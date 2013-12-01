@@ -22,27 +22,27 @@ process.source = cms.Source("PoolSource",
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 process.GlobalTag.globaltag = "START53_V15::All"
 
-process.load("hww.HWWValidation.eventMaker_cfi");
-process.load("hww.HWWValidation.vertexMaker_cfi");
-process.load("hww.HWWValidation.trackMaker_cfi");
-process.load("hww.HWWValidation.electronMaker_cfi");
-process.load("hww.HWWValidation.muonMaker_cfi");
-process.load("hww.HWWValidation.fastJetSequence_cff")
-process.load("hww.HWWValidation.jetCollectionPruner_cfi");
-process.load("hww.HWWValidation.pfJetMaker_cfi");
-process.load("hww.HWWValidation.hypDilepMaker_cfi");
-process.load("hww.HWWValidation.recoConversionMaker_cfi");
-process.load("hww.HWWValidation.scMaker_cfi");
-process.load("hww.HWWValidation.pfCandidateMaker_cfi");
-process.load("hww.HWWValidation.gsfTrackMaker_cfi");
-process.load("hww.HWWValidation.pfElectronMaker_cfi");
-process.load("hww.HWWValidation.elToMuAssMaker_cfi");
-process.load("hww.HWWValidation.pfElToElAssMaker_cfi");
-process.load("hww.HWWValidation.pfmetMaker_cfi");
-process.load("hww.HWWValidation.trkMetMaker_cfi");
-process.load("hww.HWWValidation.bTagPFJetMaker_cfi");
-process.load("hww.HWWValidation.mvaJetIdMaker_cfi");
-process.load("hww.HWWValidation.hwwAnalyzer_cfi");
+process.load("HWWValidation.HWWBase.eventMaker_cfi");
+process.load("HWWValidation.HWWBase.vertexMaker_cfi");
+process.load("HWWValidation.HWWBase.trackMaker_cfi");
+process.load("HWWValidation.HWWBase.electronMaker_cfi");
+process.load("HWWValidation.HWWBase.muonMaker_cfi");
+process.load("HWWValidation.HWWBase.fastJetSequence_cff")
+process.load("HWWValidation.HWWBase.jetCollectionPruner_cfi");
+process.load("HWWValidation.HWWBase.pfJetMaker_cfi");
+process.load("HWWValidation.HWWBase.hypDilepMaker_cfi");
+process.load("HWWValidation.HWWBase.recoConversionMaker_cfi");
+process.load("HWWValidation.HWWBase.scMaker_cfi");
+process.load("HWWValidation.HWWBase.pfCandidateMaker_cfi");
+process.load("HWWValidation.HWWBase.gsfTrackMaker_cfi");
+process.load("HWWValidation.HWWBase.pfElectronMaker_cfi");
+process.load("HWWValidation.HWWBase.elToMuAssMaker_cfi");
+process.load("HWWValidation.HWWBase.pfElToElAssMaker_cfi");
+process.load("HWWValidation.HWWBase.pfmetMaker_cfi");
+process.load("HWWValidation.HWWBase.trkMetMaker_cfi");
+process.load("HWWValidation.HWWBase.bTagPFJetMaker_cfi");
+process.load("HWWValidation.HWWBase.mvaJetIdMaker_cfi");
+process.load("HWWValidation.HWWBase.hwwAnalyzer_cfi");
 
 process.load('JetMETCorrections.Configuration.DefaultJEC_cff')
 

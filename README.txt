@@ -11,6 +11,8 @@ To install and run
 
 cd CMSSW_5_3_11/src/ (or whatever release you are using)
 
+cvs co -r V00-00-09 -d CMGTools/External UserCode/CMG/CMGTools/External
+
 git clone https://github.com/jgran/HWWValidation
 
 cd HWWValidation/HWWBase

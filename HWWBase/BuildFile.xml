@@ -54,8 +54,7 @@
 <use   name="DataFormats/Luminosity"/>
 <use   name="RecoVertex/PrimaryVertexProducer"/>
 <use   name="TrackingTools/IPTools"/>
-<use   name="hww/Dictionaries"/>
-<use   name="EGamma/EGammaAnalysisTools"/>
+<use   name="HWWValidation/Dictionaries"/>
 <use   name="root"/>
 <use   name="clhep"/>
 <lib   name="EG"/>

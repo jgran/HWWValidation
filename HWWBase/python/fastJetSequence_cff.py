@@ -2,7 +2,7 @@ import FWCore.ParameterSet.Config as cms
 
 from RecoJets.Configuration.RecoPFJets_cff import *
 from RecoJets.Configuration.RecoJets_cff import *
-from hww.HWWValidation.fastJetMaker_cfi import *
+from HWWValidation.HWWBase.fastJetMaker_cfi import *
 
 kt6PFJetsDeterministicJEC = kt4PFJets.clone(
     rParam = 0.6,

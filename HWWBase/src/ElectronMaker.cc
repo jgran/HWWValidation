@@ -47,8 +47,6 @@
 #include "MagneticField/Records/interface/IdealMagneticFieldRecord.h"
 #include "MagneticField/Engine/interface/MagneticField.h"
 
-#include "EGamma/EGammaAnalysisTools/interface/EGammaCutBasedEleId.h" 
-
 #include "Math/VectorUtil.h"
 
 #include "HWWValidation/HWWBase/interface/ElectronMaker.h"
