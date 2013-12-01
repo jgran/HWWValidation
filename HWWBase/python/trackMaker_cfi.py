@@ -1,0 +1,14 @@
+import FWCore.ParameterSet.Config as cms
+
+trackMaker = cms.EDProducer(
+    "TrackMaker",
+    aliasPrefix = cms.untracked.string("trks"),
+    trackInputTag          = cms.InputTag("generalTracks"),
+    primaryVertexInputTag   = cms.InputTag("offlinePrimaryVertices"),
+    trkIsolationdRConeMin   = cms.double(0.01),
+    trkIsolationdRConeMax   = cms.double(0.3),
+    trkIsolationVtxDiffZMax = cms.double(0.5),
+    trkIsolationTkVtxDMax   = cms.double(0.1),
+    trkIsolationPtMin       = cms.double(1.0),
+    trkIsolationNHits       = cms.int32(7)
+)
