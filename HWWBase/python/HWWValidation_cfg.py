@@ -1,5 +1,4 @@
 import FWCore.ParameterSet.Config as cms
-from JetMETCorrections.Type1MET.MetType1Corrections_cff import *
 
 process = cms.Process("HWWValidation")
 
