@@ -15,11 +15,10 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
         'file:/nfs-7/userdata/jaehyeok/A6DE4085-8191-E111-BF4E-001E67396D5B.root'),
-    #eventsToProcess = cms.untracked.VEventRange('1:1764050')
 )
 
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
-process.GlobalTag.globaltag = "START53_V15::All"
+process.GlobalTag.globaltag = "START62_V1::All"
 
 process.load("HWWValidation.HWWBase.eventMaker_cfi");
 process.load("HWWValidation.HWWBase.vertexMaker_cfi");
@@ -58,7 +57,6 @@ process.ak5PFJetsL1FastL2L3Residual = process.ak5PFJetsL2L3.clone(
 # b-tagging general configuration
 process.load('RecoJets.JetAssociationProducers.ic5PFJetTracksAssociatorAtVertex_cfi')
 process.load('RecoBTag.Configuration.RecoBTag_cff')
-process.load('RecoBTag.SoftLepton.softElectronCandProducer_cfi')
 
 process.PFJetTracksAssociatorAtVertex = process.ic5PFJetTracksAssociatorAtVertex.clone()
 process.PFJetTracksAssociatorAtVertex.jets = "ak5PFJets"
@@ -67,8 +65,6 @@ process.PFImpactParameterTagInfos = process.impactParameterTagInfos.clone()
 process.PFImpactParameterTagInfos.jetTracks = "PFJetTracksAssociatorAtVertex"
 process.PFTrackCountingHighEffBJetTags = process.trackCountingHighEffBJetTags.clone()
 process.PFTrackCountingHighEffBJetTags.tagInfos = cms.VInputTag( cms.InputTag("PFImpactParameterTagInfos") )
-
-#from CMGTools.External.puJetIDAlgo_cff import *
 
 process.p = cms.Path(process.eventMaker*process.vertexMaker*process.trackMaker*
                      process.electronMaker*process.muonMaker*process.prunedUncorrectedJets*

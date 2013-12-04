@@ -188,9 +188,6 @@ public:
   std::vector<vector<int>>    convs_nHitsBeforeVtx_;
   std::vector<int>            convs_quality_;
   std::vector<float>          scs_sigmaIEtaIPhi_;
-  std::vector<float>          scs_e1x3_;
-  std::vector<float>          scs_e3x1_;
-  std::vector<float>          scs_eMax_;
   std::vector<LorentzVector>  scs_pos_p4_;
   std::vector<LorentzVector>  gsftrks_p4_;
   std::vector<LorentzVector>  gsftrks_vertex_p4_;
@@ -730,15 +727,6 @@ public:
   }
   std::vector<float>          &scs_sigmaIEtaIPhi(){
     return(scs_sigmaIEtaIPhi_);
-  }
-  std::vector<float>          &scs_e1x3(){
-    return(scs_e1x3_);
-  }
-  std::vector<float>          &scs_e3x1(){
-    return(scs_e3x1_);
-  }
-  std::vector<float>          &scs_eMax(){
-    return(scs_eMax_);
   }
   std::vector<LorentzVector>  &scs_pos_p4(){
     return(scs_pos_p4_);

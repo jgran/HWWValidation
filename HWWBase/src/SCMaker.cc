@@ -25,9 +25,6 @@ SCMaker::SCMaker(const edm::ParameterSet& iConfig) {
     if(branchprefix.find("_") != std::string::npos) branchprefix.replace(branchprefix.find("_"),1,"");
 
     produces<std::vector<LorentzVector> >(branchprefix+"posp4").setBranchAlias(aliasprefix_+"_pos_p4");
-    produces<std::vector<float> >(branchprefix+"eMax").setBranchAlias(aliasprefix_+"_eMax");
-    produces<std::vector<float> >(branchprefix+"e1x3").setBranchAlias(aliasprefix_+"_e1x3");
-    produces<std::vector<float> >(branchprefix+"e3x1").setBranchAlias(aliasprefix_+"_e3x1"); 
     produces<std::vector<float> >(branchprefix+"sigmaIEtaIPhi").setBranchAlias(aliasprefix_+"_sigmaIEtaIPhi");
 
     // add superclusters to the ntuple if they have ET > scEtMin_
@@ -61,9 +58,6 @@ SCMaker::SCMaker(const edm::ParameterSet& iConfig) {
 
 void SCMaker::beginRun(edm::Run& iRun, const edm::EventSetup& iSetup)
 {
-
-    iSetup.get<EcalLaserDbRecord>().get(laser_);
-
 }
 
 void SCMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
@@ -119,9 +113,9 @@ void SCMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 
     std::auto_ptr<std::vector<LorentzVector> > vector_scs_pos_p4 (new std::vector<LorentzVector>);
-    std::auto_ptr<std::vector<float> > vector_scs_eMax (new std::vector<float>);
-    std::auto_ptr<std::vector<float> > vector_scs_e1x3 (new std::vector<float>);
-    std::auto_ptr<std::vector<float> > vector_scs_e3x1 (new std::vector<float>);
+    //std::auto_ptr<std::vector<float> > vector_scs_eMax (new std::vector<float>);
+    //std::auto_ptr<std::vector<float> > vector_scs_e1x3 (new std::vector<float>);
+    //std::auto_ptr<std::vector<float> > vector_scs_e3x1 (new std::vector<float>);
     std::auto_ptr<std::vector<float> > vector_scs_sigmaIEtaIPhi(new std::vector<float>);
 
     edm::Handle<EcalRecHitCollection> tempH;
@@ -157,11 +151,6 @@ void SCMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
         // get hits
         edm::Handle<EcalRecHitCollection> rhcHandle;
         iEvent.getByLabel(hitInputTags_[i], rhcHandle);
-        const EcalRecHitCollection *recHits;
-        if(haveHits) //has been determined beforehand
-            recHits = rhcHandle.product();
-        else 
-            recHits = NULL;
 
 
         size_t scIndex = 0;
@@ -174,30 +163,8 @@ void SCMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
             vector_scs_pos_p4->push_back( LorentzVector(sc->position().x(), sc->position().y(), sc->position().z(), 0.) );
 
             const std::vector<std::pair<DetId, float > > detIds = sc->hitsAndFractions() ;
-            if(haveHits) {
-
-                EcalRecHitCollection::const_iterator maxHit;
-                float eMax = 0.0;
-                float eSumNoLaser = 0.0;
-                for (unsigned int i = 0; i < detIds.size(); ++i) {
-                    EcalRecHitCollection::const_iterator hit = recHits->find(detIds[i].first);
-                    if (hit != recHits->end()) {
-                        eSumNoLaser += hit->energy() / laser_->getLaserCorrection(hit->id(), iEvent.time());
-                        if (hit->energy() > eMax) {
-                            eMax = hit->energy();
-                            maxHit = hit;
-                        }
-                    }
-                }
-
-
-            }
 
             if(haveHits) {
-
-                vector_scs_eMax->push_back( clusterTools_->eMax(*(sc->seed())) );
-                vector_scs_e1x3->push_back( clusterTools_->e1x3(*(sc->seed())) );
-                vector_scs_e3x1->push_back( clusterTools_->e3x1(*(sc->seed())) );
 
                 // get the covariances computed in 5x5 around the seed
                 std::vector<float> covariances = clusterTools_->covariances(*(sc->seed()));
@@ -214,11 +181,6 @@ void SCMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
                 vector_scs_sigmaIEtaIPhi->push_back	 ( std::isfinite(localCovariances[1]  ) ? (localCovariances[1]   > 0 ? sqrt(localCovariances[1]  ) : -1 * sqrt(-1 * localCovariances[1]  ) ) : -9999.);
             } else {
 
-                //replace everything in this section with -9999
-
-                vector_scs_eMax->push_back( -9999 );
-                vector_scs_e1x3->push_back( -9999 );
-                vector_scs_e3x1->push_back( -9999 );
                 vector_scs_sigmaIEtaIPhi->push_back	 ( -9999. );
             }
 
@@ -226,16 +188,12 @@ void SCMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
     } // end loop on sc input tags
 
-    //*evt_nscs = vector_scs_p4->size();
 
     // put results into the event
     std::string branchprefix = aliasprefix_;
     if(branchprefix.find("_") != std::string::npos) branchprefix.replace(branchprefix.find("_"),1,"");
 
     iEvent.put(vector_scs_pos_p4		, branchprefix+"posp4"			);
-    iEvent.put(vector_scs_eMax		, branchprefix+"eMax"			);
-    iEvent.put(vector_scs_e1x3		, branchprefix+"e1x3"			);
-    iEvent.put(vector_scs_e3x1		, branchprefix+"e3x1"			);
     iEvent.put(vector_scs_sigmaIEtaIPhi	, branchprefix+"sigmaIEtaIPhi"		);
 
     delete mhbhe;

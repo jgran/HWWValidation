@@ -810,21 +810,6 @@ void HWWAnalyzer::GetVariables(const edm::Event& iEvent, const edm::EventSetup& 
   iEvent.getByLabel(scs_sigmaIEtaIPhi_tag, scs_sigmaIEtaIPhi_h);
   hww.scs_sigmaIEtaIPhi_ = *scs_sigmaIEtaIPhi_h.product();
 
-  edm::InputTag scs_e1x3_tag(scInputTag.label(),"scse1x3");
-  edm::Handle<std::vector<float> > scs_e1x3_h;
-  iEvent.getByLabel(scs_e1x3_tag, scs_e1x3_h);
-  hww.scs_e1x3_ = *scs_e1x3_h.product();
-
-  edm::InputTag scs_e3x1_tag(scInputTag.label(),"scse3x1");
-  edm::Handle<std::vector<float> > scs_e3x1_h;
-  iEvent.getByLabel(scs_e3x1_tag, scs_e3x1_h);
-  hww.scs_e3x1_ = *scs_e3x1_h.product();
-
-  edm::InputTag scs_eMax_tag(scInputTag.label(),"scseMax");
-  edm::Handle<std::vector<float> > scs_eMax_h;
-  iEvent.getByLabel(scs_eMax_tag, scs_eMax_h);
-  hww.scs_eMax_ = *scs_eMax_h.product();
-
   edm::InputTag scs_pos_p4_tag(scInputTag.label(),"scsposp4");
   edm::Handle<std::vector<LorentzVector> > scs_pos_p4_h;
   iEvent.getByLabel(scs_pos_p4_tag, scs_pos_p4_h);
