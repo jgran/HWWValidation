@@ -1,39 +1,6 @@
-#ifndef ELECTRONMAKER_H
-#define ELECTRONMAKER_H
+#ifndef NTUPLEMAKER_ELECTRONMAKER_H
+#define NTUPLEMAKER_ELECTRONMAKER_H
 
-// system include files
-#include <memory>
-#include <vector>
-
-// user include files
-#include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDProducer.h"
-#include "FWCore/Framework/interface/Event.h"
-#include "FWCore/Framework/interface/MakerMacros.h"
-#include "FWCore/ParameterSet/interface/ParameterSet.h"
-
-#include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
-#include "DataFormats/EgammaCandidates/interface/GsfElectronFwd.h"
-#include "DataFormats/EgammaReco/interface/BasicClusterShapeAssociation.h"
-#include "DataFormats/EcalDetId/interface/EcalSubdetector.h"
-#include "DataFormats/TrackReco/interface/Track.h"
-#include "DataFormats/TrackReco/interface/TrackFwd.h"
-#include "DataFormats/Common/interface/ValueMap.h"
-#include "DataFormats/Math/interface/Point3D.h"
-#include "DataFormats/EgammaReco/interface/SuperCluster.h"
-#include "DataFormats/EgammaReco/interface/SuperClusterFwd.h"
-#include "DataFormats/GsfTrackReco/interface/GsfTrack.h"
-
-#include "RecoEcal/EgammaCoreTools/interface/EcalClusterLazyTools.h"
-#include "DataFormats/BeamSpot/interface/BeamSpot.h"
-
-#include "TrackingTools/GsfTools/interface/MultiTrajectoryStateTransform.h"
-
-#include "DataFormats/ParticleFlowCandidate/interface/PFCandidateFwd.h"
-#include "CommonTools/ParticleFlow/interface/PFPileUpAlgo.h"
-#include "DataFormats/VertexReco/interface/VertexFwd.h"
-
-#include "Math/VectorUtil.h"
 
 //
 // class decleration

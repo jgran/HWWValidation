@@ -1,56 +1,24 @@
-// system include files
-#include <memory>
-#include <math.h>
 
-// user include files
-#include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDProducer.h"
-#include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
-#include "FWCore/ParameterSet/interface/ParameterSet.h"
-#include "FWCore/Framework/interface/ESHandle.h"
 
-#include "DataFormats/Math/interface/LorentzVector.h"
-#include "DataFormats/EgammaReco/interface/BasicCluster.h"
-#include "DataFormats/EgammaReco/interface/BasicClusterFwd.h"
-#include "DataFormats/EgammaReco/interface/ClusterShape.h"
-#include "DataFormats/EgammaReco/interface/ClusterShapeFwd.h"
-#include "DataFormats/EgammaReco/interface/BasicClusterShapeAssociation.h"
-#include "DataFormats/EcalDetId/interface/EcalSubdetector.h"
-#include "DataFormats/Math/interface/deltaR.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
-#include "DataFormats/TrackReco/interface/HitPattern.h"
-#include "DataFormats/TrackingRecHit/interface/TrackingRecHitFwd.h"
-#include "DataFormats/TrackingRecHit/interface/TrackingRecHit.h"
-#include "DataFormats/TrackerRecHit2D/interface/SiStripRecHit2D.h"
-#include "DataFormats/TrackerRecHit2D/interface/SiStripRecHit1D.h"
-#include "DataFormats/TrackerRecHit2D/interface/SiPixelRecHit.h"
-#include "DataFormats/SiStripCluster/interface/SiStripCluster.h"
-#include "DataFormats/SiPixelCluster/interface/SiPixelCluster.h"
-#include "RecoEgamma/EgammaTools/interface/ConversionFinder.h"
-#include "DataFormats/TrackReco/interface/Track.h"
-#include "DataFormats/TrackReco/interface/TrackFwd.h"
-#include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
-#include "DataFormats/VertexReco/interface/Vertex.h"
-#include "DataFormats/VertexReco/interface/VertexFwd.h"
 
-#include "TrackingTools/TrajectoryState/interface/TrajectoryStateOnSurface.h"
+#include "RecoEcal/EgammaCoreTools/interface/EcalClusterLazyTools.h"
+
+#include "TrackingTools/GsfTools/interface/MultiTrajectoryStateTransform.h"
 #include "TrackingTools/IPTools/interface/IPTools.h"
-#include "TrackingTools/TransientTrack/interface/TransientTrack.h"
 #include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
 #include "TrackingTools/Records/interface/TransientTrackRecord.h"
 
-#include "Geometry/Records/interface/TrackerDigiGeometryRecord.h"
-#include "Geometry/CommonDetUnit/interface/TrackingGeometry.h"
+#include "CommonTools/ParticleFlow/interface/PFPileUpAlgo.h"
+
+
+#include "RecoEgamma/EgammaTools/interface/ConversionFinder.h"
+
 #include "Geometry/TrackerGeometryBuilder/interface/TrackerGeometry.h"
 
-#include "MagneticField/Records/interface/IdealMagneticFieldRecord.h"
-#include "MagneticField/Engine/interface/MagneticField.h"
-
-#include "Math/VectorUtil.h"
-
-#include "HWWValidation/HWWBase/interface/ElectronMaker.h"
 #include "HWWValidation/HWWBase/interface/EgammaFiduciality.h"
+#include "HWWValidation/HWWBase/interface/ElectronMaker.h"
 
 
 using namespace reco;
@@ -59,8 +27,6 @@ using namespace std;
 
 typedef math::XYZTLorentzVectorF LorentzVector;
 typedef math::XYZPoint Point;
-typedef Ref<edmNew::DetSetVector<SiStripCluster>,SiStripCluster > ClusterRef;
-typedef Ref<edmNew::DetSetVector<SiPixelCluster>, SiPixelCluster > pixel_ClusterRef;
 
 // constructors and destructor
 ElectronMaker::ElectronMaker(const ParameterSet& iConfig) {
