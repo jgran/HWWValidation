@@ -1239,23 +1239,6 @@ bool isChargeFlip3agree(int elIndex){
   return true;
 }
 
-/////////////////////
-// Spike rejection //
-/////////////////////
-bool isSpikeElectron(const unsigned int index) {
-
-    const int scidx = hww.els_scindex().at(index);
-    bool isSpike = false;
-    if (scidx != -1) {
-        //subtract twice max since max is in both 1x3 and 3x1, and we want neither
-        const float r4 = (hww.scs_e1x3().at(scidx) + hww.scs_e3x1().at(scidx) - 2*hww.scs_eMax().at(scidx))/hww.scs_eMax().at(scidx);
-        if (r4 < 0.05) isSpike = true;
-    }
-
-    return isSpike;
-
-}
-
 /////////////////////////
 // position correction //
 /////////////////////////
