@@ -1,29 +1,6 @@
 #ifndef SCMAKER_H
 #define SCMAKER_H
 
-// user include files
-#include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDProducer.h"
-#include "FWCore/Framework/interface/Event.h"
-#include "FWCore/ParameterSet/interface/ParameterSet.h"
-#include "FWCore/Framework/interface/ESHandle.h"
-#include "FWCore/Framework/interface/EventSetup.h"
-#include "DataFormats/Common/interface/Handle.h"
-
-#include "Geometry/CaloGeometry/interface/CaloGeometry.h"
-#include "RecoEgamma/EgammaTools/interface/HoECalculator.h"
-#include "RecoEcal/EgammaCoreTools/interface/EcalClusterLazyTools.h"
-#include "DataFormats/EgammaReco/interface/SuperClusterFwd.h"
-#include "DataFormats/Math/interface/LorentzVector.h"
-#include "DataFormats/Math/interface/Point3D.h"
-
-#include "RecoLocalCalo/EcalRecAlgos/interface/EcalSeverityLevelAlgo.h"
-#include "CondFormats/DataRecord/interface/EcalChannelStatusRcd.h"
-#include "CalibCalorimetry/EcalLaserCorrection/interface/EcalLaserDbService.h"
-
-#include "SimDataFormats/GeneratorProducts/interface/HepMCProduct.h"
-
-
 //
 // class declaration
 //

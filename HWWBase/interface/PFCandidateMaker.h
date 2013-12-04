@@ -1,18 +1,6 @@
 #ifndef PFCANDIDATEMAKER_H
 #define PFCANDIDATEMAKER_H
 
-// system include files
-#include <memory>
-
-// user include files
-#include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDProducer.h"
-#include "FWCore/Framework/interface/Event.h"
-#include "FWCore/Framework/interface/MakerMacros.h"
-#include "FWCore/ParameterSet/interface/ParameterSet.h"
-#include "CommonTools/ParticleFlow/interface/PFPileUpAlgo.h"
-#include "Math/VectorUtil.h"
-
 //
 // class decleration
 //

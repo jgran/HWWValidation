@@ -1,20 +1,13 @@
-#include "FWCore/Framework/interface/EventSetup.h"
-#include "FWCore/Framework/interface/ESHandle.h"
-#include "DataFormats/Math/interface/LorentzVector.h"
-#include "DataFormats/JetReco/interface/PFJet.h"
-#include "JetMETCorrections/Objects/interface/JetCorrector.h"
-#include "DataFormats/ParticleFlowCandidate/interface/PFCandidateFwd.h"
-#include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
-
-#include "RecoMET/METAlgorithms/interface/PFSpecificAlgo.h"
+#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/MakerMacros.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
-#include "DataFormats/VertexReco/interface/VertexFwd.h"
-#include "FWCore/Utilities/interface/Exception.h"
+#include "RecoMET/METAlgorithms/interface/PFSpecificAlgo.h"
 
+#include "HWWValidation/HWWBase/interface/PileupJetIdAlgo.h"
 #include "HWWValidation/HWWBase/interface/MVAJetIdMaker.h"
 
-typedef math::XYZTLorentzVectorF LorentzVector;
 
+typedef math::XYZTLorentzVectorF LorentzVector;
 
 
 // Constructor

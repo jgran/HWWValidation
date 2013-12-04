@@ -1,12 +1,7 @@
-#include "FWCore/Framework/interface/EventSetup.h"
-#include "FWCore/Framework/interface/ESHandle.h"
-#include "DataFormats/Math/interface/LorentzVector.h"
+#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/MakerMacros.h"
 #include "DataFormats/JetReco/interface/PFJet.h"
-#include "JetMETCorrections/Objects/interface/JetCorrector.h"
-#include "DataFormats/ParticleFlowCandidate/interface/PFCandidateFwd.h"
-#include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
-#include "DataFormats/MuonReco/interface/Muon.h"
-#include "DataFormats/MuonReco/interface/MuonFwd.h"
 
 #include "HWWValidation/HWWBase/interface/PFJetMaker.h"
 

@@ -1,21 +1,9 @@
-// system include files
-#include <memory>
-#include "Math/VectorUtil.h"
-
-// user include files
-#include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDProducer.h"
-
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
+#include "DataFormats/EgammaCandidates/interface/Conversion.h"
 
-#include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "HWWValidation/HWWBase/interface/RecoConversionMaker.h"
-
-#include "DataFormats/BeamSpot/interface/BeamSpot.h"
-#include "DataFormats/Math/interface/LorentzVector.h"
-#include "CommonTools/Statistics/interface/ChiSquaredProbability.h"
-// Propagator specific include files
 
 using namespace std;
 using namespace reco;

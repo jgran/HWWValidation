@@ -1,16 +1,9 @@
-// system include files
-#include <memory>
-
-// user include files
-#include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDProducer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
-#include "FWCore/ParameterSet/interface/ParameterSet.h"
+#include "DataFormats/METReco/interface/PFMET.h"
 
 #include "HWWValidation/HWWBase/interface/PFMETMaker.h"
-
-#include "DataFormats/METReco/interface/PFMET.h"
 
 typedef math::XYZTLorentzVectorF LorentzVector;
 

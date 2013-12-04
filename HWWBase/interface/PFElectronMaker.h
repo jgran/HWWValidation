@@ -1,28 +1,5 @@
-// -*- C++ -*-
-//
-// Package:    NtupleMaker
-// Class:      NtupleMaker
-// 
-/**\class NtupleMaker NtupleMaker.cc hww/HWWValidation/src/NtupleMaker.cc
-
-   Description: <one line class summary>
-
-   Implementation:
-   <Notes on implementation>
-*/
-#ifndef NTUPLEMAKER_PFELECTRONMAKER_H
-#define NTUPLEMAKER_PFELECTRONMAKER_H
-
-// system include files
-#include <memory>
-
-// user include files
-#include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDProducer.h"
-#include "FWCore/Framework/interface/Event.h"
-#include "FWCore/Framework/interface/MakerMacros.h"
-#include "FWCore/ParameterSet/interface/ParameterSet.h"
-#include "Math/VectorUtil.h"
+#ifndef PFELECTRONMAKER_H
+#define PFELECTRONMAKER_H
 
 //
 // class decleration

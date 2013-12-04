@@ -1,25 +1,9 @@
-// system include files
-#include <memory>
-
-// user include files
-#include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDProducer.h"
-#include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
-#include "FWCore/ParameterSet/interface/ParameterSet.h"
-#include "FWCore/Framework/interface/ESHandle.h"
-
-#include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
-#include "DataFormats/ParticleFlowCandidate/interface/PFCandidateFwd.h"
-#include "DataFormats/VertexReco/interface/VertexFwd.h"
 #include "RecoParticleFlow/PFProducer/interface/PFMuonAlgo.h"
-#include "DataFormats/ParticleFlowReco/interface/PFBlock.h"
 #include "DataFormats/Common/interface/ValueMap.h"
+#include "CommonTools/ParticleFlow/interface/PFPileUpAlgo.h"
 
 #include "HWWValidation/HWWBase/interface/PFCandidateMaker.h"
-#include "DataFormats/Math/interface/deltaR.h"
-#include "DataFormats/Math/interface/deltaPhi.h"
-#include "TMath.h"
 
 typedef math::XYZTLorentzVectorF LorentzVector;
 typedef math::XYZPoint Point;

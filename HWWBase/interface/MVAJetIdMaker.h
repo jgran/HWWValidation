@@ -1,16 +1,5 @@
-// system include files
-#include <memory>
-
-// user include files
-#include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDProducer.h"
-#include "FWCore/Framework/interface/Event.h"
-#include "FWCore/Framework/interface/MakerMacros.h"
-#include "FWCore/ParameterSet/interface/ParameterSet.h"
-
-#include "DataFormats/JetReco/interface/Jet.h"
-#include "DataFormats/JetReco/interface/PFJet.h"
-#include "PileupJetIdAlgo.h"
+#ifndef MVAJETIDMAKER_H
+#define MVAJETIDMAKER_H
 
 //
 // class decleration
@@ -42,3 +31,4 @@ private:
   std::string PFJetCorrectorL1L2L3_;
   std::string PFJetCorrectorL1FastL2L3_;
 };
+#endif

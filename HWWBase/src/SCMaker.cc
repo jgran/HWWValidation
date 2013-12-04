@@ -1,28 +1,14 @@
-// system include files
-#include <memory>
-#include <math.h>
-
-// user include files
-#include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDProducer.h"
-#include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
-#include "FWCore/ParameterSet/interface/ParameterSet.h"
-
-#include "DataFormats/CaloRecHit/interface/CaloID.h"
-#include "DataFormats/EgammaReco/interface/SuperCluster.h"
-#include "Geometry/Records/interface/CaloGeometryRecord.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
-#include "DataFormats/DetId/interface/DetId.h"
-#include "DataFormats/EcalDetId/interface/EBDetId.h"
-#include "DataFormats/EcalDetId/interface/EEDetId.h"
 #include "DataFormats/EgammaCandidates/interface/GsfElectronFwd.h"
-#include "DataFormats/Common/interface/Ref.h"
 #include "DataFormats/Math/interface/deltaPhi.h"
-#include "DataFormats/EcalDetId/interface/EcalSubdetector.h"
-#include "CondFormats/EcalObjects/interface/EcalChannelStatus.h"
+#include "Geometry/Records/interface/CaloGeometryRecord.h"
 #include "CalibCalorimetry/EcalLaserCorrection/interface/EcalLaserDbRecord.h"
+#include "RecoEgamma/EgammaTools/interface/HoECalculator.h"
+#include "RecoEcal/EgammaCoreTools/interface/EcalClusterLazyTools.h"
+#include "SimDataFormats/GeneratorProducts/interface/HepMCProduct.h"
 
 #include "HWWValidation/HWWBase/interface/SCMaker.h"
 
