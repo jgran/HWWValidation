@@ -1,20 +1,12 @@
-
 #include "FWCore/Framework/interface/MakerMacros.h"
-
 #include "DataFormats/PatCandidates/interface/Electron.h"
-
 #include "RecoEcal/EgammaCoreTools/interface/EcalClusterLazyTools.h"
-
 #include "TrackingTools/GsfTools/interface/MultiTrajectoryStateTransform.h"
 #include "TrackingTools/IPTools/interface/IPTools.h"
 #include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
 #include "TrackingTools/Records/interface/TransientTrackRecord.h"
-
 #include "CommonTools/ParticleFlow/interface/PFPileUpAlgo.h"
-
-
 #include "RecoEgamma/EgammaTools/interface/ConversionFinder.h"
-
 #include "Geometry/TrackerGeometryBuilder/interface/TrackerGeometry.h"
 
 #include "HWWValidation/HWWBase/interface/EgammaFiduciality.h"
