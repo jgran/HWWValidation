@@ -1,19 +1,9 @@
-// system include files
-#include <memory>
-#include <vector>
-
-// user include files
-#include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDProducer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
-#include "FWCore/ParameterSet/interface/ParameterSet.h"
-
-#include "DataFormats/Math/interface/LorentzVector.h"
 #include "DataFormats/JetReco/interface/JetFloatAssociation.h"
 
 #include "HWWValidation/HWWBase/interface/CommonUtils.h"
-#include "HWWValidation/HWWBase/interface/MCUtilities.h"
 #include "HWWValidation/HWWBase/interface/BTagMaker.h" 
 
 typedef math::XYZTLorentzVectorF LorentzVector;

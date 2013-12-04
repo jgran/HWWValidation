@@ -1,38 +1,12 @@
-// system include files
-#include <memory>
-#include <sstream>
-
-// user include files
 #include "DataFormats/Common/interface/ValueMap.h"
-#include "DataFormats/GeometryVector/interface/GlobalPoint.h"
-#include "DataFormats/GsfTrackReco/interface/GsfTrack.h"
-#include "DataFormats/Math/interface/deltaR.h"
-#include "DataFormats/Math/interface/LorentzVector.h"
-#include "DataFormats/Math/interface/Point3D.h"
-#include "DataFormats/MuonReco/interface/Muon.h"
-#include "DataFormats/MuonReco/interface/MuonFwd.h"
-#include "DataFormats/MuonReco/interface/MuonCocktails.h"
 #include "DataFormats/MuonReco/interface/MuonCosmicCompatibility.h"
-#include "DataFormats/MuonReco/interface/MuonPFIsolation.h"
-#include "DataFormats/MuonReco/interface/MuonQuality.h"
 #include "DataFormats/MuonReco/interface/MuonSelectors.h"
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
-#include "DataFormats/TrackReco/interface/Track.h"
-#include "DataFormats/TrackReco/interface/TrackBase.h"
-#include "DataFormats/TrackReco/interface/TrackToTrackMap.h"
-#include "DataFormats/VertexReco/interface/Vertex.h"
 #include "FWCore/Framework/interface/EDProducer.h"
 #include "FWCore/Framework/interface/Event.h"
-#include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
-#include "FWCore/ParameterSet/interface/ParameterSet.h"
-#include "Math/VectorUtil.h"
-#include "TrackingTools/IPTools/interface/IPTools.h"
-#include "TrackingTools/TransientTrack/interface/TransientTrack.h"
-#include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
-#include "TrackingTools/Records/interface/TransientTrackRecord.h"
-#include "DataFormats/MuonReco/interface/MuonChamberMatch.h"
 #include "DataFormats/MuonReco/interface/MuonShower.h"
+#include "DataFormats/VertexReco/interface/VertexFwd.h"
 
 #include "HWWValidation/HWWBase/interface/MuonMaker.h"
 
