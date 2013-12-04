@@ -1,23 +1,5 @@
-// -*- C++ -*-
-//
-// Package:    NtupleMaker
-// Class:      NtupleMaker
-// 
-/**\class NtupleMaker NtupleMaker.cc hww/HWWValidation/src/NtupleMaker.cc
-
-   Description: <one line class summary>
-
-   Implementation:
-   <Notes on implementation>
-*/
-//
-// Original Author:  pts/4
-//         Created:  Fri Jun  6 11:07:38 CDT 2008
-// $Id: ElectronMaker.h,v 1.27 2012/08/16 00:00:26 slava77 Exp $
-//
-//
-#ifndef NTUPLEMAKER_ELECTRONMAKER_H
-#define NTUPLEMAKER_ELECTRONMAKER_H
+#ifndef ELECTRONMAKER_H
+#define ELECTRONMAKER_H
 
 // system include files
 #include <memory>
