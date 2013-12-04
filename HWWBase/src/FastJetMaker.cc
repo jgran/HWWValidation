@@ -1,22 +1,10 @@
-// system include files
-#include <memory>
-
-// user include files
-#include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDProducer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
-#include "FWCore/ParameterSet/interface/ParameterSet.h"
+#include "DataFormats/MuonReco/interface/MuonMETCorrectionData.h"
 
 #include "HWWValidation/HWWBase/interface/FastJetMaker.h"
 
-#include "DataFormats/METReco/interface/CaloMET.h"
-#include "DataFormats/METReco/interface/MET.h"
-#include "DataFormats/METReco/interface/METFwd.h"
-#include "DataFormats/MuonReco/interface/Muon.h"
-#include "DataFormats/MuonReco/interface/MuonFwd.h"
-#include "DataFormats/MuonReco/interface/MuonMETCorrectionData.h"
-#include "DataFormats/Common/interface/ValueMap.h" 
 
 using namespace reco;
 using namespace edm;

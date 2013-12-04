@@ -1,13 +1,6 @@
-//-*- C++ -*-
-// $Id: EnergyDensityMaker.cc,v 1.3 2012/05/17 00:25:14 macneill Exp $
-//
-
-#include <memory>
-#include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDProducer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
-#include "FWCore/ParameterSet/interface/ParameterSet.h"
 
 
 class EnergyDensityMaker : public edm::EDProducer {

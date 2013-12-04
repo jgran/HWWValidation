@@ -1,19 +1,15 @@
-// system include files
-#include <memory>
-
-// user include files
-#include "FWCore/Framework/interface/EventSetup.h"
+#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/Framework/interface/ESHandle.h"
-
 #include "DataFormats/Math/interface/LorentzVector.h"
 #include "DataFormats/Math/interface/Point3D.h"
 #include "DataFormats/Scalers/interface/DcsStatus.h"
-#include "DataFormats/GeometryVector/interface/GlobalPoint.h"
-
 #include "MagneticField/Records/interface/IdealMagneticFieldRecord.h"
 #include "MagneticField/Engine/interface/MagneticField.h"
 
 #include "HWWValidation/HWWBase/interface/EventMaker.h"
+
 
 
 typedef math::XYZTLorentzVectorF LorentzVector;

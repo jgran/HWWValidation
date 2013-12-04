@@ -1,17 +1,7 @@
-#ifndef NTUPLEMAKER_EVENTMAKER_H
-#define NTUPLEMAKER_EVENTMAKER_H
-
-// system include files
-#include <memory>
+#ifndef EVENTMAKER_H
+#define EVENTMAKER_H
 
 // user include files
-#include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDProducer.h"
-#include "FWCore/Framework/interface/Event.h"
-#include "FWCore/Framework/interface/MakerMacros.h"
-#include "FWCore/ParameterSet/interface/ParameterSet.h"
-
-#include "TString.h"
 //
 // class decleration
 //
