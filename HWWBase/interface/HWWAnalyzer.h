@@ -1,17 +1,12 @@
 #ifndef HWWANALYZER_H
 #define HWWANALYZER_H  
 
-#include <memory>
-#include <string>
-#include <fstream>
-
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Utilities/interface/InputTag.h"
-#include "DataFormats/Math/interface/LorentzVector.h"
 
 #include "HWWValidation/HWWBase/interface/analysisSelections.h"
 #include "HWWValidation/HWWBase/interface/EGammaMvaEleEstimator.h"
@@ -19,7 +14,7 @@
 #include "HWWValidation/HWWBase/interface/monitor.h"
 
 
-typedef math::XYZTLorentzVectorF LorentzVector;
+//typedef math::XYZTLorentzVectorF LorentzVector;
 
 //
 // class declaration
@@ -83,13 +78,17 @@ class HWWAnalyzer : public edm::EDAnalyzer {
       int topVetoCounter;
       int dilepPtCounter;
   
-      //ofstream outFile;
-
       EGammaMvaEleEstimator* egammaMvaEleEstimator;
       MuonMVAEstimator* muonMVAEstimator;
   
       hypo_monitor monitor;
 
+/*
+      TH1F *cutflow_mm;
+      TH1F *cutflow_ee;
+      TH1F *cutflow_em;
+      TH1F *cutflow_me;
+*/
 
 };
 

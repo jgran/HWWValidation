@@ -1,8 +1,5 @@
-#include "Math/VectorUtil.h"
-#include "TMath.h"
-
+#include "DataFormats/Math/interface/LorentzVector.h"
 #include "HWWValidation/HWWBase/interface/HWWAnalyzer.h"
-#include "HWWValidation/HWWBase/interface/HWW.h"
 
 typedef math::XYZTLorentzVectorF LorentzVector;
 using namespace edm;
@@ -32,22 +29,6 @@ HWWAnalyzer::HWWAnalyzer(const edm::ParameterSet& iConfig){
   bTagPFJetInputTag     = iConfig.getParameter<InputTag>("bTagPFJetInputTag");
   mvaJetIdInputTag      = iConfig.getParameter<InputTag>("mvaJetIdInputTag");
 
-  baselineCounter   = 0;
-  chargeCounter     = 0;
-  FullLepCounter    = 0;
-  ExtraLepCounter   = 0;
-  metCounter        = 0;
-  dilepMassCounter  = 0;
-  zvetoCounter      = 0;
-  minmetCounter     = 0;
-  minmet40Counter   = 0;
-  dphiCounter       = 0;
-  softMuonCounter   = 0;
-  topVetoCounter    = 0;
-  dilepPtCounter    = 0;
-
-  //outFile.open("dphi.txt");
-
   egammaMvaEleEstimator = 0;
   muonMVAEstimator = 0;
 
@@ -73,39 +54,43 @@ HWWAnalyzer::HWWAnalyzer(const edm::ParameterSet& iConfig){
   muonMVAEstimator = new MuonMVAEstimator();
   muonMVAEstimator->initialize( "MuonIso_BDTG_IsoRings", MuonMVAEstimator::kIsoRings, true, muonisoweights );
 
+/*
+  edm::Service<TFileService> fs;
+  cutflow_mm = fs->make<TH1F>("cutflow_mm" , "cutflow_mm" , 20 , 0 , 20);
+  cutflow_ee = fs->make<TH1F>("cutflow_ee" , "cutflow_ee" , 20 , 0 , 20);
+  cutflow_em = fs->make<TH1F>("cutflow_em" , "cutflow_em" , 20 , 0 , 20);
+  cutflow_me = fs->make<TH1F>("cutflow_me" , "cutflow_me" , 20 , 0 , 20);
+*/
+
 }
 
 
 HWWAnalyzer::~HWWAnalyzer(){ 
-  //outFile.close();
 }
-
-//
-// member functions
-//
 
 // ------------ method called for each event  ------------
 void HWWAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup){
 
-  //Get variables needed for passFirstCuts
+  //get variables needed for passFirstCuts
   HWWAnalyzer::GetFirstVariables(iEvent, iSetup);
 
-  //Check some basic event requirements
+  //check some basic event requirements
   std::vector<int> goodHyps;
   for(unsigned int i=0; i < hww.hyp_p4().size(); i++){
     if(!passFirstCuts(i)) continue;
     goodHyps.push_back(i);
   }
   
-  //no need to continue of event didn't pass basic requirements
+  //no need to continue if event didn't pass basic requirements
   if(goodHyps.size() > 0){
 
-    //Get variables needed for remaining selections
+    //get variables needed for remaining selections
     HWWAnalyzer::GetVariables(iEvent, iSetup);
 
     //to hold indices of candidate dilepton pairs
     vector<int> candidates;
 
+    //get lepton pairs that pass baseline selection
     for(unsigned int i=0; i < goodHyps.size(); i++){
       if(!passBaseline(goodHyps.at(i), egammaMvaEleEstimator, muonMVAEstimator)) continue;
       candidates.push_back(i);      
@@ -113,8 +98,10 @@ void HWWAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
     if(candidates.size()>0){
 
+      //find best lepton pair
       int bestHyp = bestHypothesis(candidates);
 
+      //create cutflow table
       doCutFlow(bestHyp, monitor, egammaMvaEleEstimator, muonMVAEstimator);
 
     }
@@ -135,6 +122,7 @@ HWWAnalyzer::endJob()
 {
 
 monitor.print();
+monitor.makeHistograms();
 
 }
 

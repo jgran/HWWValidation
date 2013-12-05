@@ -1,6 +1,7 @@
 #include "HWWValidation/HWWBase/interface/monitor.h"
 #include "HWWValidation/HWWBase/interface/HWW.h"
 #include "TH1F.h"
+#include "TFile.h"
 #include <fstream>
 #include <string>
 
@@ -83,30 +84,24 @@ void hypo_monitor::print() const
     }
     cut_file.close();
   }
-/*
-  for ( unsigned int i=0; i<counters.size(); ++i ){
-    std::cout << Form("%-40s \thyps: %f/%f/%f/%f/%f \tnevts: %f/%f/%f/%f/%f", counters[i].name.c_str(),
-		      counters[i].nhyp[MM]/((float)nEvtProcessed),counters[i].nhyp[EE]/((float)nEvtProcessed),counters[i].nhyp[EM]/((float)nEvtProcessed),counters[i].nhyp[ME]/((float)nEvtProcessed),counters[i].nhyp[ALL]/((float)nEvtProcessed),
-		      counters[i].nevt[MM]/((float)nEvtProcessed),counters[i].nevt[EE]/((float)nEvtProcessed),counters[i].nevt[EM]/((float)nEvtProcessed),counters[i].nevt[ME]/((float)nEvtProcessed),counters[i].nevt[ALL]/((float)nEvtProcessed)) 
-	      << std::endl;
-  }
-*/
 }
 
-void hypo_monitor::makeHistograms(const char* prefix) const
+void hypo_monitor::makeHistograms() const
 {
   TH1F* hist[4];
-  TH1F* histw[4];
+  TFile* outfile = new TFile("cutflow_hists.root", "RECREATE");
+  outfile->cd();
+  float denom = 0.0;
   for (unsigned int i=0; i<4; i++){
-    hist[i]  = new TH1F(Form("%s_hcuts_%s", prefix, HypothesisTypeName(i)), 
-			"Number of events vs cuts", counters.size(), 0, counters.size() );	
-    histw[i] = new TH1F(Form("%s_hcuts_weighted_%s", prefix, HypothesisTypeName(i)), 
-		       "Number of weighted events vs cuts", counters.size(), 0, counters.size() );	
-    for ( unsigned int j=0; j<counters.size(); ++j ){
-      hist[i]->SetBinContent(j+1,counters[j].nevt[i]);
+    hist[i]  = new TH1F(Form("cutflow_%s", HypothesisTypeName(i)), 
+			Form("Relative Efficiency %s", HypothesisTypeName(i)), counters.size(), 0, counters.size() );	
+    for (unsigned int j=0; j<counters.size(); ++j){
+      if(j==0) denom = counters[0].nevt[i];//first cut will have efficiency of 1.0
+      if(j>0)  denom = counters[j-1].nevt[i];//measure efficiency relative to previous cut
       hist[i]->GetXaxis()->SetBinLabel(j+1,counters[j].name.c_str());
-      histw[i]->SetBinContent(j+1,counters[j].nevt_weighted[i]);
-      histw[i]->GetXaxis()->SetBinLabel(j+1,counters[j].name.c_str());
+      if(denom==0) continue;
+      hist[i]->SetBinContent(j+1,((float) counters[j].nevt[i])/denom);
     }
+    hist[i]->Write();
   }
 }

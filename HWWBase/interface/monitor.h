@@ -39,7 +39,7 @@ struct Entry {
 struct hypo_monitor{
   void count(HWW&, HypothesisType type, const char* name, double weight=1.0);
   void print() const;
-  void makeHistograms(const char* prefix) const;
+  void makeHistograms() const;
   hypo_monitor(bool iKeepEventList=true):nEvtProcessed(0),
 					  keepEventList(iKeepEventList){}
   // -------------------------------------- //
