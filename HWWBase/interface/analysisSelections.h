@@ -1,13 +1,14 @@
 #ifndef ANALYSIS_SELECTIONS_H
 #define ANALYSIS_SELECTIONS_H
 
-#include "ElectronIDMVA.h"
-#include "MuonIDMVA.h"
-#include "EGammaMvaEleEstimator.h"
-#include "MuonMVAEstimator.h"
-#include "analysisEnums.h"
-#include "jetSelections.h"
-#include "monitor.h"
+#include "HWWValidation/HWWBase/interface/EGammaMvaEleEstimator.h"
+#include "HWWValidation/HWWBase/interface/monitor.h"
+#include "HWWValidation/HWWBase/interface/ElectronIDMVA.h"
+#include "HWWValidation/HWWBase/interface/MuonIDMVA.h"
+#include "HWWValidation/HWWBase/interface/MuonMVAEstimator.h"
+#include "HWWValidation/HWWBase/interface/wwtypes.h"
+#include "HWWValidation/HWWBase/interface/analysisEnums.h"
+#include "HWWValidation/HWWBase/interface/jetSelections.h"
 
 void doCutFlow(int, hypo_monitor&, EGammaMvaEleEstimator*, MuonMVAEstimator*);
 bool passFirstCuts(int);

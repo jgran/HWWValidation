@@ -1,22 +1,8 @@
-#include "Math/VectorUtil.h"
-#include "TMath.h"
-#include "TLorentzVector.h"
-#include "TDatabasePDG.h"
-#include "Math/VectorUtil.h"
-#include "TROOT.h"
-//#include "DYMVA.h"
-
-
-#include "HWWValidation/HWWBase/interface/analysisSelections.h"
-#include "HWWValidation/HWWBase/interface/HWW.h"
 #include "HWWValidation/HWWBase/interface/muonSelections.h"
 #include "HWWValidation/HWWBase/interface/electronSelections.h"
 #include "HWWValidation/HWWBase/interface/eventSelections.h"
-#include "HWWValidation/HWWBase/interface/jetSelections.h"
-#include "HWWValidation/HWWBase/interface/MuonEffectiveArea.h"
-#include "HWWValidation/HWWBase/interface/wwtypes.h"
 #include "HWWValidation/HWWBase/interface/pfjetMVAtools.h"
-#include "HWWValidation/jetcorr/FactorizedJetCorrector.h"
+#include "HWWValidation/HWWBase/interface/analysisSelections.h"
 
 void doCutFlow(int i_hyp, hypo_monitor& monitor, EGammaMvaEleEstimator* egammaMvaEleEstimator, MuonMVAEstimator* muonMVAEstimator){
 
@@ -358,7 +344,6 @@ Bool_t comparePt(JetPair lv1, JetPair lv2) {
 // tightness : 2=loose 1=medium 0=tight
 bool passMVAJetId(double corjetpt, double jeteta, double mvavalue, unsigned int tightness)         
 {
-	//jgran// if(tightness<0 || tightness>2) //tightness<0 is always false since it is unsigned
 	if(tightness>2)
 	{
 		cout << "ERROR : tightness should be 0, 1, or 2. " << endl;
@@ -599,10 +584,6 @@ bool ww_eld0(unsigned int index){
     return fabs(hww.els_d0corr().at(index)) < 0.02;
 }
 
-
-//double dzPV(const LorentzVector& vtx, const LorentzVector& p4, const LorentzVector& pv){
-//    return (vtx.z()-pv.z()) - ((vtx.x()-pv.x())*p4.x()+(vtx.y()-pv.y())*p4.y())/p4.pt() * p4.z()/p4.pt();
-//}
 
 bool ww_eld0PV(unsigned int index){
     int vtxIndex = primaryVertex();
@@ -868,22 +849,7 @@ unsigned int numberOfExtraLeptons(	int i_hyp, double minPt, bool useLHeleId, int
 unsigned int numberOfSoftMuons(int i_hyp, bool nonisolated)
 {
 
-//const std::vector<JetPair>& vetojets(getDefaultJets(i_hyp, false));
 const std::vector<JetPair> vetojets = std::vector<JetPair>();  //empty, so there is no jet veto 
-
-/*
-cout << "-----------------" << endl;
-cout << "   SOFT MUON     " << endl;
-cout << "-----------------" << endl;
-        for ( std::vector<JetPair>::const_iterator ijet = vetojets.begin(); ijet != vetojets.end(); ++ijet ){
-//jgran
-cout << endl;
-cout << "vetojet " << ijet - vetojets.begin() << endl;
-cout << "pt = " << ijet->first.pt() << endl;
-cout << "eta = " << ijet->first.eta() << endl;
-cout << "phi = " << ijet->first.phi() << endl;
-        }
-*/
 
     unsigned int nMuons = 0;
     for (int imu=0; imu < int(hww.mus_charge().size()); ++imu) {
@@ -960,6 +926,3 @@ bool toptag(WWJetType type, int i_hyp, double minPt, std::vector<JetPair> ignore
     }
     return false;
 }
-
-
-
