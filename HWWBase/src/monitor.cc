@@ -92,15 +92,19 @@ void hypo_monitor::makeHistograms() const
   TFile* outfile = new TFile("cutflow_hists.root", "RECREATE");
   outfile->cd();
   float denom = 0.0;
+  float num = 0.0;
   for (unsigned int i=0; i<4; i++){
     hist[i]  = new TH1F(Form("cutflow_%s", HypothesisTypeName(i)), 
 			Form("Relative Efficiency %s", HypothesisTypeName(i)), counters.size(), 0, counters.size() );	
     for (unsigned int j=0; j<counters.size(); ++j){
       if(j==0) denom = counters[0].nevt[i];//first cut will have efficiency of 1.0
       if(j>0)  denom = counters[j-1].nevt[i];//measure efficiency relative to previous cut
+      num = counters[j].nevt[i]; 
       hist[i]->GetXaxis()->SetBinLabel(j+1,counters[j].name.c_str());
       if(denom==0) continue;
-      hist[i]->SetBinContent(j+1,((float) counters[j].nevt[i])/denom);
+      hist[i]->SetBinContent(j+1,num/denom);
+      float error = sqrt( (num/pow(denom,2))*(1 - num/denom) ); //binomial error
+      hist[i]->SetBinError(j+1,error);
     }
     hist[i]->Write();
   }
