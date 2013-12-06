@@ -9,12 +9,12 @@ process.load('Configuration.StandardSequences.Services_cff')
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 process.load("FWCore.MessageService.MessageLogger_cfi")
 
-#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
+#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-        'file:/nfs-7/userdata/jaehyeok/A6DE4085-8191-E111-BF4E-001E67396D5B.root'),
+	      'root://eoscms//eos/cms/store/relval/CMSSW_6_2_0_pre7_g496p02/RelValProdTTbar/AODSIM/PRE_ST62_V7-v1/00000/CCBB63D5-BCCF-E211-9D8F-002590593878.root'),
 )
 
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
