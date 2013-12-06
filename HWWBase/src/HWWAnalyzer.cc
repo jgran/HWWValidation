@@ -54,14 +54,6 @@ HWWAnalyzer::HWWAnalyzer(const edm::ParameterSet& iConfig){
   muonMVAEstimator = new MuonMVAEstimator();
   muonMVAEstimator->initialize( "MuonIso_BDTG_IsoRings", MuonMVAEstimator::kIsoRings, true, muonisoweights );
 
-/*
-  edm::Service<TFileService> fs;
-  cutflow_mm = fs->make<TH1F>("cutflow_mm" , "cutflow_mm" , 20 , 0 , 20);
-  cutflow_ee = fs->make<TH1F>("cutflow_ee" , "cutflow_ee" , 20 , 0 , 20);
-  cutflow_em = fs->make<TH1F>("cutflow_em" , "cutflow_em" , 20 , 0 , 20);
-  cutflow_me = fs->make<TH1F>("cutflow_me" , "cutflow_me" , 20 , 0 , 20);
-*/
-
 }
 
 

@@ -83,13 +83,6 @@ class HWWAnalyzer : public edm::EDAnalyzer {
   
       hypo_monitor monitor;
 
-/*
-      TH1F *cutflow_mm;
-      TH1F *cutflow_ee;
-      TH1F *cutflow_em;
-      TH1F *cutflow_me;
-*/
-
 };
 
 #endif
