@@ -1,6 +1,21 @@
 import FWCore.ParameterSet.Config as cms
+import FWCore.ParameterSet.VarParsing as VarParsing
 
 process = cms.Process("HWWValidation")
+options = VarParsing.VarParsing ('analysis')
+
+#set default arguments
+options.inputFiles= 'root://eoscms//eos/cms/store/relval/CMSSW_6_2_0_pre7_g496p02/RelValProdTTbar/AODSIM/PRE_ST62_V7-v1/00000/CCBB63D5-BCCF-E211-9D8F-002590593878.root'
+options.maxEvents = -1 # -1 means all events
+
+# get and parse the command line arguments
+options.parseArguments()
+
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.maxEvents) )
+
+process.source = cms.Source("PoolSource",
+    fileNames = cms.untracked.vstring(options.inputFiles),
+)
 
 process.load("Configuration.Geometry.GeometryIdeal_cff")
 process.load("Configuration.StandardSequences.MagneticField_cff")
@@ -8,15 +23,6 @@ process.load("Configuration.StandardSequences.Reconstruction_cff")
 process.load('Configuration.StandardSequences.Services_cff')
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 process.load("FWCore.MessageService.MessageLogger_cfi")
-
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
-#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
-
-process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring(
-	      'root://eoscms//eos/cms/store/relval/CMSSW_6_2_0_pre7_g496p02/RelValProdTTbar/AODSIM/PRE_ST62_V7-v1/00000/CCBB63D5-BCCF-E211-9D8F-002590593878.root'),
-)
-
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 process.GlobalTag.globaltag = "START62_V1::All"
 
@@ -41,7 +47,6 @@ process.load("HWWValidation.HWWBase.trkMetMaker_cfi");
 process.load("HWWValidation.HWWBase.bTagPFJetMaker_cfi");
 process.load("HWWValidation.HWWBase.mvaJetIdMaker_cfi");
 process.load("HWWValidation.HWWBase.hwwAnalyzer_cfi");
-
 process.load('JetMETCorrections.Configuration.DefaultJEC_cff')
 
 process.ak5PFJetsL1FastL2L3 = process.ak5PFJetsL2L3.clone(
