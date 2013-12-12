@@ -3,7 +3,7 @@ import FWCore.ParameterSet.Config as cms
 electronMaker = cms.EDProducer(
     "ElectronMaker",
     aliasPrefix             = cms.untracked.string("els"),
-    electronsInputTag       = cms.InputTag("gsfElectrons"),
+    electronsInputTag       = cms.InputTag("gedGsfElectrons"),
     trksInputTag            = cms.InputTag("generalTracks"),
     gsftracksInputTag       = cms.InputTag("electronGsfTracks"),
     pfCandsInputTag         = cms.InputTag("particleFlow"),
