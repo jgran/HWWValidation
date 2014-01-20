@@ -1,8 +1,6 @@
 #ifndef RECOCONVERSIONMAKER_H
 #define RECOCONVERSIONMAKER_H
 
-#include "FWCore/Framework/interface/EDProducer.h"
-#include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/Framework/interface/ConsumesCollector.h"
 #include "DataFormats/EgammaCandidates/interface/Conversion.h"

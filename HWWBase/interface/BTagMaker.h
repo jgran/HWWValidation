@@ -1,8 +1,6 @@
 #ifndef BTAGMAKER_H
 #define BTAGMAKER_H
 
-#include "FWCore/Framework/interface/EDProducer.h"
-#include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/Framework/interface/ConsumesCollector.h"
 #include "DataFormats/JetReco/interface/JetFloatAssociation.h"

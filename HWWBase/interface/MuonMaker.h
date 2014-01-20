@@ -3,11 +3,8 @@
 
 #include "DataFormats/Common/interface/ValueMap.h"
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
-#include "DataFormats/MuonReco/interface/MuonCosmicCompatibility.h"
 #include "DataFormats/MuonReco/interface/MuonSelectors.h"
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
-#include "FWCore/Framework/interface/EDProducer.h"
-#include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "DataFormats/MuonReco/interface/MuonShower.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"

@@ -1,8 +1,6 @@
 #ifndef PFJETMAKER_H
 #define PFJETMAKER_H
 
-#include "FWCore/Framework/interface/EDProducer.h"
-#include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/Framework/interface/ConsumesCollector.h"
 #include "DataFormats/JetReco/interface/PFJet.h"

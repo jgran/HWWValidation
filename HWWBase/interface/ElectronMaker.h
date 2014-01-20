@@ -1,11 +1,7 @@
 #ifndef ELECTRONMAKER_H
 #define ELECTRONMAKER_H
 
-#include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
-#include "DataFormats/GsfTrackReco/interface/GsfTrack.h"
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
-#include "DataFormats/EgammaCandidates/interface/Conversion.h"
-#include "DataFormats/EgammaCandidates/interface/ConversionFwd.h"
 #include "FWCore/Framework/interface/ConsumesCollector.h"
 
 
