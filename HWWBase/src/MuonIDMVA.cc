@@ -9,6 +9,8 @@
 #include "TMVA/Tools.h"
 #include "TMVA/Reader.h"
 
+using namespace HWWFunctions;
+
 //--------------------------------------------------------------------------------------------------
 MuonIDMVA::MuonIDMVA() :
     fMethodname("BDTG method"),

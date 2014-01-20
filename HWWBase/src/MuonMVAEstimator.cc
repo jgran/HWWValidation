@@ -2,11 +2,12 @@
 #include <cmath>
 #include <vector>
 
-using namespace std;
-
 #include "HWWValidation/HWWBase/interface/MuonMVAEstimator.h"
 #include "HWWValidation/HWWBase/interface/HWW.h"
 #include "HWWValidation/HWWBase/interface/trackSelections.h"
+
+using namespace std;
+using namespace HWWFunctions;
 
 //
 // dz of muon track : copied from muonSelections.cc

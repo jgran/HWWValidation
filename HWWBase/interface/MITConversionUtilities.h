@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <vector>
 
+namespace HWWFunctions {
+
 bool isMITConversion(unsigned int elidx, 
 		     int nWrongHitsMax, 
 		     float probMin,
@@ -11,5 +13,6 @@ bool isMITConversion(unsigned int elidx,
 		     bool matchCTF,
 		     bool requireArbitratedMerged);
 
-#endif
+}
 
+#endif

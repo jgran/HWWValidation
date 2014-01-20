@@ -18,6 +18,8 @@
 #include "HWWValidation/HWWBase/interface/PileupJetIdAlgo.h"
 #include "HWWValidation/HWWBase/interface/MVAJetIdMaker.h"
 #include "HWWValidation/HWWBase/interface/HWWAnalyzer.h"
+#include "HWWValidation/HWWBase/interface/HWW.h"
+
 //#include "DQMServices/Core/interface/DQMStore.h"
 //#include "DQMServices/Core/interface/MonitorElement.h"
 
@@ -59,6 +61,8 @@ HWWAnalyzer::~HWWAnalyzer(){
 
 // ------------ method called for each event  ------------
 void HWWAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup){
+  
+  using namespace HWWFunctions;
 
   HWWVal::Reset();
 

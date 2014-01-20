@@ -2,12 +2,14 @@
 #include "TVector3.h"                   
 #include <cmath>
 #include <vector>
-using namespace std;
 
 #include "HWWValidation/HWWBase/interface/EGammaMvaEleEstimator.h"
 #include "HWWValidation/HWWBase/interface/HWW.h"
 #include "HWWValidation/HWWBase/interface/electronSelections.h"
 #include "HWWValidation/HWWBase/interface/trackSelections.h"
+
+using namespace std;
+using namespace HWWFunctions;
 
 double electron_d0PV_wwV1_local(unsigned int index) { 
     if ( HWWVal::vtxs_sumpt().empty() ) return 9999.;

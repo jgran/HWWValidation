@@ -22,7 +22,6 @@
 #include "TMVA/Tools.h"
 #include "TMVA/Reader.h"
 
-
 class EGammaMvaEleEstimator{
   public:
     EGammaMvaEleEstimator();

@@ -9,6 +9,8 @@
 #include "HWWValidation/HWWBase/interface/electronSelections.h"
 #include "HWWValidation/HWWBase/interface/trackSelections.h"
 
+using namespace HWWFunctions;
+
 //--------------------------------------------------------------------------------------------------
 ElectronIDMVA::ElectronIDMVA() :
     fMethodname("BDTG method"),

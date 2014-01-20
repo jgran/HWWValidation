@@ -4,6 +4,8 @@
 #include <string>
 #include "wwtypes.h"
 
+using namespace HWWFunctions;
+
 class HWW;
 
 class EventMonitor
