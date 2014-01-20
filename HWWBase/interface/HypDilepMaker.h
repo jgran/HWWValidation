@@ -1,35 +1,17 @@
 #ifndef HYPDILEPMAKER_H
 #define HYPDILEPMAKER_H
 
-//
-// class decleration
-//
+#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/MakerMacros.h"
 
-class HypDilepMaker : public edm::EDProducer {
-public:
-  
-    
+class HypDilepMaker {
 
-  explicit HypDilepMaker (const edm::ParameterSet&);
-  ~HypDilepMaker();
-  
-private:
-  virtual void beginJob() ;
-  virtual void produce(edm::Event&, const edm::EventSetup&);
-  virtual void endJob();
-  bool testJetForLeptons(const math::XYZTLorentzVectorF& jetP4, const math::XYZTLorentzVectorF& lepP4);
-   
-  // ----------member data ---------------------------
-  edm::InputTag muonsInputTag;
-  edm::InputTag electronsInputTag;
-  edm::InputTag jetsInputTag;
-  double        hypJetMaxEtaCut;
-  double        hypJetMinPtCut;
-  double        tightptcut;
-  double        looseptcut;
-    
-	std::string aliasprefix_;
+  public:
+
+    HypDilepMaker(){};
+    void SetVars(const edm::Event&, const edm::EventSetup&);
+
 };
-
 
 #endif

@@ -1,93 +1,20 @@
-#include "FWCore/Framework/interface/EDProducer.h"
-#include "FWCore/Framework/interface/Event.h"
-#include "FWCore/Framework/interface/MakerMacros.h"
-#include "DataFormats/METReco/interface/PFMET.h"
-
 #include "HWWValidation/HWWBase/interface/PFMETMaker.h"
+#include "HWWValidation/HWWBase/interface/HWW.h"
 
-typedef math::XYZTLorentzVectorF LorentzVector;
+PFMETMaker::PFMETMaker(const edm::ParameterSet& iConfig, edm::ConsumesCollector iCollector){
 
-//
-// constructors and destructor
-//
+  PFMET_ = iCollector.consumes<edm::View<reco::PFMET> >(iConfig.getParameter<edm::InputTag>("pfmetInputTag"));
 
-PFMETMaker::PFMETMaker(const edm::ParameterSet& iConfig) {
-
-    produces<float> ("evtpfmet"          ).setBranchAlias("evt_pfmet"          );
-    produces<float> ("evtpfmetPhi"       ).setBranchAlias("evt_pfmetPhi"       );
-    produces<float> ("evtpfmetSig"       ).setBranchAlias("evt_pfmetSig"       ); //this is just MET/sqrt(sumET). Use evt_pfmetSignificance unless you really want this branch
-    produces<float> ("evtpfsumet"        ).setBranchAlias("evt_pfsumet"        );
-    produces<float> ("evtpfmetSignificance").setBranchAlias("evt_pfmetSignificance");
-    produces<float> ("evtpfmettype1cor"      ).setBranchAlias("evt_pfmet_type1cor");
-    produces<float> ("evtpfmetPhitype1cor"      ).setBranchAlias("evt_pfmetPhi_type1cor");
-
-    pfMetInputTag = iConfig.getParameter<edm::InputTag>("pfMetInputTag_");
-    pfMetCorInputTag = iConfig.getParameter<edm::InputTag>("pfMetCorInputTag_");
 }
 
+void PFMETMaker::SetVars(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 
-PFMETMaker::~PFMETMaker() {}
-
-void  PFMETMaker::beginJob() {
-}
-
-void PFMETMaker::endJob() {
-}
-
-
-// ------------ method called to produce the data  ------------
-void PFMETMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
+    HWWVal::Load_evt_pfmet();
+    HWWVal::Load_evt_pfmetPhi();
   
-    std::auto_ptr<float>   evt_pfmet         (new float   );
-    std::auto_ptr<float>   evt_pfmetPhi      (new float   );
-    std::auto_ptr<float>   evt_pfmetSig      (new float   ); //this is just MET/sqrt(sumET). Use evt_pfmetSignificance unless you really want this branch
-    std::auto_ptr<float>   evt_pfsumet       (new float   );
-    std::auto_ptr<float>   evt_pfmetSignificance(new float   );
-    std::auto_ptr<float>   evt_pfmet_type1cor         (new float   );
-    std::auto_ptr<float>   evt_pfmetPhi_type1cor      (new float   );
-
     edm::Handle<edm::View<reco::PFMET> > met_h;
-    iEvent.getByLabel(pfMetInputTag, met_h);
+    iEvent.getByToken(PFMET_, met_h);
 
-    edm::Handle<edm::View<reco::PFMET> > metcor_h;
-    iEvent.getByLabel(pfMetCorInputTag, metcor_h);
-
-    if( !met_h.isValid() ) {
-        edm::LogInfo("OutputInfo") << " failed to retrieve particle-flow MET collection";
-        edm::LogInfo("OutputInfo") << " PFMETMaker cannot continue...!";
-        return;
-    }
-
-    *evt_pfmet    = ( met_h->front() ).et();
-    *evt_pfmetPhi = ( met_h->front() ).phi();
-    *evt_pfmetSig = ( met_h->front() ).mEtSig();
-    *evt_pfsumet  = ( met_h->front() ).sumEt();       
-  
-    try { 
-        *evt_pfmetSignificance = ( met_h->front() ).significance();
-    }
-    catch ( cms::Exception& ex ) {
-        *evt_pfmetSignificance = -9999;
-    }
-
-    iEvent.put(evt_pfmet    , "evtpfmet"      );
-    iEvent.put(evt_pfmetPhi , "evtpfmetPhi"   );
-    iEvent.put(evt_pfmetSig , "evtpfmetSig"   );
-    iEvent.put(evt_pfsumet  , "evtpfsumet"    );  
-    iEvent.put(evt_pfmetSignificance , "evtpfmetSignificance" );  
-
-    if( !metcor_h.isValid() ) {
-        edm::LogInfo("OutputInfo") << " failed to corrected retrieve particle-flow MET collection";
-        edm::LogInfo("OutputInfo") << " PFMETMaker cannot continue...!";
-        return;
-    }
-
-    *evt_pfmet_type1cor = ( metcor_h->front() ).et();
-    *evt_pfmetPhi_type1cor = ( metcor_h->front() ).phi();
-  
-    iEvent.put(evt_pfmet_type1cor    , "evtpfmettype1cor"      );
-    iEvent.put(evt_pfmetPhi_type1cor , "evtpfmetPhitype1cor"   );
+    HWWVal::evt_pfmet()    = ( met_h->front() ).et();
+    HWWVal::evt_pfmetPhi() = ( met_h->front() ).phi();
 }
-
-//define this as a plug-in
-DEFINE_FWK_MODULE(PFMETMaker);

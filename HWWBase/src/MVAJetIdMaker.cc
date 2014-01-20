@@ -1,82 +1,59 @@
-#include "FWCore/Framework/interface/EDProducer.h"
-#include "FWCore/Framework/interface/MakerMacros.h"
-#include "DataFormats/VertexReco/interface/Vertex.h"
-#include "RecoMET/METAlgorithms/interface/PFSpecificAlgo.h"
-
-#include "HWWValidation/HWWBase/interface/PileupJetIdAlgo.h"
 #include "HWWValidation/HWWBase/interface/MVAJetIdMaker.h"
-
+#include "HWWValidation/HWWBase/interface/HWW.h"
 
 typedef math::XYZTLorentzVectorF LorentzVector;
 
+MVAJetIdMaker::MVAJetIdMaker(const edm::ParameterSet& iConfig, edm::ConsumesCollector iCollector){
 
-// Constructor
-MVAJetIdMaker::MVAJetIdMaker(const edm::ParameterSet& iConfig){
-  using namespace std;
-  using namespace edm;
+  PFJetCollection_     = iCollector.consumes<reco::PFJetCollection> (iConfig.getParameter<edm::InputTag>("pfJetsInputTag"));
+  CorrPFJetCollection_ = iCollector.consumes<reco::PFJetCollection> (iConfig.getParameter<edm::InputTag>("corrPFJetsInputTag"));
+  thePVCollection_     = iCollector.consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("primaryVertexInputTag"));
 
-  // product of this EDProducer
-  produces<vector<LorentzVector> > ( "pfjetscorrp4"   ).setBranchAlias( "pfjets_corr_p4"  );
-  produces<vector<float> >         ( "pfjetsJEC"      ).setBranchAlias( "pfjets_JEC"	    );
-  produces<vector<float> >         ( "pfjetsmvavalue" ).setBranchAlias( "pfjets_mvavalue"	);
-  
-  //
-  fVertexNameTag_   = iConfig.getParameter<InputTag>	( "VertexName" 		);
-  fCorrJetNameData  = iConfig.getParameter<InputTag>	( "CorrJetNameData"		);
-  fCorrJetNameMC    = iConfig.getParameter<InputTag>	( "CorrJetNameMC"		);
-  fUnCorrJetName  	= iConfig.getParameter<InputTag>	( "JetName"			);
-  fJetPtMin       	= iConfig.getParameter<double>      ("JetPtMin");
-  // 
-  fPUJetIdAlgo    	= new PileupJetIdAlgo(iConfig); 
+  fPUJetIdAlgo = new PileupJetIdAlgo(iConfig);
 
 }
 
-// Destructor
-MVAJetIdMaker::~MVAJetIdMaker(){}
-
-// ------------ method called once each job just before starting event loop  ------------
-void MVAJetIdMaker::beginJob() {}
-
-// ------------ method called once each job just after ending the event loop  ------------
-void MVAJetIdMaker::endJob() {}
-
-// ------------ method called to produce the data  ------------
-void MVAJetIdMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup){
-
-
+bool passPFLooseId(const reco::PFJet *iJet) {
+	if(iJet->energy()== 0)                                  return false;
+	if(iJet->neutralHadronEnergy()/iJet->energy() > 0.99)   return false;
+	if(iJet->neutralEmEnergy()/iJet->energy()     > 0.99)   return false;
+	if(iJet->nConstituents() <  2)                          return false;
+	if(iJet->chargedHadronEnergy()/iJet->energy() <= 0 && fabs(iJet->eta()) < 2.4 ) return false;
+	if(iJet->chargedEmEnergy()/iJet->energy() >  0.99  && fabs(iJet->eta()) < 2.4 ) return false;
+	if(iJet->chargedMultiplicity()            < 1      && fabs(iJet->eta()) < 2.4 ) return false;
+	return true;
+}
+          
+void MVAJetIdMaker::SetVars(const edm::Event& iEvent, const edm::EventSetup& iSetup){
 
   using namespace std;
   using namespace edm;
   using namespace reco;
- 
-  // create containers
-  auto_ptr<vector<LorentzVector> > pfjets_corr_p4                 (new vector<LorentzVector>  );
-  auto_ptr<vector<float> >         pfjets_JEC                     (new vector<float>          );  
-  auto_ptr<vector<float> >         pfjets_mvavalue                (new vector<float>          );  
 
+  HWWVal::Load_pfjets_corr_p4();
+  HWWVal::Load_pfjets_mvavalue();
+  HWWVal::Load_pfjets_JEC();
 
   //Uncorrected Jets
   Handle<PFJetCollection>       lHUCJets;
-  iEvent.getByLabel(fUnCorrJetName, lHUCJets);
+  iEvent.getByToken(PFJetCollection_, lHUCJets);
   PFJetCollection               lUCJets = *lHUCJets;
 
   //Corrected Jets
   Handle<PFJetCollection>       lHCJets;
-  if(iEvent.isRealData()) iEvent.getByLabel(fCorrJetNameData  , lHCJets);
-  else iEvent.getByLabel(fCorrJetNameMC  , lHCJets);
+  iEvent.getByToken(CorrPFJetCollection_  , lHCJets);
   PFJetCollection               lCJets = *lHCJets;
 
   // vertices    
   Handle<reco::VertexCollection> lHVertices;
-  iEvent.getByLabel(fVertexNameTag_      , lHVertices); 
+  iEvent.getByToken(thePVCollection_, lHVertices); 
   VertexCollection lVertices = *lHVertices;
-
 
   //store corrected pfjets
   for(unsigned int ijet=0; ijet<lCJets.size(); ijet++){
 
 		const PFJet     *pCJet  = &(lCJets.at(ijet));
-    pfjets_corr_p4 ->push_back( LorentzVector( pCJet->p4() ) );
+    HWWVal::pfjets_corr_p4() .push_back( LorentzVector( pCJet->p4() ) );
 
   }
 
@@ -101,7 +78,7 @@ void MVAJetIdMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup){
 		  const PFJet     *pCJet  = &(lCJets.at(i1));
 		  if( pUCJet->jetArea() != pCJet->jetArea()                  	) continue;
 		  if( fabs(pUCJet->eta() - pCJet->eta())         > 0.001         ) continue;
-      	  if( pUCJet->pt()                               < fJetPtMin    ) continue;
+      	  if( pUCJet->pt()                               < 0.0    ) continue;
 		  double lJec = pCJet ->pt()/pUCJet->pt();
 
 		  // calculate mva value only when there are good vertices 
@@ -109,8 +86,8 @@ void MVAJetIdMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup){
 		  if( lGoodVertices.size()>0 ) 
 		  {
 		  	PileupJetIdentifier lPUJetId =  fPUJetIdAlgo->computeIdVariables(pCJet,lJec,&lGoodVertices[0],lGoodVertices,true);
-		   	pfjets_mvavalue              	->push_back( lPUJetId.mva()              );
-        pfjets_JEC                    ->push_back( lJec ); 
+		   	HWWVal::pfjets_mvavalue() .push_back( lPUJetId.mva()              );
+        HWWVal::pfjets_JEC() .push_back( lJec ); 
 		  
 			// print out MVA inputs 
 			if(0)
@@ -139,31 +116,10 @@ void MVAJetIdMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup){
 			}
 		  }
 		  else             
-		  	pfjets_mvavalue                 ->push_back( -999.              );
+		  	HWWVal::pfjets_mvavalue() .push_back( -999. );
 
 		  break;
 
 	  } // lCJets
   } // lUCJets
-
-  // 
-  iEvent.put(pfjets_corr_p4,                 "pfjetscorrp4"                   );
-  iEvent.put(pfjets_JEC,                  	 "pfjetsJEC"                      );
-  iEvent.put(pfjets_mvavalue,             	 "pfjetsmvavalue"                 );
-
 }
-
-bool MVAJetIdMaker::passPFLooseId(const reco::PFJet *iJet) {
-	if(iJet->energy()== 0)                                  return false;
-	if(iJet->neutralHadronEnergy()/iJet->energy() > 0.99)   return false;
-	if(iJet->neutralEmEnergy()/iJet->energy()     > 0.99)   return false;
-	if(iJet->nConstituents() <  2)                          return false;
-	if(iJet->chargedHadronEnergy()/iJet->energy() <= 0 && fabs(iJet->eta()) < 2.4 ) return false;
-	if(iJet->chargedEmEnergy()/iJet->energy() >  0.99  && fabs(iJet->eta()) < 2.4 ) return false;
-	if(iJet->chargedMultiplicity()            < 1      && fabs(iJet->eta()) < 2.4 ) return false;
-	return true;
-}
-
-
-//define this as a plug-in
-DEFINE_FWK_MODULE(MVAJetIdMaker);

@@ -1,26 +1,23 @@
 #ifndef PFMETMAKER_H
 #define PFMETMAKER_H
 
-//
-// class decleration
-//
+#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/MakerMacros.h"
+#include "FWCore/Framework/interface/ConsumesCollector.h"
+#include "DataFormats/METReco/interface/PFMET.h"
 
-class PFMETMaker : public edm::EDProducer {
-public:
-    explicit PFMETMaker (const edm::ParameterSet&);
-    ~PFMETMaker();
+class PFMETMaker {
 
-private:
-    virtual void beginJob() ;
-    virtual void produce(edm::Event&, const edm::EventSetup&);
-    virtual void endJob() ;
+  public:
 
-    // ----------member data ---------------------------
-    edm::InputTag pfMetInputTag;
-    edm::InputTag pfMetCorInputTag;
-	  std::string aliasprefix_;
-    
+    PFMETMaker(const edm::ParameterSet&, edm::ConsumesCollector);
+    void SetVars(const edm::Event&, const edm::EventSetup&);
+
+  private:
+
+    edm::EDGetTokenT<edm::View<reco::PFMET> >       PFMET_;
+
 };
-
 
 #endif

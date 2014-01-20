@@ -226,9 +226,9 @@ Double_t MuonIDMVA::MVAValue(const unsigned int mu, const unsigned int vertex) {
     return -9999;
   }
 
-  Double_t MuPt  = hww.mus_trk_p4().at(mu).pt();
-  Double_t MuEta = hww.mus_trk_p4().at(mu).eta();
-  Double_t Rho = hww.evt_ww_rho_vor();
+  Double_t MuPt  = HWWVal::mus_trk_p4().at(mu).pt();
+  Double_t MuEta = HWWVal::mus_trk_p4().at(mu).eta();
+  Double_t Rho = HWWVal::evt_ww_rho_vor();
 
   Int_t subdet = 0;
   if (fabs(MuEta) < 1.479) subdet = 0;
@@ -238,33 +238,33 @@ Double_t MuonIDMVA::MVAValue(const unsigned int mu, const unsigned int vertex) {
   if (MuPt > 20.0) ptBin = 2;
 
   //set all input variables
-  fMVAVar_MuTkNchi2              = hww.mus_chi2().at(mu) / hww.mus_ndof().at(mu);
-  fMVAVar_MuGlobalNchi2          = hww.mus_gfit_chi2().at(mu) / hww.mus_gfit_ndof().at(mu);
-  fMVAVar_MuNValidHits           = hww.mus_gfit_validSTAHits().at(mu);
-  fMVAVar_MuNTrackerHits         = hww.mus_validHits().at(mu);
-  fMVAVar_MuNPixelHits           = hww.trks_valid_pixelhits().at(hww.mus_trkidx().at(mu));
-  fMVAVar_MuNMatches             = hww.mus_nmatches().at(mu);
+  fMVAVar_MuTkNchi2              = HWWVal::mus_chi2().at(mu) / HWWVal::mus_ndof().at(mu);
+  fMVAVar_MuGlobalNchi2          = HWWVal::mus_gfit_chi2().at(mu) / HWWVal::mus_gfit_ndof().at(mu);
+  fMVAVar_MuNValidHits           = HWWVal::mus_gfit_validSTAHits().at(mu);
+  fMVAVar_MuNTrackerHits         = HWWVal::mus_validHits().at(mu);
+  fMVAVar_MuNPixelHits           = HWWVal::trks_valid_pixelhits().at(HWWVal::mus_trkidx().at(mu));
+  fMVAVar_MuNMatches             = HWWVal::mus_nmatches().at(mu);
   fMVAVar_MuD0                   = mud0PV_smurfV3(mu);
 
-  const double mud0sign   = ( (trks_d0_pv(hww.mus_trkidx().at(mu),0).first)   >=0 ) ? 1. : -1.;
-  fMVAVar_MuIP3d =                   hww.mus_ip3d().at(mu)*mud0sign; 
-  if (hww.mus_ip3derr().at(mu) == 0.0) fMVAVar_MuIP3dSig = 0.0;
-  else fMVAVar_MuIP3dSig =           hww.mus_ip3d().at(mu)*mud0sign / hww.mus_ip3derr().at(mu); 
-  fMVAVar_MuTrkKink              = hww.mus_trkKink().at(mu);
-  fMVAVar_MuSegmentCompatibility = hww.mus_segmCompatibility().at(mu);
-  fMVAVar_MuCaloCompatibility    = hww.mus_caloCompatibility().at(mu);
-  fMVAVar_MuHadEnergyOverPt      = (hww.mus_e_had().at(mu)   - Rho*MuonEffectiveArea(MuonIDMVA::kMuHadEnergy,MuEta))/MuPt;
-  fMVAVar_MuHoEnergyOverPt       = (hww.mus_e_ho().at(mu)    - Rho*MuonEffectiveArea(MuonIDMVA::kMuHoEnergy,MuEta))/MuPt;
-  fMVAVar_MuEmEnergyOverPt       = (hww.mus_e_em().at(mu)    - Rho*MuonEffectiveArea(MuonIDMVA::kMuEmEnergy,MuEta))/MuPt;
-  fMVAVar_MuHadS9EnergyOverPt    = (hww.mus_e_hadS9().at(mu) - Rho*MuonEffectiveArea(MuonIDMVA::kMuHadS9Energy,MuEta))/MuPt;
-  fMVAVar_MuHoS9EnergyOverPt     = (hww.mus_e_hoS9().at(mu)  - Rho*MuonEffectiveArea(MuonIDMVA::kMuHoS9Energy,MuEta))/MuPt;
-  fMVAVar_MuEmS9EnergyOverPt     = (hww.mus_e_emS9().at(mu)  - Rho*MuonEffectiveArea(MuonIDMVA::kMuEmS9Energy,MuEta))/MuPt;
-  fMVAVar_MuTrkIso03OverPt       = (hww.mus_iso03_sumPt().at(mu) - Rho*MuonEffectiveArea(MuonIDMVA::kMuTrkIso03,MuEta))/MuPt;
-  fMVAVar_MuEMIso03OverPt        = (hww.mus_iso03_emEt().at(mu)  - Rho*MuonEffectiveArea(MuonIDMVA::kMuEMIso03,MuEta))/MuPt;
-  fMVAVar_MuHadIso03OverPt       = (hww.mus_iso03_hadEt().at(mu) - Rho*MuonEffectiveArea(MuonIDMVA::kMuHadIso03,MuEta))/MuPt;
-  fMVAVar_MuTrkIso05OverPt       = (hww.mus_iso05_sumPt().at(mu) - Rho*MuonEffectiveArea(MuonIDMVA::kMuTrkIso05,MuEta))/MuPt;
-  fMVAVar_MuEMIso05OverPt        = (hww.mus_iso05_emEt().at(mu)  - Rho*MuonEffectiveArea(MuonIDMVA::kMuEMIso05,MuEta))/MuPt;
-  fMVAVar_MuHadIso05OverPt       = (hww.mus_iso05_hadEt().at(mu) - Rho*MuonEffectiveArea(MuonIDMVA::kMuHadIso05,MuEta))/MuPt;
+  const double mud0sign   = ( (trks_d0_pv(HWWVal::mus_trkidx().at(mu),0).first)   >=0 ) ? 1. : -1.;
+  fMVAVar_MuIP3d =                   HWWVal::mus_ip3d().at(mu)*mud0sign; 
+  if (HWWVal::mus_ip3derr().at(mu) == 0.0) fMVAVar_MuIP3dSig = 0.0;
+  else fMVAVar_MuIP3dSig =           HWWVal::mus_ip3d().at(mu)*mud0sign / HWWVal::mus_ip3derr().at(mu); 
+  fMVAVar_MuTrkKink              = HWWVal::mus_trkKink().at(mu);
+  fMVAVar_MuSegmentCompatibility = HWWVal::mus_segmCompatibility().at(mu);
+  fMVAVar_MuCaloCompatibility    = HWWVal::mus_caloCompatibility().at(mu);
+  fMVAVar_MuHadEnergyOverPt      = (HWWVal::mus_e_had().at(mu)   - Rho*MuonEffectiveArea(MuonIDMVA::kMuHadEnergy,MuEta))/MuPt;
+  fMVAVar_MuHoEnergyOverPt       = (HWWVal::mus_e_ho().at(mu)    - Rho*MuonEffectiveArea(MuonIDMVA::kMuHoEnergy,MuEta))/MuPt;
+  fMVAVar_MuEmEnergyOverPt       = (HWWVal::mus_e_em().at(mu)    - Rho*MuonEffectiveArea(MuonIDMVA::kMuEmEnergy,MuEta))/MuPt;
+  fMVAVar_MuHadS9EnergyOverPt    = (HWWVal::mus_e_hadS9().at(mu) - Rho*MuonEffectiveArea(MuonIDMVA::kMuHadS9Energy,MuEta))/MuPt;
+  fMVAVar_MuHoS9EnergyOverPt     = (HWWVal::mus_e_hoS9().at(mu)  - Rho*MuonEffectiveArea(MuonIDMVA::kMuHoS9Energy,MuEta))/MuPt;
+  fMVAVar_MuEmS9EnergyOverPt     = (HWWVal::mus_e_emS9().at(mu)  - Rho*MuonEffectiveArea(MuonIDMVA::kMuEmS9Energy,MuEta))/MuPt;
+  fMVAVar_MuTrkIso03OverPt       = (HWWVal::mus_iso03_sumPt().at(mu) - Rho*MuonEffectiveArea(MuonIDMVA::kMuTrkIso03,MuEta))/MuPt;
+  fMVAVar_MuEMIso03OverPt        = (HWWVal::mus_iso03_emEt().at(mu)  - Rho*MuonEffectiveArea(MuonIDMVA::kMuEMIso03,MuEta))/MuPt;
+  fMVAVar_MuHadIso03OverPt       = (HWWVal::mus_iso03_hadEt().at(mu) - Rho*MuonEffectiveArea(MuonIDMVA::kMuHadIso03,MuEta))/MuPt;
+  fMVAVar_MuTrkIso05OverPt       = (HWWVal::mus_iso05_sumPt().at(mu) - Rho*MuonEffectiveArea(MuonIDMVA::kMuTrkIso05,MuEta))/MuPt;
+  fMVAVar_MuEMIso05OverPt        = (HWWVal::mus_iso05_emEt().at(mu)  - Rho*MuonEffectiveArea(MuonIDMVA::kMuEMIso05,MuEta))/MuPt;
+  fMVAVar_MuHadIso05OverPt       = (HWWVal::mus_iso05_hadEt().at(mu) - Rho*MuonEffectiveArea(MuonIDMVA::kMuHadIso05,MuEta))/MuPt;
 
   Double_t mva = -9999;  
   TMVA::Reader *reader = 0;
@@ -282,9 +282,9 @@ Double_t MuonIDMVA::MVAValue(const unsigned int mu, const unsigned int vertex) {
   mva = reader->EvaluateMVA( fMethodname );
 
   if (0) {
-    cout << hww.evt_run() << " " << hww.evt_lumiBlock() << " " << hww.evt_event() << " " << Rho << endl;
+    cout << HWWVal::evt_run() << " " << HWWVal::evt_lumiBlock() << " " << HWWVal::evt_event() << " " << Rho << endl;
     std::cout << "Debug Muon MVA: "
-              << hww.mus_p4().at(mu).pt() << " " << hww.mus_p4().at(mu).eta() << " " << hww.mus_p4().at(mu).phi() << " : "
+              << HWWVal::mus_p4().at(mu).pt() << " " << HWWVal::mus_p4().at(mu).eta() << " " << HWWVal::mus_p4().at(mu).phi() << " : "
               << MuPt << " " << MuEta << " --> MVABin " << MVABin << " : "     
               << fMVAVar_MuTkNchi2              << " " 
               << fMVAVar_MuGlobalNchi2          << " " 

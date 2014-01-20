@@ -1,34 +1,29 @@
 #ifndef MVAJETIDMAKER_H
 #define MVAJETIDMAKER_H
 
-//
-// class decleration
-//
+#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/MakerMacros.h"
+#include "FWCore/Framework/interface/ConsumesCollector.h"
+#include "DataFormats/METReco/interface/PFMET.h"
+#include "DataFormats/VertexReco/interface/Vertex.h"
+#include "RecoMET/METAlgorithms/interface/PFSpecificAlgo.h"
+#include "HWWValidation/HWWBase/interface/PileupJetIdAlgo.h"
 
-class MVAJetIdMaker : public edm::EDProducer {
-public:
-  explicit MVAJetIdMaker(const edm::ParameterSet&);
-  ~MVAJetIdMaker();
+class MVAJetIdMaker {
 
-private:
-  virtual void beginJob() ;
-  virtual void produce(edm::Event&, const edm::EventSetup&);
-  virtual void endJob() ;
-  bool passPFLooseId(const reco::PFJet *iJet);     
- 
- // ----------member data ---------------------------
-  edm::InputTag pfJetsInputTag_;
-  edm::InputTag fVertexNameTag_;
-  edm::InputTag fCorrJetNameData;
-  edm::InputTag fCorrJetNameMC;
-  edm::InputTag fUnCorrJetName;
-   
-  double            fJetPtMin; 
-  PileupJetIdAlgo  *fPUJetIdAlgo;
-  
-  std::string aliasprefix_;
-  std::string PFJetCorrectorL2L3_;
-  std::string PFJetCorrectorL1L2L3_;
-  std::string PFJetCorrectorL1FastL2L3_;
+  public:
+
+    MVAJetIdMaker(const edm::ParameterSet&, edm::ConsumesCollector);
+    void SetVars(const edm::Event&, const edm::EventSetup&);
+
+  private:
+
+    edm::EDGetTokenT<reco::PFJetCollection>       PFJetCollection_;
+    edm::EDGetTokenT<reco::PFJetCollection>       CorrPFJetCollection_;
+    edm::EDGetTokenT<reco::VertexCollection>      thePVCollection_;
+    PileupJetIdAlgo  *fPUJetIdAlgo;
+
 };
+
 #endif

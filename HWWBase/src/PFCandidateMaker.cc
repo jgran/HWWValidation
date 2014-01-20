@@ -1,9 +1,7 @@
-#include "FWCore/Framework/interface/MakerMacros.h"
-#include "RecoParticleFlow/PFProducer/interface/PFMuonAlgo.h"
-#include "DataFormats/Common/interface/ValueMap.h"
 #include "CommonTools/ParticleFlow/interface/PFPileUpAlgo.h"
 
 #include "HWWValidation/HWWBase/interface/PFCandidateMaker.h"
+#include "HWWValidation/HWWBase/interface/HWW.h"
 
 typedef math::XYZTLorentzVectorF LorentzVector;
 typedef math::XYZPoint Point;
@@ -11,84 +9,62 @@ using namespace reco;
 using namespace edm;
 using namespace std;
 
-//
-// constructors and destructor
-//
-PFCandidateMaker::PFCandidateMaker(const edm::ParameterSet& iConfig) {
+PFCandidateMaker::PFCandidateMaker(const edm::ParameterSet& iConfig, edm::ConsumesCollector iCollector){
 
-     pfCandidatesTag_		= iConfig.getParameter<InputTag>	("pfCandidatesTag");
-     pfElectronsTag_		= iConfig.getParameter<InputTag>	("pfElectronsTag");
-     tracksInputTag_            = iConfig.getParameter<InputTag>        ("tracksInputTag");
-     vertexInputTag_            = iConfig.getParameter<InputTag>        ("vertexInputTag");
-     minDR_electron_            = iConfig.getParameter<double>          ("minDRelectron");
-
-     produces<vector<LorentzVector>	> ("pfcandsp4"              ).setBranchAlias("pfcands_p4"			          );
-     produces<vector<int>	>           ("pfcandscharge"		      ).setBranchAlias("pfcands_charge"		        );
-     produces<vector<int> >           ("pfcandsparticleId"		  ).setBranchAlias("pfcands_particleId"		    );
-     produces<vector<int>	>           ("pfcandspfelsidx"		    ).setBranchAlias("pfcands_pfelsidx"		      );
-     produces<vector<int>	>           ("pfcandstrkidx"		      ).setBranchAlias("pfcands_trkidx"		        );
-     produces<vector<int> >          ("pfcandsvtxidx"             ).setBranchAlias("pfcands_vtxidx"       );
-
-    // for matching to vertices using the "PFNoPileup" method
-    // hint: it is just track vertex association 
-    pfPileUpAlgo_ = new PFPileUpAlgo();
+  PFCandidateCollection_ = iCollector.consumes<reco::PFCandidateCollection>(iConfig.getParameter<edm::InputTag>("pfCandsInputTag"));
+  PFElectrons_           = iCollector.consumes<edm::ValueMap<reco::PFCandidatePtr> >(iConfig.getParameter<edm::InputTag>("pfElectronsTag"));
+  TrackCollection_       = iCollector.consumes<reco::TrackCollection>(iConfig.getParameter<edm::InputTag>("trackInputTag"));
+  thePVCollection_       = iCollector.consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("primaryVertexInputTag"));
 
 }
 
-PFCandidateMaker::~PFCandidateMaker() 
-{
-    if (pfPileUpAlgo_ != 0) delete pfPileUpAlgo_;
-}
+void PFCandidateMaker::SetVars(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 
-void  PFCandidateMaker::beginRun(edm::Run&, const edm::EventSetup& es) {}
-void PFCandidateMaker::beginJob() {}
-void PFCandidateMaker::endJob()   {}
+      HWWVal::Load_pfcands_p4();
+      HWWVal::Load_pfcands_charge();
+      HWWVal::Load_pfcands_particleId();
+      HWWVal::Load_pfcands_vtxidx();
+      HWWVal::Load_pfcands_trkidx();
+      HWWVal::Load_pfcands_pfelsidx();
 
-// ------------ method called to produce the data  ------------
-void PFCandidateMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
 
-     auto_ptr<vector<LorentzVector> >	pfcands_p4		            (new vector<LorentzVector>  );
-     auto_ptr<vector<int> >		        pfcands_charge		        (new vector<int>		        );
-     auto_ptr<vector<int> >		        pfcands_particleId	      (new vector<int>		        );
-     auto_ptr<vector<int> >	          pfcands_trkidx		        (new vector<int>        	  );
-     auto_ptr<vector<int> >	          pfcands_pfelsidx	        (new vector<int>        	  );
-     auto_ptr<vector<int> >           pfcands_vtxidx            (new vector<int>              );
-    
+     PFPileUpAlgo *pfPileUpAlgo_ = new PFPileUpAlgo();
+ 
      //get pfcandidates
+     const reco::PFCandidateCollection *pfCandidates;
      Handle<PFCandidateCollection> pfCandidatesHandle;
-     iEvent.getByLabel(pfCandidatesTag_, pfCandidatesHandle);
+     iEvent.getByToken(PFCandidateCollection_, pfCandidatesHandle);
      pfCandidates  = pfCandidatesHandle.product();
 
      //get pfelectrons
      typedef edm::ValueMap<reco::PFCandidatePtr> PFCandMap;
      Handle<PFCandMap> pfElectronsHandle;
-     iEvent.getByLabel(pfElectronsTag_, pfElectronsHandle);
+     iEvent.getByToken(PFElectrons_, pfElectronsHandle);
      const PFCandMap *pfElectrons  = pfElectronsHandle.product();
 
      // get tracks
      Handle<reco::TrackCollection>  track_h;
-     iEvent.getByLabel(tracksInputTag_, track_h);
+     iEvent.getByToken(TrackCollection_, track_h);
 
      // get vertices
      Handle<reco::VertexCollection> vertex_h;
-     iEvent.getByLabel(vertexInputTag_, vertex_h);
+     iEvent.getByToken(thePVCollection_, vertex_h);
      const reco::VertexCollection *vertices = vertex_h.product();
+
 
       int iCand = 0;
       for( PFCandidateCollection::const_iterator pf_it = pfCandidates->begin(); pf_it != pfCandidates->end(); pf_it++ ) {
   
-        //
 	      int pfflags = 0;
 	      for( unsigned int i = 0; i < 17; i++ ) {
           if(pf_it->flag((PFCandidate::Flags)i)) pfflags |= (1<<i);
 	      }
 
-        //
         iCand++;
 
-  	    pfcands_p4			          ->push_back( LorentzVector(pf_it->px(), pf_it->py(), pf_it->pz(), pf_it->p())	  );
-  	    pfcands_charge		        ->push_back( pf_it->charge()						                                        );
-  	    pfcands_particleId		    ->push_back( pf_it->translateTypeToPdgId(pf_it->particleId())	                  );
+  	    HWWVal::pfcands_p4()			          .push_back( LorentzVector(pf_it->px(), pf_it->py(), pf_it->pz(), pf_it->p())	  );
+  	    HWWVal::pfcands_charge()		        .push_back( pf_it->charge()						                                        );
+  	    HWWVal::pfcands_particleId()		    .push_back( pf_it->translateTypeToPdgId(pf_it->particleId())	                  );
 
           //for charged pfcandidates, find corresponding track index
           //here we take the track directly from PFCandidate::trackRef()
@@ -96,7 +72,7 @@ void PFCandidateMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 
             // match pf cand to a vertex
             // using the no pileup algo
-            pfcands_vtxidx->push_back(pfPileUpAlgo_->chargedHadronVertex(*vertices, *pf_it));
+            HWWVal::pfcands_vtxidx().push_back(pfPileUpAlgo_->chargedHadronVertex(*vertices, *pf_it));
 
             reco::TrackRef pftrack = pf_it->trackRef();
 
@@ -118,7 +94,7 @@ void PFCandidateMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
                 }
 
                 //found corresponding track
-                pfcands_trkidx->push_back( trkidx );
+                HWWVal::pfcands_trkidx().push_back( trkidx );
                 foundTrack = true;
                 break;
               }
@@ -128,14 +104,14 @@ void PFCandidateMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 
             if( !foundTrack ){
               //no matched track found, set trkidx to -1
-              pfcands_trkidx->push_back(-1);
+              HWWVal::pfcands_trkidx().push_back(-1);
             }
             
           }else{
             //neutral particle, set trkidx to -2
-            pfcands_trkidx->push_back(-2);
+            HWWVal::pfcands_trkidx().push_back(-2);
             // no vertex match
-            pfcands_vtxidx->push_back(-2);
+            HWWVal::pfcands_vtxidx().push_back(-2);
           }
 
           //find corresponding PFMuon index
@@ -160,23 +136,12 @@ void PFCandidateMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 		elsIndex++;
 	      }            
 	    }
-	    pfcands_pfelsidx->push_back(index);
+	    HWWVal::pfcands_pfelsidx().push_back(index);
 	  } else {
-            pfcands_pfelsidx->push_back(-2);
+            HWWVal::pfcands_pfelsidx().push_back(-2);
           }
  
           
      }//loop over candidate collection
 
-     iEvent.put(pfcands_p4,			            "pfcandsp4"		          );
-     iEvent.put(pfcands_charge,			        "pfcandscharge"		      );
-     iEvent.put(pfcands_particleId,		      "pfcandsparticleId"	    );
-     iEvent.put(pfcands_trkidx,			        "pfcandstrkidx"		      );
-     iEvent.put(pfcands_vtxidx,               "pfcandsvtxidx"         );
-     iEvent.put(pfcands_pfelsidx,		        "pfcandspfelsidx"	      );
-
 }
-
-//define this as a plug-in
-DEFINE_FWK_MODULE(PFCandidateMaker);
-

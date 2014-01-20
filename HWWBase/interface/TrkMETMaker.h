@@ -1,34 +1,17 @@
 #ifndef TRKMETMAKER_H
 #define TRKMETMAKER_H
 
-//
-// class decleration
-//
-typedef math::XYZTLorentzVectorF LorentzVector;
+#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/MakerMacros.h"
 
-class TrkMETMaker : public edm::EDProducer {
-public:
-     explicit TrkMETMaker (const edm::ParameterSet&);
-     ~TrkMETMaker();
+class TrkMETMaker {
 
-private:
-  //  virtual void beginJob() ;
-  virtual void beginJob() ;
-  virtual void beginRun(edm::Run&, const edm::EventSetup&) ;
-  virtual void produce(edm::Event&, const edm::EventSetup&);
-  virtual void endJob() ;
-  double dzPV(const LorentzVector& vtx, const LorentzVector& p4, const LorentzVector& pv);
+  public:
 
-  // ----------member data ---------------------------
-  edm::InputTag pfcandInputTag_;
-  edm::InputTag trackInputTag_;      
-  edm::InputTag hypInputTag_;       
-  edm::InputTag vertexInputTag_;       
+    TrkMETMaker() {};
+    void SetVars(const edm::Event&, const edm::EventSetup&);
 
-  float dzcut_;
-  float drcut_;
-  float correctJets_;
-  std::string aliasprefix_;
 };
 
 #endif

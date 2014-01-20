@@ -147,64 +147,64 @@ Double_t ElectronIDMVA::MVAValue(const unsigned int ele, const unsigned int vert
     }
 
     Int_t subdet = 0;
-    if (fabs(hww.els_etaSC().at(ele)) < 1.0) subdet = 0;
-    else if (fabs(hww.els_etaSC().at(ele)) < 1.479) subdet = 1;
+    if (fabs(HWWVal::els_etaSC().at(ele)) < 1.0) subdet = 0;
+    else if (fabs(HWWVal::els_etaSC().at(ele)) < 1.479) subdet = 1;
     else subdet = 2;
     Int_t ptBin = 0;
-    if (hww.els_p4().at(ele).Pt() > 20.0) ptBin = 1;
+    if (HWWVal::els_p4().at(ele).Pt() > 20.0) ptBin = 1;
 
     //set all input variables
-    fMVAVar_EleSigmaIEtaIEta =          hww.els_sigmaIEtaIEta().at(ele); 
-    fMVAVar_EleDEtaIn =                 hww.els_dEtaIn().at(ele); 
-    fMVAVar_EleDPhiIn =                 hww.els_dPhiIn().at(ele); 
-    if (version_ == 3) fMVAVar_EleHoverE =                 hww.els_hOverE().at(ele); //this is new
+    fMVAVar_EleSigmaIEtaIEta =          HWWVal::els_sigmaIEtaIEta().at(ele); 
+    fMVAVar_EleDEtaIn =                 HWWVal::els_dEtaIn().at(ele); 
+    fMVAVar_EleDPhiIn =                 HWWVal::els_dPhiIn().at(ele); 
+    if (version_ == 3) fMVAVar_EleHoverE =                 HWWVal::els_hOverE().at(ele); //this is new
     fMVAVar_EleD0 =                     electron_d0PV_wwV1(ele);
     fMVAVar_EleDZ =                     electron_dzPV_wwV1(ele);
-    fMVAVar_EleFBrem =                  hww.els_fbrem().at(ele); 
-    fMVAVar_EleEOverP =                 hww.els_eOverPIn().at(ele);
-    fMVAVar_EleESeedClusterOverPout =   hww.els_eSeedOverPOut().at(ele);
-    fMVAVar_EleSigmaIPhiIPhi =          hww.els_sigmaIPhiIPhi().at(ele);
-    fMVAVar_EleNBrem =                  hww.els_nSeed().at(ele);
-    TVector3 pIn(hww.els_trk_p4().at(ele).px(), hww.els_trk_p4().at(ele).py(), hww.els_trk_p4().at(ele).pz());
-    fMVAVar_EleOneOverEMinusOneOverP =  1./hww.els_eSC().at(ele) - 1./pIn.Mag();
-    fMVAVar_EleESeedClusterOverPIn =    hww.els_eSeedOverPIn().at(ele);
-    const double gsfsign   = ( (gsftrks_d0_pv(hww.els_gsftrkidx().at(ele),0).first)   >=0 ) ? 1. : -1.;
-    fMVAVar_EleIP3d =                   hww.els_ip3d().at(ele)*gsfsign; 
-    if (hww.els_ip3derr().at(ele) == 0.0) fMVAVar_EleIP3dSig = 0.0;
-    else fMVAVar_EleIP3dSig =           hww.els_ip3d().at(ele)*gsfsign / hww.els_ip3derr().at(ele); 
+    fMVAVar_EleFBrem =                  HWWVal::els_fbrem().at(ele); 
+    fMVAVar_EleEOverP =                 HWWVal::els_eOverPIn().at(ele);
+    fMVAVar_EleESeedClusterOverPout =   HWWVal::els_eSeedOverPOut().at(ele);
+    fMVAVar_EleSigmaIPhiIPhi =          HWWVal::els_sigmaIPhiIPhi().at(ele);
+    fMVAVar_EleNBrem =                  HWWVal::els_nSeed().at(ele);
+    TVector3 pIn(HWWVal::els_trk_p4().at(ele).px(), HWWVal::els_trk_p4().at(ele).py(), HWWVal::els_trk_p4().at(ele).pz());
+    fMVAVar_EleOneOverEMinusOneOverP =  1./HWWVal::els_eSC().at(ele) - 1./pIn.Mag();
+    fMVAVar_EleESeedClusterOverPIn =    HWWVal::els_eSeedOverPIn().at(ele);
+    const double gsfsign   = ( (gsftrks_d0_pv(HWWVal::els_gsftrkidx().at(ele),0).first)   >=0 ) ? 1. : -1.;
+    fMVAVar_EleIP3d =                   HWWVal::els_ip3d().at(ele)*gsfsign; 
+    if (HWWVal::els_ip3derr().at(ele) == 0.0) fMVAVar_EleIP3dSig = 0.0;
+    else fMVAVar_EleIP3dSig =           HWWVal::els_ip3d().at(ele)*gsfsign / HWWVal::els_ip3derr().at(ele); 
 
     if (version_ == 3) {    //these are new
-      Double_t ElePt = hww.els_p4().at(ele).pt();
-      Double_t EleEta = hww.els_etaSC().at(ele);
-      Double_t Rho = hww.evt_ww_rho_vor();
-      fMVAVar_EleGsfTrackChi2OverNdof = hww.els_chi2().at(ele) / hww.els_ndof().at(ele);
-      fMVAVar_EledEtaCalo = hww.els_dEtaOut().at(ele); 
-      fMVAVar_EledPhiCalo = hww.els_dPhiOut().at(ele);
-      fMVAVar_EleR9 = hww.els_e3x3().at(ele) / hww.els_eSCRaw().at(ele);
-      fMVAVar_EleSCEtaWidth = hww.els_etaSCwidth().at(ele);
-      fMVAVar_EleSCPhiWidth = hww.els_phiSCwidth().at(ele);
-      fMVAVar_EleCovIEtaIPhi = hww.scs_sigmaIEtaIPhi().at(hww.els_scindex().at(ele))>0 ? pow(hww.scs_sigmaIEtaIPhi().at(hww.els_scindex().at(ele)),2) : -1.* pow(hww.scs_sigmaIEtaIPhi().at(hww.els_scindex().at(ele)),2);
-      fMVAVar_ElePreShowerOverRaw = hww.els_eSCPresh().at(ele) / hww.els_eSCRaw().at(ele);
+      Double_t ElePt = HWWVal::els_p4().at(ele).pt();
+      Double_t EleEta = HWWVal::els_etaSC().at(ele);
+      Double_t Rho = HWWVal::evt_ww_rho_vor();
+      fMVAVar_EleGsfTrackChi2OverNdof = HWWVal::els_chi2().at(ele) / HWWVal::els_ndof().at(ele);
+      fMVAVar_EledEtaCalo = HWWVal::els_dEtaOut().at(ele); 
+      fMVAVar_EledPhiCalo = HWWVal::els_dPhiOut().at(ele);
+      fMVAVar_EleR9 = HWWVal::els_e3x3().at(ele) / HWWVal::els_eSCRaw().at(ele);
+      fMVAVar_EleSCEtaWidth = HWWVal::els_etaSCwidth().at(ele);
+      fMVAVar_EleSCPhiWidth = HWWVal::els_phiSCwidth().at(ele);
+      fMVAVar_EleCovIEtaIPhi = HWWVal::scs_sigmaIEtaIPhi().at(HWWVal::els_scindex().at(ele))>0 ? pow(HWWVal::scs_sigmaIEtaIPhi().at(HWWVal::els_scindex().at(ele)),2) : -1.* pow(HWWVal::scs_sigmaIEtaIPhi().at(HWWVal::els_scindex().at(ele)),2);
+      fMVAVar_ElePreShowerOverRaw = HWWVal::els_eSCPresh().at(ele) / HWWVal::els_eSCRaw().at(ele);
       fMVAVar_EleChargedIso03OverPt 
-	= (hww.els_iso03_pf_ch().at(ele) //electronIsoValuePF(ele, vertex, 0.3, 99999., 0.1, 0.07, 0.025, -999., 0)*ElePt
+	= (HWWVal::els_iso03_pf_ch().at(ele) //electronIsoValuePF(ele, vertex, 0.3, 99999., 0.1, 0.07, 0.025, -999., 0)*ElePt
 	   - Rho * ElectronEffectiveArea(ElectronIDMVA::kEleChargedIso03, EleEta)) / ElePt;
       fMVAVar_EleNeutralHadronIso03OverPt 
-	= (hww.els_iso03_pf_nhad05().at(ele) //electronIsoValuePF(ele, vertex, 0.3, 0.5, 0.1, 0.07, 0.025, -999., 130)*ElePt
+	= (HWWVal::els_iso03_pf_nhad05().at(ele) //electronIsoValuePF(ele, vertex, 0.3, 0.5, 0.1, 0.07, 0.025, -999., 130)*ElePt
 	   - Rho * ElectronEffectiveArea(ElectronIDMVA::kEleNeutralHadronIso03, EleEta) 
 	   + Rho * ElectronEffectiveArea(ElectronIDMVA::kEleNeutralHadronIso007,EleEta)) / ElePt;
       fMVAVar_EleGammaIso03OverPt 
-	= (hww.els_iso03_pf_gamma05().at(ele) //electronIsoValuePF(ele, vertex, 0.3, 0.5, 0.1, 0.07, 0.025, -999., 22)*ElePt
+	= (HWWVal::els_iso03_pf_gamma05().at(ele) //electronIsoValuePF(ele, vertex, 0.3, 0.5, 0.1, 0.07, 0.025, -999., 22)*ElePt
 	   - Rho * ElectronEffectiveArea(ElectronIDMVA::kEleGammaIso03, EleEta) 
 	   + Rho * ElectronEffectiveArea(ElectronIDMVA::kEleGammaIsoVetoEtaStrip03,EleEta))/ElePt;      
       fMVAVar_EleChargedIso04OverPt 
-	= (hww.els_iso04_pf_ch().at(ele) //electronIsoValuePF(ele, vertex, 0.4, 99999., 0.1, 0.07, 0.025, -999., 0)*ElePt
+	= (HWWVal::els_iso04_pf_ch().at(ele) //electronIsoValuePF(ele, vertex, 0.4, 99999., 0.1, 0.07, 0.025, -999., 0)*ElePt
 	   - Rho * ElectronEffectiveArea(ElectronIDMVA::kEleChargedIso04, EleEta)) / ElePt;
       fMVAVar_EleNeutralHadronIso04OverPt 
-	= (hww.els_iso04_pf_nhad05().at(ele) //electronIsoValuePF(ele, vertex, 0.4, 0.5, 0.1, 0.07, 0.025, -999., 130)*ElePt
+	= (HWWVal::els_iso04_pf_nhad05().at(ele) //electronIsoValuePF(ele, vertex, 0.4, 0.5, 0.1, 0.07, 0.025, -999., 130)*ElePt
 	   - Rho * ElectronEffectiveArea(ElectronIDMVA::kEleNeutralHadronIso04, EleEta) 
 	   + Rho * ElectronEffectiveArea(ElectronIDMVA::kEleNeutralHadronIso007,EleEta)) / ElePt;
       fMVAVar_EleGammaIso04OverPt 
-	= (hww.els_iso04_pf_gamma05().at(ele) //electronIsoValuePF(ele, vertex, 0.4, 0.5, 0.1, 0.07, 0.025, -999., 22)*ElePt
+	= (HWWVal::els_iso04_pf_gamma05().at(ele) //electronIsoValuePF(ele, vertex, 0.4, 0.5, 0.1, 0.07, 0.025, -999., 22)*ElePt
 	   - Rho * ElectronEffectiveArea(ElectronIDMVA::kEleGammaIso04, EleEta) 
 	   + Rho * ElectronEffectiveArea(ElectronIDMVA::kEleGammaIsoVetoEtaStrip04,EleEta))/ElePt;
     }
@@ -227,10 +227,10 @@ Double_t ElectronIDMVA::MVAValue(const unsigned int ele, const unsigned int vert
     //DEBUG
     if (0) {
       cout << endl;
-      cout << hww.evt_run() << " " << hww.evt_lumiBlock() << " " << hww.evt_event() << " " << hww.evt_ww_rho_vor() << endl;
+      cout << HWWVal::evt_run() << " " << HWWVal::evt_lumiBlock() << " " << HWWVal::evt_event() << " " << HWWVal::evt_ww_rho_vor() << endl;
       std::cout << "Debug Electron MVA: "
-		<< hww.els_p4().at(ele).pt() << " " << " " << hww.els_p4().at(ele).Eta() << " " << hww.els_p4().at(ele).Phi() << " : "
-		<< hww.els_p4().at(ele).pt() << " " << hww.els_etaSC().at(ele) << " --> MVABin " << MVABin << " : "     
+		<< HWWVal::els_p4().at(ele).pt() << " " << " " << HWWVal::els_p4().at(ele).Eta() << " " << HWWVal::els_p4().at(ele).Phi() << " : "
+		<< HWWVal::els_p4().at(ele).pt() << " " << HWWVal::els_etaSC().at(ele) << " --> MVABin " << MVABin << " : "     
 		<< fMVAVar_EleSigmaIEtaIEta << " " 
 		<< fMVAVar_EleDEtaIn << " " 
 		<< fMVAVar_EleDPhiIn << " " 

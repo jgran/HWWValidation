@@ -5,7 +5,6 @@
 
 #include "HWWValidation/HWWBase/interface/jetSelections.h"
 #include "HWWValidation/HWWBase/interface/trackSelections.h"
-#include "HWWValidation/HWWBase/interface/utilities.h"
 #include "HWWValidation/jetcorr/JetCorrectorParameters.icc"
 #include "HWWValidation/jetcorr/FactorizedJetCorrector.icc"
 #include "HWWValidation/jetcorr/SimpleJetCorrector.icc"

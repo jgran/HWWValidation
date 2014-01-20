@@ -375,7 +375,7 @@ Double_t MuonMVAEstimator::mvaValueIso( Int_t mu, Double_t rho, MuonEffectiveAre
 
 
 	Double_t mvavalue = -9999.;
-	if( hww.mus_trkidx().at(mu)<0 && hww.mus_sta_d0().at(mu)<0) return -9999;
+	if( HWWVal::mus_trkidx().at(mu)<0 && HWWVal::mus_sta_d0().at(mu)<0) return -9999;
 
 
 /*
@@ -386,10 +386,10 @@ Double_t MuonMVAEstimator::mvaValueIso( Int_t mu, Double_t rho, MuonEffectiveAre
 	// vertex selection
 	Int_t ivtx = 0;
 
-	Double_t Pt				= 	hww.mus_trkidx().at(mu)>=0 ? hww.mus_trk_p4().at(mu).pt() : hww.mus_sta_p4().at(mu).pt() ;
-	Double_t Eta			=	hww.mus_trkidx().at(mu)>=0 ? hww.mus_trk_p4().at(mu).eta() : hww.mus_sta_p4().at(mu).eta() ;
-	Bool_t isGlobalMuon		=	(hww.mus_type().at(mu)) & (1<<1); 
-	Bool_t isTrackerMuon	=	(hww.mus_type().at(mu)) & (1<<2);
+	Double_t Pt				= 	HWWVal::mus_trkidx().at(mu)>=0 ? HWWVal::mus_trk_p4().at(mu).pt() : HWWVal::mus_sta_p4().at(mu).pt() ;
+	Double_t Eta			=	HWWVal::mus_trkidx().at(mu)>=0 ? HWWVal::mus_trk_p4().at(mu).eta() : HWWVal::mus_sta_p4().at(mu).eta() ;
+	Bool_t isGlobalMuon		=	(HWWVal::mus_type().at(mu)) & (1<<1); 
+	Bool_t isTrackerMuon	=	(HWWVal::mus_type().at(mu)) & (1<<2);
 	Double_t Rho			= 	rho;
 	//MuonEffectiveArea::MuonEffectiveAreaTarget EATarget	= EATarget;
 	
@@ -411,18 +411,18 @@ Double_t MuonMVAEstimator::mvaValueIso( Int_t mu, Double_t rho, MuonEffectiveAre
 
 
 	// Calcluate energy deposit in rings
-	for(unsigned int ipf = 0; ipf < hww.pfcands_p4().size(); ++ipf) {
+	for(unsigned int ipf = 0; ipf < HWWVal::pfcands_p4().size(); ++ipf) {
 
 
 		// exclude muon itself
-		if ( hww.pfcands_trkidx().at(ipf)>=0 && hww.mus_trkidx().at(mu)>=0 && 
-			 hww.pfcands_trkidx().at(ipf) == hww.mus_trkidx().at(mu) )  continue;
+		if ( HWWVal::pfcands_trkidx().at(ipf)>=0 && HWWVal::mus_trkidx().at(mu)>=0 && 
+			 HWWVal::pfcands_trkidx().at(ipf) == HWWVal::mus_trkidx().at(mu) )  continue;
 
 		//************************************************************
 		// New Isolation Calculations
 		//************************************************************
-		double dr = sqrt( pow( hww.pfcands_p4().at(ipf).eta() - hww.mus_trk_p4().at(mu).eta(), 2) 
-				+ pow(acos(cos(hww.pfcands_p4().at(ipf).phi() - hww.mus_trk_p4().at(mu).phi() )), 2) );
+		double dr = sqrt( pow( HWWVal::pfcands_p4().at(ipf).eta() - HWWVal::mus_trk_p4().at(mu).eta(), 2) 
+				+ pow(acos(cos(HWWVal::pfcands_p4().at(ipf).phi() - HWWVal::mus_trk_p4().at(mu).phi() )), 2) );
 		
 		if (dr < 1.0) {
 			Bool_t IsLeptonFootprint = kFALSE;
@@ -438,21 +438,21 @@ Double_t MuonMVAEstimator::mvaValueIso( Int_t mu, Double_t rho, MuonEffectiveAre
 				// if pf candidate matches an electron passing ID cuts, then veto it 
 				// pfcands_pfelsidx : index of PFElectron 
 				// pfels_elsidx : index of els matching PFElectron
-				if( abs(hww.pfcands_particleId().at(ipf))==11   				&&
-				    hww.pfcands_pfelsidx().at(ipf)>=0          				&&
-					hww.pfels_elsidx().at(hww.pfcands_pfelsidx().at(ipf))>=0 && 
-					ele == hww.pfels_elsidx().at(hww.pfcands_pfelsidx().at(ipf)) ) IsLeptonFootprint = true;
-				if( abs(hww.pfcands_particleId().at(ipf))==11   				&&
-				    hww.pfcands_pfelsidx().at(ipf)>=0          				&&
-					hww.pfels_elsidx().at(hww.pfcands_pfelsidx().at(ipf))>=0 &&
-					hww.els_trkidx().at(ele) == hww.pfcands_trkidx().at(ipf) ) IsLeptonFootprint = true;
+				if( abs(HWWVal::pfcands_particleId().at(ipf))==11   				&&
+				    HWWVal::pfcands_pfelsidx().at(ipf)>=0          				&&
+					HWWVal::pfels_elsidx().at(HWWVal::pfcands_pfelsidx().at(ipf))>=0 && 
+					ele == HWWVal::pfels_elsidx().at(HWWVal::pfcands_pfelsidx().at(ipf)) ) IsLeptonFootprint = true;
+				if( abs(HWWVal::pfcands_particleId().at(ipf))==11   				&&
+				    HWWVal::pfcands_pfelsidx().at(ipf)>=0          				&&
+					HWWVal::pfels_elsidx().at(HWWVal::pfcands_pfelsidx().at(ipf))>=0 &&
+					HWWVal::els_trkidx().at(ele) == HWWVal::pfcands_trkidx().at(ipf) ) IsLeptonFootprint = true;
 			
 				//if pf candidate lies in veto regions of electron passing ID cuts, then veto it
-				double tmpDR = sqrt( pow(hww.pfcands_p4().at(ipf).eta() - hww.els_p4().at(ele).eta(),2) 
-									 + pow(acos(cos(hww.pfcands_p4().at(ipf).phi() - hww.els_p4().at(ele).phi())),2));
-				if(	hww.pfcands_trkidx().at(ipf)>=0  && fabs(hww.els_etaSC().at(ele)) >= 1.479 
+				double tmpDR = sqrt( pow(HWWVal::pfcands_p4().at(ipf).eta() - HWWVal::els_p4().at(ele).eta(),2) 
+									 + pow(acos(cos(HWWVal::pfcands_p4().at(ipf).phi() - HWWVal::els_p4().at(ele).phi())),2));
+				if(	HWWVal::pfcands_trkidx().at(ipf)>=0  && fabs(HWWVal::els_etaSC().at(ele)) >= 1.479 
 					&& tmpDR < 0.015) IsLeptonFootprint = kTRUE;
-				if( translatePdgIdToType(hww.pfcands_particleId().at(ipf)) == kgamma && fabs(hww.els_etaSC().at(ele)) >= 1.479 
+				if( translatePdgIdToType(HWWVal::pfcands_particleId().at(ipf)) == kgamma && fabs(HWWVal::els_etaSC().at(ele)) >= 1.479 
 					&& tmpDR < 0.08) IsLeptonFootprint = kTRUE;
 			}
 			
@@ -460,50 +460,50 @@ Double_t MuonMVAEstimator::mvaValueIso( Int_t mu, Double_t rho, MuonEffectiveAre
 
 				unsigned int idenmu = IdentifiedMu[imu]; 
 				//if pf candidate matches an muon passing ID cuts, then veto it
-				if ( hww.pfcands_trkidx().at(ipf)>=0 && hww.mus_trkidx().at(idenmu)>=0 && 
-					 hww.pfcands_trkidx().at(ipf) == hww.mus_trkidx().at(idenmu) )  IsLeptonFootprint = true;
+				if ( HWWVal::pfcands_trkidx().at(ipf)>=0 && HWWVal::mus_trkidx().at(idenmu)>=0 && 
+					 HWWVal::pfcands_trkidx().at(ipf) == HWWVal::mus_trkidx().at(idenmu) )  IsLeptonFootprint = true;
 
 
 				//if pf candidate lies in veto regions of muon passing ID cuts, then veto it
-				double tmpDR = sqrt( pow(hww.pfcands_p4().at(ipf).eta() - hww.mus_p4().at(idenmu).eta(),2) 
-									 + pow(acos(cos(hww.pfcands_p4().at(ipf).phi() - hww.mus_p4().at(idenmu).phi())),2));
-				if(hww.pfcands_trkidx().at(ipf)>=0 && tmpDR < 0.01) IsLeptonFootprint = kTRUE;
+				double tmpDR = sqrt( pow(HWWVal::pfcands_p4().at(ipf).eta() - HWWVal::mus_p4().at(idenmu).eta(),2) 
+									 + pow(acos(cos(HWWVal::pfcands_p4().at(ipf).phi() - HWWVal::mus_p4().at(idenmu).phi())),2));
+				if(HWWVal::pfcands_trkidx().at(ipf)>=0 && tmpDR < 0.01) IsLeptonFootprint = kTRUE;
 			}
 
 			if( !IsLeptonFootprint ) {
 
-				if( hww.pfcands_trkidx().at(ipf)>=0) { //Charged
+				if( HWWVal::pfcands_trkidx().at(ipf)>=0) { //Charged
 
 					// dZ cut
-					if ( (fabs( trks_dz_pv( hww.pfcands_trkidx().at(ipf), ivtx ).first 
-									- dzPVmu(hww.mus_vertex_p4().at(mu), hww.mus_trk_p4().at(mu), hww.vtxs_position().at(ivtx)) ) > 0.2) ) continue;
+					if ( (fabs( trks_dz_pv( HWWVal::pfcands_trkidx().at(ipf), ivtx ).first 
+									- dzPVmu(HWWVal::mus_vertex_p4().at(mu), HWWVal::mus_trk_p4().at(mu), HWWVal::vtxs_position().at(ivtx)) ) > 0.2) ) continue;
 
 					// Veto any PFmuon, or PFEle 
-					if ( 	translatePdgIdToType(hww.pfcands_particleId().at(ipf)) == ke 
-							|| translatePdgIdToType(hww.pfcands_particleId().at(ipf)) == kmu ) continue;
+					if ( 	translatePdgIdToType(HWWVal::pfcands_particleId().at(ipf)) == ke 
+							|| translatePdgIdToType(HWWVal::pfcands_particleId().at(ipf)) == kmu ) continue;
 
 					// Footprint Veto	
 					if (fabs(Eta) > 1.479 && dr < 0.01) continue;
 
-					if (dr < 0.1) ChargedIso_DR0p0To0p1 += hww.pfcands_p4().at(ipf).pt();
-					if (dr >= 0.1 && dr < 0.2) ChargedIso_DR0p1To0p2 += hww.pfcands_p4().at(ipf).pt();
-					if (dr >= 0.2 && dr < 0.3) ChargedIso_DR0p2To0p3 += hww.pfcands_p4().at(ipf).pt();
-					if (dr >= 0.3 && dr < 0.4) ChargedIso_DR0p3To0p4 += hww.pfcands_p4().at(ipf).pt();
-					if (dr >= 0.4 && dr < 0.5) ChargedIso_DR0p4To0p5 += hww.pfcands_p4().at(ipf).pt();
+					if (dr < 0.1) ChargedIso_DR0p0To0p1 += HWWVal::pfcands_p4().at(ipf).pt();
+					if (dr >= 0.1 && dr < 0.2) ChargedIso_DR0p1To0p2 += HWWVal::pfcands_p4().at(ipf).pt();
+					if (dr >= 0.2 && dr < 0.3) ChargedIso_DR0p2To0p3 += HWWVal::pfcands_p4().at(ipf).pt();
+					if (dr >= 0.3 && dr < 0.4) ChargedIso_DR0p3To0p4 += HWWVal::pfcands_p4().at(ipf).pt();
+					if (dr >= 0.4 && dr < 0.5) ChargedIso_DR0p4To0p5 += HWWVal::pfcands_p4().at(ipf).pt();
 				}    
-				else if (	translatePdgIdToType(hww.pfcands_particleId().at(ipf)) == kgamma ) { //Gamma
-					if (dr < 0.1) GammaIso_DR0p0To0p1 += hww.pfcands_p4().at(ipf).pt();
-					if (dr >= 0.1 && dr < 0.2) GammaIso_DR0p1To0p2 += hww.pfcands_p4().at(ipf).pt();
-					if (dr >= 0.2 && dr < 0.3) GammaIso_DR0p2To0p3 += hww.pfcands_p4().at(ipf).pt();
-					if (dr >= 0.3 && dr < 0.4) GammaIso_DR0p3To0p4 += hww.pfcands_p4().at(ipf).pt();
-					if (dr >= 0.4 && dr < 0.5) GammaIso_DR0p4To0p5 += hww.pfcands_p4().at(ipf).pt();
+				else if (	translatePdgIdToType(HWWVal::pfcands_particleId().at(ipf)) == kgamma ) { //Gamma
+					if (dr < 0.1) GammaIso_DR0p0To0p1 += HWWVal::pfcands_p4().at(ipf).pt();
+					if (dr >= 0.1 && dr < 0.2) GammaIso_DR0p1To0p2 += HWWVal::pfcands_p4().at(ipf).pt();
+					if (dr >= 0.2 && dr < 0.3) GammaIso_DR0p2To0p3 += HWWVal::pfcands_p4().at(ipf).pt();
+					if (dr >= 0.3 && dr < 0.4) GammaIso_DR0p3To0p4 += HWWVal::pfcands_p4().at(ipf).pt();
+					if (dr >= 0.4 && dr < 0.5) GammaIso_DR0p4To0p5 += HWWVal::pfcands_p4().at(ipf).pt();
 				}
 				else { //NeutralHadron
-					if (dr < 0.1) NeutralHadronIso_DR0p0To0p1 += hww.pfcands_p4().at(ipf).pt();
-					if (dr >= 0.1 && dr < 0.2) NeutralHadronIso_DR0p1To0p2 += hww.pfcands_p4().at(ipf).pt();
-					if (dr >= 0.2 && dr < 0.3) NeutralHadronIso_DR0p2To0p3 += hww.pfcands_p4().at(ipf).pt();
-					if (dr >= 0.3 && dr < 0.4) NeutralHadronIso_DR0p3To0p4 += hww.pfcands_p4().at(ipf).pt();
-					if (dr >= 0.4 && dr < 0.5) NeutralHadronIso_DR0p4To0p5 += hww.pfcands_p4().at(ipf).pt();
+					if (dr < 0.1) NeutralHadronIso_DR0p0To0p1 += HWWVal::pfcands_p4().at(ipf).pt();
+					if (dr >= 0.1 && dr < 0.2) NeutralHadronIso_DR0p1To0p2 += HWWVal::pfcands_p4().at(ipf).pt();
+					if (dr >= 0.2 && dr < 0.3) NeutralHadronIso_DR0p2To0p3 += HWWVal::pfcands_p4().at(ipf).pt();
+					if (dr >= 0.3 && dr < 0.4) NeutralHadronIso_DR0p3To0p4 += HWWVal::pfcands_p4().at(ipf).pt();
+					if (dr >= 0.4 && dr < 0.5) NeutralHadronIso_DR0p4To0p5 += HWWVal::pfcands_p4().at(ipf).pt();
 				}
 			} // IsLeptonFootprint
 		} // dR < 1.0

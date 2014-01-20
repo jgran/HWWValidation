@@ -1,23 +1,20 @@
-#ifndef CMS2_SCMAKER_H
-#define CMS2_SCMAKER_H
+#ifndef VERTEXMAKER_H
+#define VERTEXMAKER_H
 
-//
-// class declaration
-//
+#include "FWCore/Framework/interface/ConsumesCollector.h"
+#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "DataFormats/VertexReco/interface/VertexFwd.h"
+#include "DataFormats/VertexReco/interface/Vertex.h"
 
-class VertexMaker : public edm::EDProducer {
-public:
-  explicit VertexMaker (const edm::ParameterSet&);
-  
-private:
-  virtual void beginJob() ;
-  virtual void produce(edm::Event&, const edm::EventSetup&);
-  virtual void endJob() ;
+class VertexMaker {
 
-  // ----------member data ---------------------------
-  edm::InputTag primaryVertexInputTag_;
+  public:
 
-	std::string aliasprefix_;
+    VertexMaker(const edm::ParameterSet&, edm::ConsumesCollector);
+    void SetVars(const edm::Event&, const edm::EventSetup&);
+
+    edm::EDGetTokenT<reco::VertexCollection> thePVCollection_;
+
 };
 
 #endif

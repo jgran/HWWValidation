@@ -1,34 +1,24 @@
 #ifndef PFELECTRONMAKER_H
 #define PFELECTRONMAKER_H
 
-//
-// class decleration
-//
+#include "DataFormats/Common/interface/ValueMap.h"
+#include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
+#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/MakerMacros.h"
+#include "FWCore/Framework/interface/ConsumesCollector.h"
 
-class PFElectronMaker : public edm::EDProducer {
-public:
-     explicit PFElectronMaker (const edm::ParameterSet&);
-     ~PFElectronMaker();
+class PFElectronMaker {
 
-private:
-//  virtual void beginJob() ;
-     virtual void beginJob() ;
-     virtual void beginRun(edm::Run&, const edm::EventSetup&) ;
-     virtual void produce(edm::Event&, const edm::EventSetup&);
-     virtual void endJob() ;
-    
-     // ----------member data ---------------------------
-     edm::InputTag pfCandidatesTag_;
-/*
-     edm::InputTag isoc_vm_tag_;
-     edm::InputTag ison_vm_tag_;
-     edm::InputTag isop_vm_tag_;
-     edm::InputTag isoc04_vm_tag_;
-     edm::InputTag ison04_vm_tag_;
-     edm::InputTag isop04_vm_tag_;
-     edm::InputTag pfAllElectrons_tag_;  
-*/
+  public:
+
+    PFElectronMaker(const edm::ParameterSet&, edm::ConsumesCollector);
+    void SetVars(const edm::Event&, const edm::EventSetup&);
+
+  private:
+
+    edm::EDGetTokenT<edm::ValueMap<reco::PFCandidatePtr> >    PFElectrons_;
+
 };
 
 #endif
-

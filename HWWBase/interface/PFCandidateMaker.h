@@ -1,34 +1,31 @@
 #ifndef PFCANDIDATEMAKER_H
 #define PFCANDIDATEMAKER_H
 
-//
-// class decleration
-//
+#include "DataFormats/Common/interface/ValueMap.h"
+#include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
+#include "DataFormats/MuonReco/interface/MuonCosmicCompatibility.h"
+#include "DataFormats/MuonReco/interface/MuonSelectors.h"
+#include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
+#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/MakerMacros.h"
+#include "DataFormats/MuonReco/interface/MuonShower.h"
+#include "DataFormats/VertexReco/interface/VertexFwd.h"
+#include "FWCore/Framework/interface/ConsumesCollector.h"
 
-class PFCandidateMaker : public edm::EDProducer {
-public:
-     explicit PFCandidateMaker (const edm::ParameterSet&);
-     ~PFCandidateMaker();
+class PFCandidateMaker {
 
-private:
-  //  virtual void beginJob() ;
-  virtual void beginJob() ;
-  virtual void beginRun(edm::Run&, const edm::EventSetup&) ;
-  virtual void produce(edm::Event&, const edm::EventSetup&);
-  virtual void endJob() ;
+  public:
 
-  float getFixGridRho(std::vector<float>& etabins,std::vector<float>& phibins);
-  
-  // ----------member data ---------------------------
-  double minDR_electron_;
-  edm::InputTag pfElectronsTag_;
-  edm::InputTag pfCandidatesTag_;
-  edm::InputTag tracksInputTag_;
-  edm::InputTag vertexInputTag_;
+    PFCandidateMaker(const edm::ParameterSet&, edm::ConsumesCollector);
+    void SetVars(const edm::Event&, const edm::EventSetup&);
 
-  const reco::PFCandidateCollection *pfCandidates;
+  private:
 
-    PFPileUpAlgo *pfPileUpAlgo_;
+    edm::EDGetTokenT<reco::PFCandidateCollection>             PFCandidateCollection_;
+    edm::EDGetTokenT<edm::ValueMap<reco::PFCandidatePtr> >    PFElectrons_;
+    edm::EDGetTokenT<reco::TrackCollection>                   TrackCollection_;
+    edm::EDGetTokenT<reco::VertexCollection>                  thePVCollection_;
 
 };
 

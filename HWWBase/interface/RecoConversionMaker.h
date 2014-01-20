@@ -1,26 +1,23 @@
 #ifndef RECOCONVERSIONMAKER_H
 #define RECOCONVERSIONMAKER_H
 
-//
-// class declaration
-//
+#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/MakerMacros.h"
+#include "FWCore/Framework/interface/ConsumesCollector.h"
+#include "DataFormats/EgammaCandidates/interface/Conversion.h"
 
-class RecoConversionMaker : public edm::EDProducer {
-public:
-  explicit RecoConversionMaker (const edm::ParameterSet&);
-  
-private:
-  virtual void beginJob() ;
-  virtual void produce(edm::Event&, const edm::EventSetup&);
-  virtual void endJob() ;
-  double  lxy(const math::XYZPoint& myBeamSpot, const reco::Conversion&) const;
-      
-  // ----------member data ---------------------------
-  std::string   aliasprefix_;
-  edm::InputTag recoConversionInputTag_;
-  edm::InputTag beamSpotInputTag_;
-  
+class RecoConversionMaker {
 
+  public:
+
+    RecoConversionMaker(const edm::ParameterSet&, edm::ConsumesCollector);
+    void SetVars(const edm::Event&, const edm::EventSetup&);
+
+  private:
+
+    edm::EDGetTokenT<edm::View<reco::Conversion> >     Conversion_;
+    edm::EDGetTokenT<reco::BeamSpot>                   BeamSpot_;
 
 };
 

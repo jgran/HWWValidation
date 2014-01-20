@@ -1,41 +1,22 @@
-#include "FWCore/Framework/interface/EDProducer.h"
-#include "FWCore/Framework/interface/Event.h"
-#include "FWCore/Framework/interface/MakerMacros.h"
 #include "DataFormats/Math/interface/LorentzVector.h"
 #include "DataFormats/Math/interface/deltaR.h"
-
 #include "HWWValidation/HWWBase/interface/PFElToElAssMaker.h"
-
+#include "HWWValidation/HWWBase/interface/HWW.h"
 
 typedef math::XYZTLorentzVectorF LorentzVector;
-using std::vector;
 
-PFElToElAssMaker::PFElToElAssMaker(const edm::ParameterSet& iConfig) {
-
-     aliasprefix_ = iConfig.getUntrackedParameter<std::string>("aliasPrefix");
-     std::string branchprefix = aliasprefix_;
-     if(branchprefix.find("_") != std::string::npos) branchprefix.replace(branchprefix.find("_"),1,"");
-
-     produces<vector<int>   >(branchprefix+"elsidx").setBranchAlias(aliasprefix_+"_elsidx");
-     
-     elsInputTag_ = iConfig.getParameter<edm::InputTag>("elsInputTag");
-     pfelsInputTag_ = iConfig.getParameter<edm::InputTag>("pfelsInputTag");
-     m_minDR_     = iConfig.getParameter<double>       ("minDR");
-}
-
-void PFElToElAssMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
+void PFElToElAssMaker::SetVars(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 
      using namespace edm;
-     // make vectors to hold the information
-     std::auto_ptr<vector<int>    > vector_pfels_elsidx(new vector<int>   );
-     
-     // get reco electron p4's
-     edm::Handle<vector<LorentzVector> > els_p4_h;
-     iEvent.getByLabel(elsInputTag_.label(), "elsp4", els_p4_h);
+     using std::vector;
 
-     // get particle flow electron p4's
-     edm::Handle<vector<LorentzVector> > pfels_p4_h;
-     iEvent.getByLabel(pfelsInputTag_.label(), "pfelsp4", pfels_p4_h);
+     HWWVal::Load_pfels_elsidx();
+
+     vector<LorentzVector> *pfels_p4_h = new vector<LorentzVector>;
+     *pfels_p4_h = HWWVal::pfels_p4();
+
+     vector<LorentzVector> *els_p4_h = new vector<LorentzVector>;
+     *els_p4_h = HWWVal::els_p4();
      
      //loop over reco electrons and find the closest particle flow electron
      for (vector<LorentzVector>::const_iterator pfels_it = pfels_p4_h->begin(); pfels_it != pfels_p4_h->end(); pfels_it++)
@@ -60,28 +41,12 @@ void PFElToElAssMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 	       }
 	  }
 
-	  if(minDR > m_minDR_) {
+	  if(minDR > 0.1) {
 	       minDR = -9999.;
 	       index = -1;
 	  }
 
 	  // fill vector
-	  vector_pfels_elsidx->push_back(index);
+	  HWWVal::pfels_elsidx().push_back(index);
      }
-
-     // store vectors
-     std::string branchprefix = aliasprefix_;
-     if(branchprefix.find("_") != std::string::npos) branchprefix.replace(branchprefix.find("_"),1,"");
-
-     iEvent.put(vector_pfels_elsidx, branchprefix+"elsidx");
 }
-
-// ------------ method called once each job just before starting event loop  ------------
-void PFElToElAssMaker::beginJob() {}
-
-// ------------ method called once each job just after ending the event loop  ------------
-void PFElToElAssMaker::endJob() {}
-
-
-//define this as a plug-in
-DEFINE_FWK_MODULE(PFElToElAssMaker);

@@ -1,45 +1,27 @@
-#include "FWCore/Framework/interface/EDProducer.h"
-#include "FWCore/Framework/interface/Event.h"
-#include "FWCore/Framework/interface/MakerMacros.h"
-#include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
-#include "DataFormats/Common/interface/ValueMap.h"
-
 #include "HWWValidation/HWWBase/interface/PFElectronMaker.h"
+#include "HWWValidation/HWWBase/interface/HWW.h"
 
-//
 typedef math::XYZTLorentzVectorF LorentzVector;
 typedef math::XYZPoint Point;
 typedef edm::ValueMap<reco::PFCandidatePtr> PFCandMap;
 
-//
 using namespace reco;
 using namespace edm;
 using namespace std;
 
-//
-PFElectronMaker::PFElectronMaker(const ParameterSet& iConfig) {
-      
-  //
-  pfCandidatesTag_    = iConfig.getParameter<InputTag> ("pfCandidatesTag");
+PFElectronMaker::PFElectronMaker(const edm::ParameterSet& iConfig, edm::ConsumesCollector iCollector){
 
-  //
-  produces<vector<LorentzVector> >  ("pfelsp4"                  ).setBranchAlias("pfels_p4"                 );
+  PFElectrons_ = iCollector.consumes<edm::ValueMap<reco::PFCandidatePtr> >(iConfig.getParameter<edm::InputTag>("pfElectronsTag"));
 
-} //
+}
 
-PFElectronMaker::~PFElectronMaker() {}
-void  PFElectronMaker::beginRun( Run&, const EventSetup& es ) {}
-void PFElectronMaker::beginJob() {}
-void PFElectronMaker::endJob() {}
+void PFElectronMaker::SetVars( const edm::Event& iEvent, const edm::EventSetup& iSetup ) {
 
-//
-void PFElectronMaker::produce( Event& iEvent, const EventSetup& iSetup ) {
-
-  auto_ptr<vector<LorentzVector> > pfels_p4                  (new vector<LorentzVector> );
+ HWWVal::Load_pfels_p4();
 
   //
   Handle<PFCandMap > pfCandidatesHandle;
-  iEvent.getByLabel( pfCandidatesTag_, pfCandidatesHandle );
+  iEvent.getByToken( PFElectrons_, pfCandidatesHandle );
   const ValueMap<reco::PFCandidatePtr> *pfCandidates  = pfCandidatesHandle.product();
   
   //
@@ -55,15 +37,7 @@ void PFElectronMaker::produce( Event& iEvent, const EventSetup& iSetup ) {
      if(pf_it->flag((PFCandidate::Flags)i)) pfflags |= (1<<i);
    }
   
-   pfels_p4               ->push_back(LorentzVector(pf_it->px(), pf_it->py(), pf_it->pz(), pf_it->p()) );
+   HWWVal::pfels_p4()               .push_back(LorentzVector(pf_it->px(), pf_it->py(), pf_it->pz(), pf_it->p()) );
     
-  } //
-  
-
-  //
-  iEvent.put( pfels_p4                  , "pfelsp4"                 );
+  } 
 }
-
-//define this as a plug-in
-DEFINE_FWK_MODULE(PFElectronMaker);
-

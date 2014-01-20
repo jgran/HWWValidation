@@ -5,32 +5,36 @@
 #include <fstream>
 #include <string>
 
-MonitorEventId::MonitorEventId(HWW& hww){
-  run = hww.evt_run();
-  event = hww.evt_event();
-  lumi = hww.evt_lumiBlock();
+EventMonitor::MonitorEventId::MonitorEventId(HWW& hww){
+  run = HWWVal::evt_run();
+  event = HWWVal::evt_event();
+  lumi = HWWVal::evt_lumiBlock();
 }
 
-MonitorEventId::MonitorEventId(){
+EventMonitor::MonitorEventId::MonitorEventId(){
   run = 0;
   event = 0;
   lumi = 0;
 }
 
-Entry::Entry()
+EventMonitor::Entry::Entry()
 {
   for (unsigned int i=0; i<5; ++i){
     nhyp[i] = 0;
     nevt[i] = 0;
+    nhyp_weighted[i] = 0.0;
+    nevt_weighted[i] = 0.0;
     seen[i] = false;
   }
 }
 
-void hypo_monitor::count(HWW& hww, HypothesisType type, const char* name, double weight)
+
+
+void EventMonitor::hypo_monitor::count(HWW& hww, HypothesisType type, const char* name, double weight)
 {
-  std::vector<Entry>::iterator itr = counters.begin();
+  std::vector<EventMonitor::Entry>::iterator itr = counters.begin();
   while (itr != counters.end() && itr->name != name) itr++;
-  Entry* entry(0);
+  EventMonitor::Entry* entry(0);
   if ( itr == counters.end() ){
     counters.push_back(Entry());
     entry = &counters.back();
@@ -38,7 +42,7 @@ void hypo_monitor::count(HWW& hww, HypothesisType type, const char* name, double
   } else {
     entry = &*itr;
   }
-  MonitorEventId id(hww);
+  EventMonitor::MonitorEventId id(hww);
   entry->nhyp[type]++;
   entry->nhyp[ALL]++;
   if (id != entry->lastEvent){
@@ -53,7 +57,7 @@ void hypo_monitor::count(HWW& hww, HypothesisType type, const char* name, double
   }
 }
 
-void hypo_monitor::print() const
+void EventMonitor::hypo_monitor::print() const
 {
   std::cout << "Total number of processed events: \t" << nEvtProcessed << std::endl;
   ofstream out_file; out_file.open("cutflow.txt");
@@ -78,7 +82,7 @@ void hypo_monitor::print() const
     cut_file << Form("%-40s \tnevts: %u/%u/%u/%u/%u", counters[i].name.c_str(),
 		     counters[i].nevt[MM],counters[i].nevt[EE],counters[i].nevt[EM],counters[i].nevt[ME],counters[i].nevt[ALL]) << "\n";
 
-    for ( std::vector<MonitorEventId>::const_iterator id=counters[i].events.begin();
+    for ( std::vector<EventMonitor::MonitorEventId>::const_iterator id=counters[i].events.begin();
 	  id!=counters[i].events.end(); ++id ){
       cut_file << id->run << "\t" << id->lumi << "\t" << id->event <<"\n";
     }
@@ -86,7 +90,7 @@ void hypo_monitor::print() const
   }
 }
 
-void hypo_monitor::makeHistograms() const
+void EventMonitor::hypo_monitor::makeHistograms() const
 {
   TH1F* hist[4];
   TFile* outfile = new TFile("cutflow_hists.root", "RECREATE");

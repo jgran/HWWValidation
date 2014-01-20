@@ -54,16 +54,16 @@ HypothesisType getHypothesisType( unsigned int type ){
 }
 
 HypothesisType getHypothesisTypeNew( unsigned int i_hyp ){
-  if (abs(hww.hyp_lt_id().at(i_hyp))==11 && abs(hww.hyp_ll_id().at(i_hyp))==11) {
+  if (abs(HWWVal::hyp_lt_id().at(i_hyp))==11 && abs(HWWVal::hyp_ll_id().at(i_hyp))==11) {
     return EE;
-  } else if (abs(hww.hyp_lt_id().at(i_hyp))==13 && abs(hww.hyp_ll_id().at(i_hyp))==13) {
+  } else if (abs(HWWVal::hyp_lt_id().at(i_hyp))==13 && abs(HWWVal::hyp_ll_id().at(i_hyp))==13) {
     return MM;
   } else {
-    if (hww.hyp_lt_p4().at(i_hyp).pt()>hww.hyp_ll_p4().at(i_hyp).pt()) {
-      if (abs(hww.hyp_lt_id().at(i_hyp))==11) return EM;
+    if (HWWVal::hyp_lt_p4().at(i_hyp).pt()>HWWVal::hyp_ll_p4().at(i_hyp).pt()) {
+      if (abs(HWWVal::hyp_lt_id().at(i_hyp))==11) return EM;
       else return ME;
     } else {
-      if (abs(hww.hyp_lt_id().at(i_hyp))==11) return ME;
+      if (abs(HWWVal::hyp_lt_id().at(i_hyp))==11) return ME;
       else return EM;
     }
   }

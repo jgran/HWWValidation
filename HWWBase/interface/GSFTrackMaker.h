@@ -1,26 +1,22 @@
 #ifndef GSFTRACKMAKER_H
 #define GSFTRACKMAKER_H
 
-typedef math::XYZPoint Point;
+#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/MakerMacros.h"
+#include "FWCore/Framework/interface/ConsumesCollector.h"
+#include "DataFormats/GsfTrackReco/interface/GsfTrack.h"
 
-//
-// class declaration
-//
+class GSFTrackMaker {
 
-class GSFTrackMaker : public edm::EDProducer {
-public:
-  explicit GSFTrackMaker (const edm::ParameterSet&);
-  
-private:
-  virtual void beginJob() ;
-  virtual void produce(edm::Event&, const edm::EventSetup&);
-  virtual void endJob() ;
-      
-  // ----------member data ---------------------------
-  edm::InputTag gsftracksInputTag_;
-  edm::InputTag beamSpot_tag_;
+  public:
 
-  
+    GSFTrackMaker(const edm::ParameterSet&, edm::ConsumesCollector);
+    void SetVars(const edm::Event&, const edm::EventSetup&);
+
+  private:
+
+    edm::EDGetTokenT<edm::View<reco::GsfTrack> >              GSFTrack_;
+
 };
-
 #endif

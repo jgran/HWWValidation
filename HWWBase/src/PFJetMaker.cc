@@ -1,86 +1,48 @@
-#include "FWCore/Framework/interface/EDProducer.h"
-#include "FWCore/Framework/interface/Event.h"
-#include "FWCore/Framework/interface/MakerMacros.h"
-#include "DataFormats/JetReco/interface/PFJet.h"
-
 #include "HWWValidation/HWWBase/interface/PFJetMaker.h"
+#include "HWWValidation/HWWBase/interface/HWW.h"
 
 typedef math::XYZTLorentzVectorF LorentzVector;
 
-// Constructor
-PFJetMaker::PFJetMaker(const edm::ParameterSet& iConfig){
-  using namespace std;
-  using namespace edm;
+PFJetMaker::PFJetMaker(const edm::ParameterSet& iConfig, edm::ConsumesCollector iCollector){
 
-  // product of this EDProducer
-  produces<vector<LorentzVector> > ( "pfjetsp4"                               ).setBranchAlias( "pfjets_p4"                               );
-  produces<vector<float> >         ( "pfjetschargedHadronE"                   ).setBranchAlias( "pfjets_chargedHadronE"                   );
-  produces<vector<float> >         ( "pfjetsneutralHadronE"                   ).setBranchAlias( "pfjets_neutralHadronE"                   );
-  produces<vector<float> >         ( "pfjetschargedEmE"                       ).setBranchAlias( "pfjets_chargedEmE"                       );
-  produces<vector<float> >         ( "pfjetsneutralEmE"                       ).setBranchAlias( "pfjets_neutralEmE"                       );
-  produces<vector<float> >         ( "pfjetsphotonE"                          ).setBranchAlias( "pfjets_photonE"                          );
-  produces<vector<float> >         ( "pfjetselectronE"                        ).setBranchAlias( "pfjets_electronE"                        );
-  produces<vector<float> >         ( "pfjetsmuonE"                            ).setBranchAlias( "pfjets_muonE"                            );
-  produces<vector<float> >         ( "pfjetshfHadronE"                        ).setBranchAlias( "pfjets_hfHadronE"                        );
-  produces<vector<float> >         ( "pfjetshfEmE"                            ).setBranchAlias( "pfjets_hfEmE"                            );
-  produces<vector<int> >           ( "pfjetschargedHadronMultiplicity"        ).setBranchAlias( "pfjets_chargedHadronMultiplicity"        );
-  produces<vector<int> >           ( "pfjetsneutralHadronMultiplicity"        ).setBranchAlias( "pfjets_neutralHadronMultiplicity"        );
-  produces<vector<int> >           ( "pfjetsphotonMultiplicity"               ).setBranchAlias( "pfjets_photonMultiplicity"               );
-  produces<vector<int> >           ( "pfjetselectronMultiplicity"             ).setBranchAlias( "pfjets_electronMultiplicity"             );
-  produces<vector<int> >           ( "pfjetsmuonMultiplicity"                 ).setBranchAlias( "pfjets_muonMultiplicity"                 );
-  produces<vector<int> >           ( "pfjetshfHadronMultiplicity"             ).setBranchAlias( "pfjets_hfHadronMultiplicity"             );
-  produces<vector<int> >           ( "pfjetshfEmMultiplicity"                 ).setBranchAlias( "pfjets_hfEmMultiplicity"                 );
-  produces<vector<int>   >         ( "pfjetschargedMultiplicity"              ).setBranchAlias( "pfjets_chargedMultiplicity"              );
-  produces<vector<int>   >         ( "pfjetsneutralMultiplicity"              ).setBranchAlias( "pfjets_neutralMultiplicity"              );
-  produces<vector<float> >         ( "pfjetsarea"                             ).setBranchAlias( "pfjets_area"                             );
+  PFJetCollection_       = iCollector.consumes<reco::PFJetCollection>(iConfig.getParameter<edm::InputTag>("pfJetsInputTag"));
 
-  //
-  pfJetsInputTag_                   = iConfig.getParameter<InputTag>   ( "pfJetsInputTag"                   );
-  pfCandidatesTag_                  = iConfig.getParameter<InputTag>   ( "pfCandidatesTag"                  );
-  pfJetPtCut_                       = iConfig.getParameter<double>     ( "pfJetPtCut"                       );
 }
 
-// Destructor
-PFJetMaker::~PFJetMaker(){}
 
-// ------------ method called once each job just before starting event loop  ------------
-void PFJetMaker::beginJob() {}
+bool sortPFJetsByPt(reco::PFJet jet1, reco::PFJet jet2) {
+  return jet1.pt() > jet2.pt();
+}
 
-// ------------ method called once each job just after ending the event loop  ------------
-void PFJetMaker::endJob() {}
 
-// ------------ method called to produce the data  ------------
-void PFJetMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup){
+void PFJetMaker::SetVars(const edm::Event& iEvent, const edm::EventSetup& iSetup){
 
   using namespace std;
   using namespace edm;
   using namespace reco;
- 
-  // create containers
-  auto_ptr<vector<LorentzVector> > pfjets_p4                        (new vector<LorentzVector>  );
-  auto_ptr<vector<float> >         pfjets_area                      (new vector<float>          );  
 
-  Handle<View<PFJet> > pfJetsHandle;
-  iEvent.getByLabel(pfJetsInputTag_, pfJetsHandle);
+  HWWVal::Load_pfjets_p4();
+  HWWVal::Load_pfjets_area();
 
-  //get pfcandidates
-  Handle<PFCandidateCollection> pfCandidatesHandle;
-  iEvent.getByLabel(pfCandidatesTag_, pfCandidatesHandle);
+  edm::Handle<reco::PFJetCollection>    pfjetsHandle;
+  iEvent.getByToken(PFJetCollection_,  pfjetsHandle	);
 
-  for(View<PFJet>::const_iterator pfjet_it = pfJetsHandle->begin(); pfjet_it != pfJetsHandle->end(); pfjet_it++) {
+  std::auto_ptr<reco::PFJetCollection> outPFJetCollection (new reco::PFJetCollection        );
+    
+  for(reco::PFJetCollection::const_iterator jet_it = pfjetsHandle->begin();
+      jet_it != pfjetsHandle->end(); jet_it++) {
+       
+    if(jet_it->pt() > 0.0 )
+      outPFJetCollection->push_back(*jet_it);
+  }
+  
+  std::sort(outPFJetCollection->begin(),  outPFJetCollection->end(), sortPFJetsByPt);
 
-    pfjets_p4                        ->push_back( LorentzVector( pfjet_it->p4() )      );
-    pfjets_area                      ->push_back(pfjet_it->jetArea()                   );
+  for(reco::PFJetCollection::const_iterator pfjet_it = outPFJetCollection->begin(); pfjet_it != outPFJetCollection->end(); pfjet_it++) {
 
-    int idx = pfjet_it - pfJetsHandle->begin();
-    RefToBase < Jet > jetRef1( Ref < View < PFJet > > ( pfJetsHandle , idx ) );
+    HWWVal::pfjets_p4()     .push_back( LorentzVector( pfjet_it->p4() )      );
+    HWWVal::pfjets_area()   .push_back(pfjet_it->jetArea()                   );
 
   }
 
-  iEvent.put(pfjets_p4                        , "pfjetsp4"                        );
-  iEvent.put(pfjets_area                      , "pfjetsarea"                      );
 }
-
-
-//define this as a plug-in
-DEFINE_FWK_MODULE(PFJetMaker);

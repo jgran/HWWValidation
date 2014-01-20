@@ -10,7 +10,7 @@
 #include "HWWValidation/HWWBase/interface/analysisEnums.h"
 #include "HWWValidation/HWWBase/interface/jetSelections.h"
 
-void doCutFlow(int, hypo_monitor&, EGammaMvaEleEstimator*, MuonMVAEstimator*);
+void doCutFlow(int, EventMonitor::hypo_monitor&, EGammaMvaEleEstimator*, MuonMVAEstimator*);
 bool passFirstCuts(int);
 bool passCharge(int);
 bool passBaseline(int, EGammaMvaEleEstimator*, MuonMVAEstimator*);
@@ -24,7 +24,7 @@ bool passSoftMuonVeto(int);
 bool passTopVeto(int);
 
 int  bestHypothesis(const std::vector<int>&);
-//bool isGoodVertex(size_t);
+bool isGoodVertex(int);
 unsigned int nGoodVertex();
 
 
@@ -79,9 +79,6 @@ bool fakableMuon(unsigned int i, MuFOTypes, MuonMVAEstimator* muonMVAEstimator,
 bool passMuonRingsMVA(unsigned int mu, MuonMVAEstimator* muonMVAEstimator, std::vector<Int_t> IdentifiedMu, std::vector<Int_t> IdentifiedEle);
 bool passMuonRingsMVAFO(unsigned int mu, MuonMVAEstimator* muonMVAEstimator, std::vector<Int_t> IdentifiedMu, std::vector<Int_t> IdentifiedEle);
 
-//
-// extra leptons
-//
 
 //
 // leptons

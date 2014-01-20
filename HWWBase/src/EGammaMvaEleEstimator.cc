@@ -8,23 +8,22 @@ using namespace std;
 #include "HWWValidation/HWWBase/interface/HWW.h"
 #include "HWWValidation/HWWBase/interface/electronSelections.h"
 #include "HWWValidation/HWWBase/interface/trackSelections.h"
-#include "HWWValidation/HWWBase/interface/eventSelections.h"
 
 double electron_d0PV_wwV1_local(unsigned int index) { 
-    if ( hww.vtxs_sumpt().empty() ) return 9999.;
+    if ( HWWVal::vtxs_sumpt().empty() ) return 9999.;
     int iMax = 0; // try the first vertex
 	double dxyPV=0;
-	if(hww.els_gsftrkidx().at(index)>=0)
+	if(HWWVal::els_gsftrkidx().at(index)>=0)
 	{
-    	dxyPV = hww.els_d0().at(index)-
-        	hww.vtxs_position().at(iMax).x()*sin(hww.gsftrks_p4().at(hww.els_gsftrkidx().at(index)).phi())+
-        	hww.vtxs_position().at(iMax).y()*cos(hww.gsftrks_p4().at(hww.els_gsftrkidx().at(index)).phi());
+    	dxyPV = HWWVal::els_d0().at(index)-
+        	HWWVal::vtxs_position().at(iMax).x()*sin(HWWVal::gsftrks_p4().at(HWWVal::els_gsftrkidx().at(index)).phi())+
+        	HWWVal::vtxs_position().at(iMax).y()*cos(HWWVal::gsftrks_p4().at(HWWVal::els_gsftrkidx().at(index)).phi());
 	}
 	else 
 	{
-    	dxyPV = hww.els_d0().at(index)-
-        	hww.vtxs_position().at(iMax).x()*sin(hww.els_trk_p4().at(index).phi())+
-        	hww.vtxs_position().at(iMax).y()*cos(hww.els_trk_p4().at(index).phi());
+    	dxyPV = HWWVal::els_d0().at(index)-
+        	HWWVal::vtxs_position().at(iMax).x()*sin(HWWVal::els_trk_p4().at(index).phi())+
+        	HWWVal::vtxs_position().at(iMax).y()*cos(HWWVal::els_trk_p4().at(index).phi());
 	}
 
     return dxyPV;
@@ -266,30 +265,30 @@ Double_t EGammaMvaEleEstimator::mvaValue(Int_t ele, Bool_t printDebug) {
 
 	Double_t mvavalue = -999.;
 
-	Double_t fbrem 				=	hww.els_fbrem().at(ele); 
-	Double_t kfchi2				=	hww.els_trkidx().at(ele)>=0 ? hww.trks_chi2().at(hww.els_trkidx().at(ele))/hww.trks_ndof().at(hww.els_trkidx().at(ele)) : 0.;
-	Int_t    kfhits				= 	hww.els_trkidx().at(ele)>=0 ? hww.trks_nlayers().at(hww.els_trkidx().at(ele)) : -1;
-	Double_t gsfchi2			= 	hww.els_chi2().at(ele) / hww.els_ndof().at(ele);
-	Double_t deta				=	hww.els_dEtaIn().at(ele);
-	Double_t dphi				=	hww.els_dPhiIn().at(ele); 
-	Double_t detacalo			= 	hww.els_dEtaOut().at(ele);
-	Double_t see				= 	hww.els_sigmaIEtaIEta().at(ele);
-	Double_t spp				=	hww.els_sigmaIPhiIPhi().at(ele); // FIXME : check the case where it's 0 
-	Double_t etawidth			=	hww.els_etaSCwidth().at(ele);
-	Double_t phiwidth			= 	hww.els_phiSCwidth().at(ele);
-	Double_t e1x5e5x5			=	hww.els_e5x5().at(ele)!=0. ? 1. - hww.els_e1x5().at(ele)/hww.els_e5x5().at(ele) : -1; 
-	Double_t R9					= 	hww.els_e3x3().at(ele) / hww.els_eSCRaw().at(ele);
-	Double_t HoE				=	hww.els_hOverE().at(ele);
-	Double_t EoP				=	hww.els_eOverPIn().at(ele);
-	//Double_t IoEmIoP			=	1./hww.els_eSC().at(ele) - 1./hww.els_p4().at(ele).P(); 
-	Double_t IoEmIoP			=	1./hww.els_ecalEnergy().at(ele) - 1./hww.els_p4().at(ele).P(); // this is consistent with CMSSW 
-	Double_t eleEoPout			=	hww.els_eOverPOut().at(ele);
-	Double_t PreShowerOverRaw	=	hww.els_eSCPresh().at(ele) / hww.els_eSCRaw().at(ele);
+	Double_t fbrem 				=	HWWVal::els_fbrem().at(ele); 
+	Double_t kfchi2				=	HWWVal::els_trkidx().at(ele)>=0 ? HWWVal::trks_chi2().at(HWWVal::els_trkidx().at(ele))/HWWVal::trks_ndof().at(HWWVal::els_trkidx().at(ele)) : 0.;
+	Int_t    kfhits				= 	HWWVal::els_trkidx().at(ele)>=0 ? HWWVal::trks_nlayers().at(HWWVal::els_trkidx().at(ele)) : -1;
+	Double_t gsfchi2			= 	HWWVal::els_chi2().at(ele) / HWWVal::els_ndof().at(ele);
+	Double_t deta				=	HWWVal::els_dEtaIn().at(ele);
+	Double_t dphi				=	HWWVal::els_dPhiIn().at(ele); 
+	Double_t detacalo			= 	HWWVal::els_dEtaOut().at(ele);
+	Double_t see				= 	HWWVal::els_sigmaIEtaIEta().at(ele);
+	Double_t spp				=	HWWVal::els_sigmaIPhiIPhi().at(ele); // FIXME : check the case where it's 0 
+	Double_t etawidth			=	HWWVal::els_etaSCwidth().at(ele);
+	Double_t phiwidth			= 	HWWVal::els_phiSCwidth().at(ele);
+	Double_t e1x5e5x5			=	HWWVal::els_e5x5().at(ele)!=0. ? 1. - HWWVal::els_e1x5().at(ele)/HWWVal::els_e5x5().at(ele) : -1; 
+	Double_t R9					= 	HWWVal::els_e3x3().at(ele) / HWWVal::els_eSCRaw().at(ele);
+	Double_t HoE				=	HWWVal::els_hOverE().at(ele);
+	Double_t EoP				=	HWWVal::els_eOverPIn().at(ele);
+	//Double_t IoEmIoP			=	1./HWWVal::els_eSC().at(ele) - 1./HWWVal::els_p4().at(ele).P(); 
+	Double_t IoEmIoP			=	1./HWWVal::els_ecalEnergy().at(ele) - 1./HWWVal::els_p4().at(ele).P(); // this is consistent with CMSSW 
+	Double_t eleEoPout			=	HWWVal::els_eOverPOut().at(ele);
+	Double_t PreShowerOverRaw	=	HWWVal::els_eSCPresh().at(ele) / HWWVal::els_eSCRaw().at(ele);
 	Double_t d0					=	electron_d0PV_wwV1_local(ele);
-	const double gsfsign = ( (gsftrks_d0_pv(hww.els_gsftrkidx().at(ele),0).first)   >=0 ) ? 1. : -1.;
-	Double_t ip3d				=	hww.els_ip3d().at(ele)*gsfsign; 
-	Double_t eta				= 	hww.els_etaSC().at(ele);
-	Double_t pt					= 	hww.els_p4().at(ele).pt();
+	const double gsfsign = ( (gsftrks_d0_pv(HWWVal::els_gsftrkidx().at(ele),0).first)   >=0 ) ? 1. : -1.;
+	Double_t ip3d				=	HWWVal::els_ip3d().at(ele)*gsfsign; 
+	Double_t eta				= 	HWWVal::els_etaSC().at(ele);
+	Double_t pt					= 	HWWVal::els_p4().at(ele).pt();
 
 
 	mvavalue =  EGammaMvaEleEstimator::mvaValue(
