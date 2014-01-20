@@ -2,5 +2,4 @@
 <use   name="RecoEgamma/EgammaTools"/>
 <use   name="RecoVertex/PrimaryVertexProducer"/>
 <use   name="TrackingTools/IPTools"/>
-<use   name="HWWValidation/Dictionaries"/>
 <flags   EDM_PLUGIN="1"/>
