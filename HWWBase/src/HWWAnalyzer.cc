@@ -1,27 +1,6 @@
 #include "DataFormats/Math/interface/LorentzVector.h"
-#include "HWWValidation/HWWBase/interface/EventMaker.h"
-#include "HWWValidation/HWWBase/interface/VertexMaker.h"
-#include "HWWValidation/HWWBase/interface/TrackMaker.h"
-#include "HWWValidation/HWWBase/interface/ElectronMaker.h"
-#include "HWWValidation/HWWBase/interface/MuonMaker.h"
-#include "HWWValidation/HWWBase/interface/PFJetMaker.h"
-#include "HWWValidation/HWWBase/interface/HypDilepMaker.h"
-#include "HWWValidation/HWWBase/interface/PFCandidateMaker.h"
-#include "HWWValidation/HWWBase/interface/PFElectronMaker.h"
-#include "HWWValidation/HWWBase/interface/PFElToElAssMaker.h"
-#include "HWWValidation/HWWBase/interface/GSFTrackMaker.h"
-#include "HWWValidation/HWWBase/interface/RecoConversionMaker.h"
-#include "HWWValidation/HWWBase/interface/RhoMaker.h"
-#include "HWWValidation/HWWBase/interface/PFMETMaker.h"
-#include "HWWValidation/HWWBase/interface/TrkMETMaker.h"
-#include "HWWValidation/HWWBase/interface/BTagMaker.h"
-#include "HWWValidation/HWWBase/interface/PileupJetIdAlgo.h"
-#include "HWWValidation/HWWBase/interface/MVAJetIdMaker.h"
 #include "HWWValidation/HWWBase/interface/HWWAnalyzer.h"
 #include "HWWValidation/HWWBase/interface/HWW.h"
-
-//#include "DQMServices/Core/interface/DQMStore.h"
-//#include "DQMServices/Core/interface/MonitorElement.h"
 
 
 HWWAnalyzer::HWWAnalyzer(const edm::ParameterSet& iConfig)
@@ -53,13 +32,16 @@ HWWAnalyzer::HWWAnalyzer(const edm::ParameterSet& iConfig)
   muonMVAEstimator = new MuonMVAEstimator();
   muonMVAEstimator->initialize( "MuonIso_BDTG_IsoRings", MuonMVAEstimator::kIsoRings, true, muonisoweights );
 
+  //DQMStore
+  //dbe_ = edm::Service<DQMStore>().operator->();
+
 }
 
 
 HWWAnalyzer::~HWWAnalyzer(){ 
 }
 
-// ------------ method called for each event  ------------
+// --- method called for each event  ------------
 void HWWAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup){
   
   using namespace HWWFunctions;
@@ -133,18 +115,8 @@ HWWAnalyzer::endJob()
 {
 
 //monitor.print();
-//monitor.makeHistograms();
+monitor.makeHistograms();
 
-}
-
-// ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
-void
-HWWAnalyzer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
-  //The following says we do not know what parameters are allowed so do no validation
-  // Please change this to state exactly what you do use, even if it is no parameters
-  edm::ParameterSetDescription desc;
-  desc.setUnknown();
-  descriptions.addDefault(desc);
 }
 
 DEFINE_FWK_MODULE(HWWAnalyzer);

@@ -1,9 +1,38 @@
-#include "HWWValidation/HWWBase/interface/monitor.h"
-#include "HWWValidation/HWWBase/interface/HWW.h"
 #include "TH1F.h"
 #include "TFile.h"
 #include <fstream>
-#include <string>
+#include "FWCore/ServiceRegistry/interface/Service.h"
+#include "HWWValidation/HWWBase/interface/monitor.h"
+#include "HWWValidation/HWWBase/interface/HWW.h"
+
+//DQM
+#include "DQMServices/Core/interface/DQMStore.h"
+#include "DQMServices/Core/interface/MonitorElement.h"
+
+void EventMonitor::hypo_monitor::makeHistograms() const
+{
+  DQMStore* dbe = edm::Service<DQMStore>().operator->();
+  dbe->cd();
+  //dbe->setCurrentFolder("Physics/HWW");
+  MonitorElement* hist[4];
+
+  float denom = 0.0;
+  float num = 0.0;
+  for (unsigned int i=0; i<4; i++){
+    hist[i] = dbe -> book1D(Form("cutflow_%s", HypothesisTypeName(i)), 
+		      	Form("Relative Efficiency %s", HypothesisTypeName(i)), counters.size(), 0, counters.size() );	
+    for (unsigned int j=0; j<counters.size(); ++j){
+      if(j==0) denom = counters[0].nevt[i];//first cut will have efficiency of 1.0
+      if(j>0)  denom = counters[j-1].nevt[i];//measure efficiency relative to previous cut
+      num = counters[j].nevt[i]; 
+      hist[i]->setBinLabel(j+1,counters[j].name.c_str(), 1);
+      if(denom==0) continue;
+      hist[i]->setBinContent(j+1,num/denom);
+      float error = sqrt( (num/pow(denom,2))*(1 - num/denom) ); //binomial error
+      hist[i]->setBinError(j+1,error);
+    }
+  }
+}
 
 EventMonitor::MonitorEventId::MonitorEventId(HWW& hww){
   run = HWWVal::evt_run();
@@ -27,8 +56,6 @@ EventMonitor::Entry::Entry()
     seen[i] = false;
   }
 }
-
-
 
 void EventMonitor::hypo_monitor::count(HWW& hww, HypothesisType type, const char* name, double weight)
 {
@@ -87,29 +114,5 @@ void EventMonitor::hypo_monitor::print() const
       cut_file << id->run << "\t" << id->lumi << "\t" << id->event <<"\n";
     }
     cut_file.close();
-  }
-}
-
-void EventMonitor::hypo_monitor::makeHistograms() const
-{
-  TH1F* hist[4];
-  TFile* outfile = new TFile("cutflow_hists.root", "RECREATE");
-  outfile->cd();
-  float denom = 0.0;
-  float num = 0.0;
-  for (unsigned int i=0; i<4; i++){
-    hist[i]  = new TH1F(Form("cutflow_%s", HypothesisTypeName(i)), 
-			Form("Relative Efficiency %s", HypothesisTypeName(i)), counters.size(), 0, counters.size() );	
-    for (unsigned int j=0; j<counters.size(); ++j){
-      if(j==0) denom = counters[0].nevt[i];//first cut will have efficiency of 1.0
-      if(j>0)  denom = counters[j-1].nevt[i];//measure efficiency relative to previous cut
-      num = counters[j].nevt[i]; 
-      hist[i]->GetXaxis()->SetBinLabel(j+1,counters[j].name.c_str());
-      if(denom==0) continue;
-      hist[i]->SetBinContent(j+1,num/denom);
-      float error = sqrt( (num/pow(denom,2))*(1 - num/denom) ); //binomial error
-      hist[i]->SetBinError(j+1,error);
-    }
-    hist[i]->Write();
   }
 }

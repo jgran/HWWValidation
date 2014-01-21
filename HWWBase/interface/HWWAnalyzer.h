@@ -13,22 +13,33 @@
 #include "HWWValidation/HWWBase/interface/MuonMVAEstimator.h"
 #include "HWWValidation/HWWBase/interface/monitor.h"
 
+#include "HWWValidation/HWWBase/interface/EventMaker.h"
 #include "HWWValidation/HWWBase/interface/VertexMaker.h"
+#include "HWWValidation/HWWBase/interface/TrackMaker.h"
+#include "HWWValidation/HWWBase/interface/ElectronMaker.h"
+#include "HWWValidation/HWWBase/interface/MuonMaker.h"
+#include "HWWValidation/HWWBase/interface/PFJetMaker.h"
+#include "HWWValidation/HWWBase/interface/HypDilepMaker.h"
+#include "HWWValidation/HWWBase/interface/PFCandidateMaker.h"
+#include "HWWValidation/HWWBase/interface/PFElectronMaker.h"
+#include "HWWValidation/HWWBase/interface/PFElToElAssMaker.h"
+#include "HWWValidation/HWWBase/interface/GSFTrackMaker.h"
+#include "HWWValidation/HWWBase/interface/RecoConversionMaker.h"
+#include "HWWValidation/HWWBase/interface/RhoMaker.h"
+#include "HWWValidation/HWWBase/interface/PFMETMaker.h"
+#include "HWWValidation/HWWBase/interface/TrkMETMaker.h"
+#include "HWWValidation/HWWBase/interface/BTagMaker.h"
+#include "HWWValidation/HWWBase/interface/PileupJetIdAlgo.h"
+#include "HWWValidation/HWWBase/interface/MVAJetIdMaker.h"
 
 //#include "DQMServices/Core/interface/DQMEDAnalyzer.h"
 
-
-//
-// class declaration
-//
 
 class HWWAnalyzer : public edm::EDAnalyzer {
 //class HWWAnalyzer : public DQMEDAnalyzer {
    public:
       explicit HWWAnalyzer(const edm::ParameterSet&);
       ~HWWAnalyzer();
-
-      static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 
    private:
       virtual void beginJob() ;
