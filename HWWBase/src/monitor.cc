@@ -1,5 +1,3 @@
-#include "TH1F.h"
-#include "TFile.h"
 #include <fstream>
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "HWWValidation/HWWBase/interface/monitor.h"
