@@ -23,7 +23,7 @@ ElectronMaker::ElectronMaker(const edm::ParameterSet& iConfig, edm::ConsumesColl
   TrackCollection_          = iCollector.consumes<reco::TrackCollection>(iConfig.getParameter<edm::InputTag>("trackInputTag"));
   GSFTrackCollection_       = iCollector.consumes<reco::GsfTrackCollection>(iConfig.getParameter<edm::InputTag>("gsftrksInputTag"));
   GSFElectron_              = iCollector.consumes<edm::View<reco::GsfElectron> >(iConfig.getParameter<edm::InputTag>("electronsInputTag"));
-  GSFElectronCollection_   = iCollector.consumes<reco::GsfElectronCollection>(iConfig.getParameter<edm::InputTag>("electronsInputTag"));
+  GSFElectronCollection_    = iCollector.consumes<reco::GsfElectronCollection>(iConfig.getParameter<edm::InputTag>("electronsInputTag"));
   PFCandidateCollection_    = iCollector.consumes<reco::PFCandidateCollection>(iConfig.getParameter<edm::InputTag>("pfCandsInputTag"));
   thePVCollection_          = iCollector.consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("primaryVertexInputTag"));
   BeamSpot_                 = iCollector.consumes<reco::BeamSpot>(iConfig.getParameter<edm::InputTag>("beamSpotTag"));
@@ -103,8 +103,6 @@ void ElectronMaker::SetVars(const edm::Event& iEvent, const edm::EventSetup& iSe
   edm::ESHandle<TrackerGeometry> theTrackerGeometry;
   iSetup.get<TrackerDigiGeometryRecord>().get(theTrackerGeometry);
 
-  // --- Get Input Collections --- //
-
   ////////////////
   // Get Tracks //
   ////////////////
@@ -145,6 +143,7 @@ void ElectronMaker::SetVars(const edm::Event& iEvent, const edm::EventSetup& iSe
   //////////////
   // PF Cands //
   //////////////
+
   iEvent.getByToken(PFCandidateCollection_, pfCand_h);
 
 
@@ -159,6 +158,7 @@ void ElectronMaker::SetVars(const edm::Event& iEvent, const edm::EventSetup& iSe
   ///////////////////////////
   // TransientTrackBuilder //
   ///////////////////////////
+
   ESHandle<TransientTrackBuilder> theTTBuilder;
   iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder",theTTBuilder);
 
@@ -168,7 +168,6 @@ void ElectronMaker::SetVars(const edm::Event& iEvent, const edm::EventSetup& iSe
   ////////////////////////////////////////////////
 
   EcalClusterLazyTools* clusterTools_;
-  //if ( clusterTools_ ) delete clusterTools_;
   clusterTools_ = new EcalClusterLazyTools( iEvent, iSetup, InputTag("reducedEcalRecHitsEB"), InputTag("reducedEcalRecHitsEE") );
 
 
@@ -180,13 +179,13 @@ void ElectronMaker::SetVars(const edm::Event& iEvent, const edm::EventSetup& iSe
   iEvent.getByToken(BeamSpot_, beamspot_h);
   const reco::BeamSpot &beamSpotreco = *(beamspot_h.product());
 
-  // --- Fill --- //
+
+
 
   /////////////////////////
   // Loop Over Electrons //
   /////////////////////////
 
-  //remove *evt_nels       = els_h->size();
   double mass     = 0.000510998918;
   size_t elsIndex = 0;
   for( View<GsfElectron>::const_iterator el = els_h->begin(); el != els_h->end(); el++, elsIndex++ ) {
@@ -197,8 +196,6 @@ void ElectronMaker::SetVars(const edm::Event& iEvent, const edm::EventSetup& iSe
 
       const Track*                 el_track         = (const Track*)(el->gsfTrack().get());
       const RefToBase<GsfElectron> gsfElRef         = els_h->refAt(elsIndex);    
-
-      //const TrackRef               ctfTkRef         = el->closestCtfTrackRef();
       const TrackRef               ctfTkRef         = el->closestTrack();
       const GsfTrackRef            gsfTkRef         = el->gsfTrack();
       const VertexCollection*      vertexCollection = vertexHandle.product();
@@ -230,6 +227,7 @@ void ElectronMaker::SetVars(const edm::Event& iEvent, const edm::EventSetup& iSe
       if ( el->isEERingGap() ) fiducialityMask |= 1 << ISEERINGGAP;
       if ( el->isGap()       ) fiducialityMask |= 1 << ISGAP;
 
+
       ///////////////////////////
       // Corrections & Seeding //
       ///////////////////////////
@@ -240,6 +238,7 @@ void ElectronMaker::SetVars(const edm::Event& iEvent, const edm::EventSetup& iSe
       if ( el->ecalDrivenSeed()               ) electronTypeMask |= 1 << ISECALDRIVEN;
       if ( el->passingCutBasedPreselection()  ) electronTypeMask |= 1 << ISCUTPRESELECTED;
       if ( el->passingMvaPreselection()       ) electronTypeMask |= 1 << ISMVAPRESELECTED;
+
 
       /////////////////////
       // Lorentz Vectors //
@@ -253,16 +252,18 @@ void ElectronMaker::SetVars(const edm::Event& iEvent, const edm::EventSetup& iSe
       p4In.SetXYZT (   p3In.x() , p3In.y() , p3In.z() , sqrt( mass*mass + p3In.R() *p3In.R()  ) );
       p4Out.SetXYZT(   p3Out.x(), p3Out.y(), p3Out.z(), sqrt( mass*mass + p3Out.R()*p3Out.R() ) );
 
+
       //////////////
       // Electron //
       //////////////
 
       HWWVal::els_fiduciality()        .push_back( fiducialityMask                                 );
       HWWVal::els_type()               .push_back( electronTypeMask                                );
-      HWWVal::els_ecalEnergy()         .push_back( el->correctedEcalEnergy()                       );  // energy corrections and uncertainties
+      HWWVal::els_ecalEnergy()         .push_back( el->correctedEcalEnergy()                       ); 
       HWWVal::els_p4()                 .push_back( LorentzVector( el->p4() )                       );
       HWWVal::els_trk_p4()             .push_back( trk_p4                                          );
       HWWVal::els_vertex_p4()          .push_back( LorentzVector(el->vx(), el->vy(), el->vz(), 0.) );
+
 
       ///////////////
       // Isolation //
@@ -273,6 +274,7 @@ void ElectronMaker::SetVars(const edm::Event& iEvent, const edm::EventSetup& iSe
       HWWVal::els_tkIso()                 .push_back( el->dr03TkSumPt()                          );
       HWWVal::els_ecalIso04()             .push_back( el->dr04EcalRecHitSumEt()                  );
       HWWVal::els_hcalIso04()             .push_back( el->dr04HcalTowerSumEt()                   );
+
 
       //////////////////
       // PF Isolation //
@@ -293,6 +295,7 @@ void ElectronMaker::SetVars(const edm::Event& iEvent, const edm::EventSetup& iSe
           float pfiso_ch = 0.0;
           float pfiso_em = 0.0;
           float pfiso_nh = 0.0;
+
           PFIsolation2012(*el, vertexCollection, firstGoodVertexIdx, 0.3, pfiso_ch, pfiso_em, pfiso_nh);
           HWWVal::els_iso03_pf2012_ch() .push_back( pfiso_ch );
           HWWVal::els_iso03_pf2012_em() .push_back( pfiso_em );
@@ -343,7 +346,6 @@ void ElectronMaker::SetVars(const edm::Event& iEvent, const edm::EventSetup& iSe
 
       if( el->superCluster()->seed().isAvailable() ) { 
 
-          //
           const BasicCluster&  clRef              = *(el->superCluster()->seed());
           const vector<float>& lcovs              = clusterTools_->localCovariances(clRef);                    // get the local covariances computed in a 5x5 around the seed
           const vector<float>  localCovariancesSC = clusterTools_->scLocalCovariances(*(el->superCluster()));  // get the local covariances computed using all crystals in the SC
@@ -411,11 +413,11 @@ void ElectronMaker::SetVars(const edm::Event& iEvent, const edm::EventSetup& iSe
   
       if ( firstGoodVertex!=vertexCollection->end() ) {
           Measurement1D ip3D_regular = IPTools::absoluteImpactParameter3D(tt, *firstGoodVertex).second;
-          //
+
           HWWVal::els_ip3d()      . push_back( ip3D_regular.value() );
           HWWVal::els_ip3derr()   . push_back( ip3D_regular.error() );
       } else {
-          //
+
           HWWVal::els_ip3d()      . push_back( -999. );
           HWWVal::els_ip3derr()   . push_back( -999. );
       }
@@ -427,7 +429,7 @@ void ElectronMaker::SetVars(const edm::Event& iEvent, const edm::EventSetup& iSe
 
       const HitPattern& p_inner = el_track->trackerExpectedHitsInner(); 
 
-      HWWVal::els_exp_innerlayers() . push_back(p_inner.numberOfHits());
+      HWWVal::els_exp_innerlayers().push_back(p_inner.numberOfHits());
 
 
       /////////////////
@@ -448,13 +450,11 @@ void ElectronMaker::SetVars(const edm::Event& iEvent, const edm::EventSetup& iSe
 
       for(unsigned int i_conv = 0; i_conv < v_convInfos.size(); i_conv++) {
     
-          //
           math::XYZPoint convPoint  = v_convInfos.at(i_conv).pointOfConversion();
           float          convPointX = isfinite(convPoint.x()) ? convPoint.x() : -9999.;
           float          convPointY = isfinite(convPoint.y()) ? convPoint.y() : -9999.;
           float          convPointZ = isfinite(convPoint.z()) ? convPoint.z() : -9999.;
 
-          //
           v_dist        .push_back( isfinite(v_convInfos.at(i_conv).dist()) ? v_convInfos.at(i_conv).dist() : -9999.  );
           v_dcot        .push_back( v_convInfos.at(i_conv).dcot()                                                     );
           v_rad         .push_back( v_convInfos.at(i_conv).radiusOfConversion()                                       );
@@ -462,7 +462,6 @@ void ElectronMaker::SetVars(const edm::Event& iEvent, const edm::EventSetup& iSe
           v_flag        .push_back( v_convInfos.at(i_conv).flag()                                                     );
           v_pos_p4      .push_back( LorentzVector(convPointX, convPointY, convPointZ, 0)                              );
 
-          //
           if( v_convInfos.at(i_conv).conversionPartnerCtfTk().isNonnull() ) {
               v_tkidx.push_back(v_convInfos.at(i_conv).conversionPartnerCtfTk().key());
           }
@@ -481,32 +480,32 @@ void ElectronMaker::SetVars(const edm::Event& iEvent, const edm::EventSetup& iSe
       } // end for loop
 
 
-      //
       ConversionInfo convInfo   = convFinder.getConversionInfo( *el, tracks_h, gsftracks_h, evt_bField );
 
-      //
-      HWWVal::els_conv_dist()        . push_back( isfinite(convInfo.dist()) ? convInfo.dist() : -9999. );
-      HWWVal::els_conv_dcot()        . push_back( convInfo.dcot()                                      );
+      HWWVal::els_conv_dist().push_back( isfinite(convInfo.dist()) ? convInfo.dist() : -9999. );
+      HWWVal::els_conv_dcot().push_back( convInfo.dcot()                                      );
 
 
-      //////////////////////////////
+      //////////////////////////////////////////////
       // Flag For Vertex Fit Conversion Rejection //
-      //////////////////////////////
+      //////////////////////////////////////////////
 
       Handle<ConversionCollection> convs_h;
       iEvent.getByToken(ConversionCollection_, convs_h);
+
 
       //////////////////////////////
       // Old Conversion Rejection //
       //////////////////////////////
 
-
       HWWVal::els_conv_old_dist()        . push_back( isfinite(el->convDist())   ? el->convDist()   : -9999. );
       HWWVal::els_conv_old_dcot()        . push_back( isfinite(el->convDcot())   ? el->convDcot()   : -9999. );
+
 
       //////////////////////
       // 2012 Electron ID //
       //////////////////////
+
       GsfElectronRef ele(els_coll_h, elsIndex);
 
   } // end Loop on Electrons

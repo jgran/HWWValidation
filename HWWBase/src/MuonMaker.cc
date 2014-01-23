@@ -66,9 +66,6 @@ void MuonMaker::SetVars(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   HWWVal::Load_mus_isoR03_pf_NeutralHadronEt();
   HWWVal::Load_mus_isoR03_pf_PhotonEt();
   HWWVal::Load_mus_isoR03_pf_PUPt();
-  HWWVal::Load_mus_ip3d();
-  HWWVal::Load_mus_ip3derr();
-
 
 
   ///////////////
@@ -161,7 +158,7 @@ void MuonMaker::SetVars(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     // Muon Quality //
     //////////////////
 
-    HWWVal::mus_trkKink()             .push_back( quality.trkKink             );
+    HWWVal::mus_trkKink()           .push_back( quality.trkKink             );
 
 
 
@@ -256,7 +253,7 @@ void MuonMaker::SetVars(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     HWWVal::mus_chi2()               .push_back( siTrack.isNonnull()     ? siTrack->chi2()                                      : -9999.        );
     HWWVal::mus_ndof()               .push_back( siTrack.isNonnull()     ? siTrack->ndof()                                      : -9999.        );
     HWWVal::mus_validHits()          .push_back( siTrack.isNonnull()     ? siTrack->numberOfValidHits()                         : -9999         );
-    HWWVal::mus_ptErr()              .push_back( siTrack.isNonnull()     ? siTrack->ptError()                                   :  -9999.       );
+    HWWVal::mus_ptErr()              .push_back( siTrack.isNonnull()     ? siTrack->ptError()                                   : -9999.        );
 
 
     ////////
@@ -270,24 +267,6 @@ void MuonMaker::SetVars(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     HWWVal::mus_isoR03_pf_PhotonEt()                        .push_back( pfStructR03.sumPhotonEt                     );
     HWWVal::mus_isoR03_pf_PUPt()                            .push_back( pfStructR03.sumPUPt                         );
 
-
-    ///////////
-    // IP 3D //
-    ///////////
-
-    if ( siTrack.isNonnull() && firstGoodVertex != vertexCollection->end() ) {
-      
-      //TransientTrack tt       = theTTBuilder->build( siTrack );
-      //Measurement1D ip3D      = IPTools::absoluteImpactParameter3D( tt, *firstGoodVertex ).second;
-      //HWWVal::mus_ip3d         -> push_back( ip3D.value()                    );
-      //HWWVal::mus_ip3derr      -> push_back( ip3D.error()                    );
-
-    } else {
-
-      HWWVal::mus_ip3d()         .push_back( -9999. );
-      HWWVal::mus_ip3derr()      .push_back( -9999. );
-
-    } 
 
     muonIndex++;
 

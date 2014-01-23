@@ -39,7 +39,7 @@ void VertexMaker::SetVars(const edm::Event& iEvent, const edm::EventSetup& iSetu
     double sumpt = 0;
     for (reco::Vertex::trackRef_iterator i = vtx->tracks_begin(); i != vtx->tracks_end(); ++i) sumpt += (*i)->pt();
 
-    HWWVal::vtxs_sumpt()		 .push_back(sumpt);
+    HWWVal::vtxs_sumpt().push_back(sumpt);
 
     std::vector<float> temp_vec;
     temp_vec.clear();

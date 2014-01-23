@@ -53,9 +53,9 @@ void RecoConversionMaker::SetVars(const edm::Event& iEvent, const edm::EventSetu
     //quality 
     int qualityMask = 0;
     for(int iM = 0; iM < 32; ++iM) {
-      if(it->quality((Conversion::ConversionQuality)iM))
-	qualityMask |= 1 << iM;
+      if(it->quality((Conversion::ConversionQuality)iM)) qualityMask |= 1 << iM;
     }
+
     HWWVal::convs_quality().push_back(qualityMask);
     
     vector<edm::RefToBase<reco::Track> > v_temp_trks = it->tracks();
@@ -73,10 +73,10 @@ void RecoConversionMaker::SetVars(const edm::Event& iEvent, const edm::EventSetu
     v_temp_out.clear();
     v_temp_outalgo.clear();
     vector<uint8_t> v_temp_nhits = it->nHitsBeforeVtx();
-    for(unsigned int i = 0; i < v_temp_nhits.size(); i++) 
-      v_temp_out.push_back(v_temp_nhits.at(i));
-    HWWVal::convs_nHitsBeforeVtx().push_back(v_temp_out);
 
+    for(unsigned int i = 0; i < v_temp_nhits.size(); i++) v_temp_out.push_back(v_temp_nhits.at(i));
+
+    HWWVal::convs_nHitsBeforeVtx().push_back(v_temp_out);
     HWWVal::convs_ndof().push_back(it->conversionVertex().ndof() );
     HWWVal::convs_chi2().push_back(it->conversionVertex().chi2() );
     HWWVal::convs_dl().push_back(lxy(beamSpotH->position(), *it));

@@ -17,7 +17,7 @@ using reco::TrackBase;
 
 TrackMaker::TrackMaker(const edm::ParameterSet& iConfig, edm::ConsumesCollector iCollector){
 
-  TrackCollection_       = iCollector.consumes<edm::View<reco::Track> >(iConfig.getParameter<edm::InputTag>("trackInputTag"));
+  TrackCollection_ = iCollector.consumes<edm::View<reco::Track> >(iConfig.getParameter<edm::InputTag>("trackInputTag"));
 
 }
 
@@ -44,8 +44,6 @@ void TrackMaker::SetVars(const edm::Event& iEvent, const edm::EventSetup& iSetup
   // Get Tracks //
   ////////////////
 
-  //Handle<View<reco::Track> > track_h;
-  //iEvent.getByLabel("generalTracks", track_h);
   Handle<edm::View<reco::Track> > track_h;
   iEvent.getByToken(TrackCollection_, track_h); 
   if( !track_h.isValid() ) {
@@ -138,51 +136,47 @@ void TrackMaker::SetVars(const edm::Event& iEvent, const edm::EventSetup& iSetup
       typedef Ref<edmNew::DetSetVector<SiPixelCluster>, SiPixelCluster > pixel_ClusterRef;
 
 
-      for(trackingRecHit_iterator ihit = i->recHitsBegin(); 
-	  ihit != i->recHitsEnd(); ++ihit){
-	if(i_layer > 1) break;
-	int k = ihit-i->recHitsBegin();
-	hit_pattern = pattern.getHitPattern(k);
-	valid_hit = pattern.validHitFilter(hit_pattern);
-	pixel_hit = pattern.pixelHitFilter(hit_pattern);
-	strip_hit = pattern.stripHitFilter(hit_pattern);
-	if(!valid_hit) continue;
-	if(pixel_hit){
-	  const SiPixelRecHit *pixel_hit_cast = dynamic_cast<const SiPixelRecHit*>(&(**ihit));
-	  assert(pixel_hit_cast != 0);
-	  if(i_layer == 1){
-	    i_layer++;
+      for(trackingRecHit_iterator ihit = i->recHitsBegin(); ihit != i->recHitsEnd(); ++ihit){
+        if(i_layer > 1) break;
+        int k = ihit-i->recHitsBegin();
+        hit_pattern = pattern.getHitPattern(k);
+        valid_hit = pattern.validHitFilter(hit_pattern);
+        pixel_hit = pattern.pixelHitFilter(hit_pattern);
+        strip_hit = pattern.stripHitFilter(hit_pattern);
+        if(!valid_hit) continue;
+        if(pixel_hit){
+          const SiPixelRecHit *pixel_hit_cast = dynamic_cast<const SiPixelRecHit*>(&(**ihit));
+          assert(pixel_hit_cast != 0);
+          if(i_layer == 1){
+            i_layer++;
 
-	  }
-	}
-	else if (strip_hit){
-	  const SiStripRecHit1D *strip_hit_cast = dynamic_cast<const SiStripRecHit1D*>(&(**ihit));
-	  const SiStripRecHit2D *strip2d_hit_cast = dynamic_cast<const SiStripRecHit2D*>(&(**ihit));
-	  ClusterRef cluster;
-	  if(strip_hit_cast == NULL)
-	    cluster = strip2d_hit_cast->cluster();
-	  else 
-	    cluster = strip_hit_cast->cluster();
-	  int cluster_size   = (int)cluster->amplitudes().size();
-	  int cluster_charge = 0;
-	  double   cluster_weight_size = 0.0;
-	  int max_strip_i = std::max_element(cluster->amplitudes().begin(),cluster->amplitudes().end())-cluster->amplitudes().begin();
-	  for(int istrip = 0; istrip < cluster_size; istrip++){
-	    cluster_charge += (int)cluster->amplitudes().at(istrip);
-	    cluster_weight_size += (istrip-max_strip_i)*(istrip-max_strip_i)*(cluster->amplitudes().at(istrip));
-	  }
-	  cluster_weight_size = sqrt(cluster_weight_size/cluster_charge);
-	  if(i_layer == 1){
-	    i_layer++;
-	  }
-	}
+          }
+        }
+        else if (strip_hit){
+          const SiStripRecHit1D *strip_hit_cast = dynamic_cast<const SiStripRecHit1D*>(&(**ihit));
+          const SiStripRecHit2D *strip2d_hit_cast = dynamic_cast<const SiStripRecHit2D*>(&(**ihit));
+          ClusterRef cluster;
+          if(strip_hit_cast == NULL)
+            cluster = strip2d_hit_cast->cluster();
+          else 
+            cluster = strip_hit_cast->cluster();
+          int cluster_size   = (int)cluster->amplitudes().size();
+          int cluster_charge = 0;
+          double   cluster_weight_size = 0.0;
+          int max_strip_i = std::max_element(cluster->amplitudes().begin(),cluster->amplitudes().end())-cluster->amplitudes().begin();
+          for(int istrip = 0; istrip < cluster_size; istrip++){
+            cluster_charge += (int)cluster->amplitudes().at(istrip);
+            cluster_weight_size += (istrip-max_strip_i)*(istrip-max_strip_i)*(cluster->amplitudes().at(istrip));
+          }
+          cluster_weight_size = sqrt(cluster_weight_size/cluster_charge);
+          if(i_layer == 1){
+            i_layer++;
+          }
+        }
       }
-      
-    
-
     }
     
-     HWWVal::trks_nlayers()    .push_back( i->hitPattern().trackerLayersWithMeasurement() );
+    HWWVal::trks_nlayers()    .push_back( i->hitPattern().trackerLayersWithMeasurement() );
 
   } // End loop on tracks
 

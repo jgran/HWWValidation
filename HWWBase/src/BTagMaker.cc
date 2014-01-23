@@ -18,19 +18,20 @@ edm::RefToBase<reco::Jet> getReferenceJetRef(const edm::View<reco::Jet>* refJets
 
   double mindR = 0.01;
   edm::RefToBase<reco::Jet> retRef = edm::RefToBase<reco::Jet>();
-  for(edm::View<reco::Jet>::const_iterator it = refJets->begin();  
-      it!= refJets->end(); it++) {
+
+  for(edm::View<reco::Jet>::const_iterator it = refJets->begin(); it!= refJets->end(); it++) {
 
     double dR = ROOT::Math::VectorUtil::DeltaR(it->p4(), jet->p4());
+
     if(dR < mindR) {
       mindR = dR;
       unsigned int idx = it - refJets->begin();
       retRef = refJets->refAt(idx);
     }
+
   }
 
-  if (mindR == 0.01)
-       std::cout << "\n didn't find a match!\n";
+  if (mindR == 0.01) std::cout << "\n didn't find a match!\n";
 
   if(!retRef.isNonnull())
     throw cms::Exception("Reference jet not found in BTagMaker");
@@ -53,8 +54,8 @@ void BTagMaker::SetVars(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   edm::Handle<reco::JetFloatAssociation::Container> trackCountingHighEffBJetTags;
   iEvent.getByToken(BJetTags_, trackCountingHighEffBJetTags);
   
-  for( edm::View<reco::Jet>::const_iterator it =  CaloJets->begin();
-	   it != CaloJets->end(); it++ ) {
+  for( edm::View<reco::Jet>::const_iterator it =  CaloJets->begin(); it != CaloJets->end(); it++ ) {
+
     edm::RefToBase<reco::Jet> jetRef   = getReferenceJetRef(referenceCaloJets, &(*it));
 
     HWWVal::pfjets_trackCountingHighEffBJetTag()  .push_back( CommonUtils::isinf((*trackCountingHighEffBJetTags)[jetRef]) 

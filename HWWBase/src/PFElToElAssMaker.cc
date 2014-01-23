@@ -7,46 +7,47 @@ typedef math::XYZTLorentzVectorF LorentzVector;
 
 void PFElToElAssMaker::SetVars(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 
-     using namespace edm;
-     using std::vector;
+  using namespace edm;
+  using std::vector;
 
-     HWWVal::Load_pfels_elsidx();
+  HWWVal::Load_pfels_elsidx();
 
-     vector<LorentzVector> *pfels_p4_h = new vector<LorentzVector>;
-     *pfels_p4_h = HWWVal::pfels_p4();
+  vector<LorentzVector> *pfels_p4_h = new vector<LorentzVector>;
+  *pfels_p4_h = HWWVal::pfels_p4();
 
-     vector<LorentzVector> *els_p4_h = new vector<LorentzVector>;
-     *els_p4_h = HWWVal::els_p4();
-     
-     //loop over reco electrons and find the closest particle flow electron
-     for (vector<LorentzVector>::const_iterator pfels_it = pfels_p4_h->begin(); pfels_it != pfels_p4_h->end(); pfels_it++)
-     {       
-	  double pfel_eta = pfels_it->Eta();
-	  double pfel_phi = pfels_it->Phi();
+  vector<LorentzVector> *els_p4_h = new vector<LorentzVector>;
+  *els_p4_h = HWWVal::els_p4();
+  
+  //loop over reco electrons and find the closest particle flow electron
+  for (vector<LorentzVector>::const_iterator pfels_it = pfels_p4_h->begin(); pfels_it != pfels_p4_h->end(); pfels_it++) {       
+
+    double pfel_eta = pfels_it->Eta();
+    double pfel_phi = pfels_it->Phi();
        
-	  double minDR = 9999.;
-	  unsigned int i = 0;
-	  int index = -1; 
+    double minDR = 9999.;
+    unsigned int i = 0;
+    int index = -1; 
 
-	  for (vector<LorentzVector>::const_iterator els_it = els_p4_h->begin(); els_it != els_p4_h->end(); els_it++, i++) {
-	 
-	       double el_eta = els_it->Eta();
-	       double el_phi = els_it->Phi();
+    for (vector<LorentzVector>::const_iterator els_it = els_p4_h->begin(); els_it != els_p4_h->end(); els_it++, i++) {
 
-	       double dR = deltaR(pfel_eta, pfel_phi, el_eta, el_phi);
+      double el_eta = els_it->Eta();
+      double el_phi = els_it->Phi();
+      double dR = deltaR(pfel_eta, pfel_phi, el_eta, el_phi);
 
-	       if(dR < minDR) {
-		    minDR = dR;
-		    index = i;
-	       }
-	  }
+      if(dR < minDR) {
+        minDR = dR;
+        index = i;
+      }
 
-	  if(minDR > 0.1) {
-	       minDR = -9999.;
-	       index = -1;
-	  }
+    }
 
-	  // fill vector
-	  HWWVal::pfels_elsidx().push_back(index);
-     }
+    if(minDR > 0.1) {
+      minDR = -9999.;
+      index = -1;
+    }
+
+    HWWVal::pfels_elsidx().push_back(index);
+
+  }
+
 }
