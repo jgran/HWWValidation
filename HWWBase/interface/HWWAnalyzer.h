@@ -4,9 +4,11 @@
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/Run.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Utilities/interface/InputTag.h"
+#include "FWCore/ServiceRegistry/interface/Service.h"
 
 #include "HWWValidation/HWWBase/interface/analysisSelections.h"
 #include "HWWValidation/HWWBase/interface/EGammaMvaEleEstimator.h"
@@ -32,19 +34,25 @@
 #include "HWWValidation/HWWBase/interface/PileupJetIdAlgo.h"
 #include "HWWValidation/HWWBase/interface/MVAJetIdMaker.h"
 
-//#include "DQMServices/Core/interface/DQMEDAnalyzer.h"
+#include <DQMServices/Core/interface/DQMStore.h>
+#include <DQMServices/Core/interface/MonitorElement.h>
+#include <DQMServices/Core/interface/DQMEDAnalyzer.h>
 
 
-class HWWAnalyzer : public edm::EDAnalyzer {
-//class HWWAnalyzer : public DQMEDAnalyzer {
+class HWWAnalyzer : public DQMEDAnalyzer {
+
    public:
-      explicit HWWAnalyzer(const edm::ParameterSet&);
-      ~HWWAnalyzer();
+
+      HWWAnalyzer(const edm::ParameterSet&);
+      virtual ~HWWAnalyzer();
+
+   protected:
+
+      void analyze(const edm::Event&, const edm::EventSetup&);
+      void bookHistograms(DQMStore::IBooker &, edm::Run const &, edm::EventSetup const &) override;
+      void endLuminosityBlock(const edm::LuminosityBlock& l, const edm::EventSetup& c);
 
    private:
-      virtual void beginJob() ;
-      virtual void analyze(const edm::Event&, const edm::EventSetup&);
-      virtual void endJob() ;
 
       EGammaMvaEleEstimator* egammaMvaEleEstimator;
       MuonMVAEstimator* muonMVAEstimator;
@@ -68,6 +76,13 @@ class HWWAnalyzer : public edm::EDAnalyzer {
       TrkMETMaker         trkMETMaker;
       BTagMaker           bTagMaker;
       MVAJetIdMaker       mvaJetIdMaker;
+
+      MonitorElement* cutflow_mm;
+      MonitorElement* cutflow_ee;
+      MonitorElement* cutflow_em;
+      MonitorElement* cutflow_me;
+
+      void FillHistograms();
 
 };
 
