@@ -1,42 +1,11 @@
 #include <fstream>
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "HWWValidation/HWWBase/interface/monitor.h"
-#include "HWWValidation/HWWBase/interface/HWW.h"
 
 //DQM
 #include "DQMServices/Core/interface/DQMStore.h"
 #include "DQMServices/Core/interface/MonitorElement.h"
 
-void EventMonitor::hypo_monitor::makeHistograms() const
-{
-  DQMStore* dbe = edm::Service<DQMStore>().operator->();
-  dbe->cd();
-  //dbe->setCurrentFolder("Physics/HWW");
-  MonitorElement* hist[4];
-
-  float denom = 0.0;
-  float num = 0.0;
-  for (unsigned int i=0; i<4; i++){
-    hist[i] = dbe -> book1D(Form("cutflow_%s", HypothesisTypeName(i)), 
-		      	Form("Relative Efficiency %s", HypothesisTypeName(i)), counters.size(), 0, counters.size() );	
-    for (unsigned int j=0; j<counters.size(); ++j){
-      if(j==0) denom = counters[0].nevt[i];//first cut will have efficiency of 1.0
-      if(j>0)  denom = counters[j-1].nevt[i];//measure efficiency relative to previous cut
-      num = counters[j].nevt[i]; 
-      hist[i]->setBinLabel(j+1,counters[j].name.c_str(), 1);
-      if(denom==0) continue;
-      hist[i]->setBinContent(j+1,num/denom);
-      float error = sqrt( (num/pow(denom,2))*(1 - num/denom) ); //binomial error
-      hist[i]->setBinError(j+1,error);
-    }
-  }
-}
-
-EventMonitor::MonitorEventId::MonitorEventId(HWW& hww){
-  run = HWWVal::evt_run();
-  event = HWWVal::evt_event();
-  lumi = HWWVal::evt_lumiBlock();
-}
 
 EventMonitor::MonitorEventId::MonitorEventId(){
   run = 0;
@@ -55,7 +24,7 @@ EventMonitor::Entry::Entry()
   }
 }
 
-void EventMonitor::hypo_monitor::count(HWW& hww, HypothesisType type, const char* name, double weight)
+void EventMonitor::hypo_monitor::count(HypothesisType type, const char* name, double weight)
 {
   std::vector<EventMonitor::Entry>::iterator itr = counters.begin();
   while (itr != counters.end() && itr->name != name) itr++;
@@ -67,7 +36,7 @@ void EventMonitor::hypo_monitor::count(HWW& hww, HypothesisType type, const char
   } else {
     entry = &*itr;
   }
-  EventMonitor::MonitorEventId id(hww);
+  EventMonitor::MonitorEventId id;
   entry->nhyp[type]++;
   entry->nhyp[ALL]++;
   if (id != entry->lastEvent){
@@ -88,16 +57,16 @@ void EventMonitor::hypo_monitor::print() const
   ofstream out_file; out_file.open("cutflow.txt");
   for ( unsigned int i=0; i<counters.size(); ++i ){
 
-    if( (counters[i].name).compare("njets == 0"     ) == 0) out_file << "-------------------------" << endl;
-    if( (counters[i].name).compare("njets == 1"     ) == 0) out_file << "-------------------------" << endl;
-    if( (counters[i].name).compare("njets == 2 or 3") == 0) out_file << "-------------------------" << endl;
+    if( (counters[i].name).compare("njets == 0"     ) == 0) out_file << "-------------------------" << std::endl;
+    if( (counters[i].name).compare("njets == 1"     ) == 0) out_file << "-------------------------" << std::endl;
+    if( (counters[i].name).compare("njets == 2 or 3") == 0) out_file << "-------------------------" << std::endl;
     out_file << Form("%-40s \tnevts: %u/%u/%u/%u/%u", counters[i].name.c_str(),
 		      counters[i].nevt[MM],counters[i].nevt[EE],counters[i].nevt[EM],counters[i].nevt[ME],counters[i].nevt[ALL]) 	      
 	      << std::endl;
 
-    if( (counters[i].name).compare("njets == 0"     ) == 0) std::cout << "-------------------------" << endl;
-    if( (counters[i].name).compare("njets == 1"     ) == 0) std::cout << "-------------------------" << endl;
-    if( (counters[i].name).compare("njets == 2 or 3") == 0) std::cout << "-------------------------" << endl;
+    if( (counters[i].name).compare("njets == 0"     ) == 0) std::cout << "-------------------------" << std::endl;
+    if( (counters[i].name).compare("njets == 1"     ) == 0) std::cout << "-------------------------" << std::endl;
+    if( (counters[i].name).compare("njets == 2 or 3") == 0) std::cout << "-------------------------" << std::endl;
     std::cout << Form("%-40s \tnevts: %u/%u/%u/%u/%u", counters[i].name.c_str(),
 		      counters[i].nevt[MM],counters[i].nevt[EE],counters[i].nevt[EM],counters[i].nevt[ME],counters[i].nevt[ALL]) 	      
 	      << std::endl;

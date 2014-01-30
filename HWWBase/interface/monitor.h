@@ -6,7 +6,6 @@
 
 using namespace HWWFunctions;
 
-class HWW;
 
 class EventMonitor
 {
@@ -14,7 +13,6 @@ public:
 
   struct MonitorEventId { 
     unsigned long int run, event, lumi; 
-    MonitorEventId(HWW&);
     MonitorEventId();
     bool operator < (const MonitorEventId& id) const{
       if (run != id.run) return run < id.run;
@@ -43,9 +41,8 @@ public:
 
   struct hypo_monitor{
     std::vector<EventMonitor::Entry> counters;
-    void count(HWW&, HypothesisType type, const char* name, double weight=1.0);
+    void count(HypothesisType type, const char* name, double weight=1.0);
     void print() const;
-    void makeHistograms() const;
     unsigned int nEvtProcessed;
     bool keepEventList;
     hypo_monitor(bool iKeepEventList=true):nEvtProcessed(0),keepEventList(iKeepEventList){}

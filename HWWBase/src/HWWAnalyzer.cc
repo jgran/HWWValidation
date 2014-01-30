@@ -50,10 +50,10 @@ void HWWAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
   monitor.counters.clear();
 
   //count total events
-  monitor.count(GetHWW(), MM, "total events", 1.0);
-  monitor.count(GetHWW(), EE, "total events", 1.0);
-  monitor.count(GetHWW(), EM, "total events", 1.0);
-  monitor.count(GetHWW(), ME, "total events", 1.0);
+  monitor.count(MM, "total events", 1.0);
+  monitor.count(EE, "total events", 1.0);
+  monitor.count(EM, "total events", 1.0);
+  monitor.count(ME, "total events", 1.0);
 
   //get variables
   eventMaker    .SetVars(iEvent, iSetup);
