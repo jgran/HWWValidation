@@ -118,8 +118,8 @@ void MuonMVAEstimator::initialize( std::string methodName,
   
   //Check number of weight files given
   if (fNMVABins != weightsfiles.size() ) {
-    std::cout << "Error: Expected Number of bins = " << fNMVABins << " does not equal to weightsfiles.size() = " 
-              << weightsfiles.size() << std::endl;
+    edm::LogError("InvalidInput") << "Error: Expected Number of bins = " << fNMVABins << " does not equal to weightsfiles.size() = " 
+                                  << weightsfiles.size();
     assert(fNMVABins == weightsfiles.size());
   }
 
@@ -215,15 +215,8 @@ void MuonMVAEstimator::initialize( std::string methodName,
     }
 		
     tmpTMVAReader->BookMVA(fMethodname , weightsfiles[i]);
-/*
-    std::cout << "MVABin " << i << " : MethodName = " << fMethodname 
-              << " , type == " << type << " , "
-              << "Load weights file : " << weightsfiles[i] 
-              << std::endl;
-*/
     fTMVAReader.push_back(tmpTMVAReader);
   }
-  //std::cout << "Muon ID MVA Completed\n";
 }
 
 
@@ -269,7 +262,7 @@ unsigned int MuonMVAEstimator::GetMVABin( double eta, double pt, Bool_t isGlobal
       bin = 4;
     }
     else {
-      cout << "Warning: Muon is not a tracker muon. Such muons are not supported. \n";
+      edm::LogWarning("NotTrackerMuon") << "Warning: Muon is not a tracker muon. Such muons are not supported.";
       bin = 0;
     }
   }
@@ -314,7 +307,7 @@ Double_t MuonMVAEstimator::mvaValue_Iso(	Double_t Pt,
 											Bool_t printDebug) {
 
 			if (!fisInitialized) { 
-				std::cout << "Error: MuonMVAEstimator not properly initialized.\n"; 
+				edm::LogError("NotInitialized") << "Error: MuonMVAEstimator not properly initialized."; 
 				return -9999;
 			}
 
@@ -338,27 +331,26 @@ Double_t MuonMVAEstimator::mvaValue_Iso(	Double_t Pt,
 			Double_t mva = fTMVAReader[GetMVABin(Eta,Pt,isGlobalMuon,isTrackerMuon)]->EvaluateMVA(fMethodname);
 
 			if(printDebug) {
-				cout 	<< " *** Inside the class fMethodname " << fMethodname << " fMVAType " << fMVAType << endl;
-				cout  	<< "ChargedIso ( 0.0 | 0.1 | 0.2 | 0.3 | 0.4 | 0.5 ): " 
+		    LogDebug("MuonMVAEstimator") << " *** Inside the class fMethodname " << fMethodname << " fMVAType " << fMVAType << "\n" 
+			      << "ChargedIso ( 0.0 | 0.1 | 0.2 | 0.3 | 0.4 | 0.5 ): " 
 						<< fMVAVar_ChargedIso_DR0p0To0p1  << " "
-					   	<< fMVAVar_ChargedIso_DR0p1To0p2  << " "
+						<< fMVAVar_ChargedIso_DR0p1To0p2  << " "
 						<< fMVAVar_ChargedIso_DR0p2To0p3 << " "
-					   	<< fMVAVar_ChargedIso_DR0p3To0p4 << " "
-						<< fMVAVar_ChargedIso_DR0p4To0p5 << endl;
-				cout  	<< "PF Gamma Iso ( 0.0 | 0.1 | 0.2 | 0.3 | 0.4 | 0.5 ): " 
+					 	<< fMVAVar_ChargedIso_DR0p3To0p4 << " "
+						<< fMVAVar_ChargedIso_DR0p4To0p5 << "\n"
+				    << "PF Gamma Iso ( 0.0 | 0.1 | 0.2 | 0.3 | 0.4 | 0.5 ): " 
 						<< fMVAVar_GammaIso_DR0p0To0p1 << " "
-					   	<< fMVAVar_GammaIso_DR0p1To0p2 << " "
+					 	<< fMVAVar_GammaIso_DR0p1To0p2 << " "
 						<< fMVAVar_GammaIso_DR0p2To0p3 << " "
 					 	<< fMVAVar_GammaIso_DR0p3To0p4 << " "
-					  	<< fMVAVar_GammaIso_DR0p4To0p5 << endl;
-				cout  	<< "PF Neutral Hadron Iso ( 0.0 | 0.1 | 0.2 | 0.3 | 0.4 | 0.5 ): " 
+					  << fMVAVar_GammaIso_DR0p4To0p5 << "\n"
+				   	<< "PF Neutral Hadron Iso ( 0.0 | 0.1 | 0.2 | 0.3 | 0.4 | 0.5 ): " 
 						<< fMVAVar_NeutralHadronIso_DR0p0To0p1 << " "
-					   	<< fMVAVar_NeutralHadronIso_DR0p1To0p2 << " "
+					 	<< fMVAVar_NeutralHadronIso_DR0p1To0p2 << " "
 						<< fMVAVar_NeutralHadronIso_DR0p2To0p3 << " "
 						<< fMVAVar_NeutralHadronIso_DR0p3To0p4 << " "
-					    << fMVAVar_NeutralHadronIso_DR0p4To0p5 << " "
-					   	<< endl;
-				cout 	<< " ### MVA " << mva << endl;
+					  << fMVAVar_NeutralHadronIso_DR0p4To0p5 << " "
+			    	<< " ### MVA " << mva << endl;
 			}
 
 			return mva;
@@ -370,7 +362,7 @@ Double_t MuonMVAEstimator::mvaValueIso( Int_t mu, Double_t rho, MuonEffectiveAre
 			
 
 	if (!fisInitialized) { 
-		std::cout << "Error: MuonMVAEstimator not properly initialized.\n"; 
+		edm::LogError("NotInitialized") << "Error: MuonMVAEstimator not properly initialized.\n"; 
 		return -9999;
 	}
 

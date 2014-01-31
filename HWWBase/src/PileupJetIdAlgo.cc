@@ -218,7 +218,7 @@ void PileupJetIdAlgo::runMva()
 	if( cutBased_ ) {
 		internalId_.idFlag_ = computeCutIDflag(internalId_.betaStarClassic_,internalId_.dR2Mean_,internalId_.nvtx_,internalId_.jetPt_,internalId_.jetEta_);
 	} else {
-		if( ! reader_ ) { bookReader(); std::cerr << "Reader booked" << std::endl; }
+		if( ! reader_ ) { bookReader(); /*std::cerr << "Reader booked" << std::endl;*/ }
 		if(fabs(internalId_.jetEta_) <  5.0) internalId_.mva_ = reader_->EvaluateMVA( tmvaMethod_.c_str() );
 		if(fabs(internalId_.jetEta_) >= 5.0) internalId_.mva_ = -2.;
 		internalId_.idFlag_ = computeIDflag(internalId_.mva_,internalId_.jetPt_,internalId_.jetEta_);
@@ -289,7 +289,7 @@ PileupJetIdentifier PileupJetIdAlgo::computeIdVariables(const reco::Jet * jet, f
 							const reco::VertexCollection & allvtx,
 							bool calculateMva) 
 {
-	static int printWarning = 10; 
+	//static int printWarning = 10; 
 	typedef std::vector <reco::PFCandidatePtr> constituents_type;
 	typedef std::vector <reco::PFCandidatePtr>::iterator constituents_iterator;
 
@@ -303,9 +303,6 @@ PileupJetIdentifier PileupJetIdAlgo::computeIdVariables(const reco::Jet * jet, f
 	if( patjet != 0 && jec == 0. ) { // if this is a pat jet and no jec has been passed take the jec from the object
 		jec = patjet->pt()/patjet->correctedJet(0).pt();
 	}
-	//// else if( patjet != 0 && patjet->pt() > 20. ) {
-	//// 	std::cout <<  patjet->pt() << " " << jet->pt() << " " << jec << std::endl;
-	//// }
 	if( jec < 0. ) {
 		jec = 1.;
 	}
@@ -427,7 +424,7 @@ PileupJetIdentifier PileupJetIdAlgo::computeIdVariables(const reco::Jet * jet, f
 					internalId_.betaStar_ += tkpt;
 				}
 			} catch (cms::Exception &e) {
-				if(printWarning-- > 0) { std::cerr << e << std::endl; }
+				//if(printWarning-- > 0) { std::cerr << e << std::endl; }
 			}
 		}
 		// trailing candidate
@@ -457,7 +454,7 @@ PileupJetIdentifier PileupJetIdAlgo::computeIdVariables(const reco::Jet * jet, f
 		internalId_.d0_ = fabs(impactTrack->dxy(vtx->position()));
 		internalId_.dZ_ = fabs(impactTrack->dz(vtx->position()));
 	} else {
-		if(printWarning-- > 0) { std::cerr << "WARNING : did not find any valid track reference attached to the jet " << std::endl; }
+		//if(printWarning-- > 0) { std::cerr << "WARNING : did not find any valid track reference attached to the jet " << std::endl; }
 	}
 	internalId_.nParticles_ = constituents.size(); 
 

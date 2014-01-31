@@ -89,7 +89,7 @@ void PFCandidateMaker::SetVars(const edm::Event& iEvent, const edm::EventSetup& 
           //sanity check
           float dpt = pftrack->pt() - trkref->pt();
           if( fabs( dpt ) > 0.1 ){
-            cout << "Warning: pfcandidate track pt - matched track pt = " << dpt << ", possible mismatch" << endl;
+            edm::LogWarning("SanityCheck") << "Warning: pfcandidate track pt - matched track pt = " << dpt << ", possible mismatch";
           }
 
           //found corresponding track

@@ -1,4 +1,5 @@
 #include "Math/VectorUtil.h"
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "HWWValidation/HWWBase/interface/electronSelections.h"
 #include "HWWValidation/HWWBase/interface/MITConversionUtilities.h"
 #include "HWWValidation/HWWBase/interface/muonSelections.h"
@@ -357,8 +358,8 @@ namespace HWWFunctions {
               }
 
           } else {
-          cout << "Error! Likelihood WP not supported: " 
-               << workingPoint << ". Please choose 0 for Emanuele 8th September" << endl;
+          edm::LogError("InvalidInput") << "Error! Likelihood WP not supported: " 
+                                        << workingPoint << ". Please choose 0 for Emanuele 8th September";
       }
 
       return false;
@@ -616,16 +617,15 @@ namespace HWWFunctions {
 
     // debug
     if(0) {
-    cout << "AEff : " << AEff << " "
-       << "rho : " << rhoPrime << " "
-       << "pfiso_ch : " << pfiso_ch << " "
-       << "pfiso_em : " << pfiso_em << " "
-       << "pfiso_nh : " << pfiso_nh << " "
-       << "pfiso_n : " << pfiso_n << " "
-       << "pfiso : " << pfiso << " "
-       << "pt : " << pt << " "
-       << "etaAbs : " << etaAbs 
-       << endl; 
+       LogDebug("electronSelections") << "AEff : " << AEff << " "
+                                      << "rho : " << rhoPrime << " "
+                                      << "pfiso_ch : " << pfiso_ch << " "
+                                      << "pfiso_em : " << pfiso_em << " "
+                                      << "pfiso_nh : " << pfiso_nh << " "
+                                      << "pfiso_n : " << pfiso_n << " "
+                                      << "pfiso : " << pfiso << " "
+                                      << "pt : " << pt << " "
+                                      << "etaAbs : " << etaAbs;
     }
 
       return pfiso;

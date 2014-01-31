@@ -42,7 +42,7 @@ public:
   struct hypo_monitor{
     std::vector<EventMonitor::Entry> counters;
     void count(HypothesisType type, const char* name, double weight=1.0);
-    void print() const;
+    //void print() const;
     unsigned int nEvtProcessed;
     bool keepEventList;
     hypo_monitor(bool iKeepEventList=true):nEvtProcessed(0),keepEventList(iKeepEventList){}

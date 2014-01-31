@@ -4,6 +4,7 @@
 #include "TMVA/Tools.h"
 #include "TMVA/Reader.h"
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "HWWValidation/HWWBase/interface/ElectronIDMVA.h"
 #include "HWWValidation/HWWBase/interface/HWW.h"
 #include "HWWValidation/HWWBase/interface/electronSelections.h"
@@ -41,7 +42,7 @@ void ElectronIDMVA::Initialize( TString methodName, unsigned int version,
         TString Subdet2Pt20ToInfWeights) {
 
     if (version != 1 && version != 2 && version != 3) {
-        std::cout << "[ElectronIDMVA::Initialize] Version must be 1 or 2 or 3.  Aborting." << std::endl;
+        edm::LogError("InvalidInput") << "[ElectronIDMVA::Initialize] Version must be 1 or 2 or 3.  Aborting.";
         return;
     }
 
@@ -127,24 +128,13 @@ void ElectronIDMVA::Initialize( TString methodName, unsigned int version,
 
     }
 
-/*
-    std::cout << "Electron ID MVA Initialization\n";
-    std::cout << "MethodName : " << fMethodname << std::endl;
-    std::cout << "Load weights file : " << Subdet0Pt10To20Weights << std::endl;
-    std::cout << "Load weights file : " << Subdet1Pt10To20Weights << std::endl;
-    std::cout << "Load weights file : " << Subdet2Pt10To20Weights << std::endl;
-    std::cout << "Load weights file : " << Subdet0Pt20ToInfWeights << std::endl;
-    std::cout << "Load weights file : " << Subdet1Pt20ToInfWeights << std::endl;
-    std::cout << "Load weights file : " << Subdet2Pt20ToInfWeights << std::endl;
-*/
-
 }
 
 //--------------------------------------------------------------------------------------------------
 Double_t ElectronIDMVA::MVAValue(const unsigned int ele, const unsigned int vertex) {
 
     if (!fIsInitialized) { 
-        std::cout << "Error: ElectronIDMVA not properly initialized.\n"; 
+        edm::LogError("NotInitialized") << "Error: ElectronIDMVA not properly initialized."; 
         return -9999;
     }
 
@@ -228,43 +218,39 @@ Double_t ElectronIDMVA::MVAValue(const unsigned int ele, const unsigned int vert
     
     //DEBUG
     if (0) {
-      cout << endl;
-      cout << HWWVal::evt_run() << " " << HWWVal::evt_lumiBlock() << " " << HWWVal::evt_event() << " " << HWWVal::evt_ww_rho_vor() << endl;
-      std::cout << "Debug Electron MVA: "
-		<< HWWVal::els_p4().at(ele).pt() << " " << " " << HWWVal::els_p4().at(ele).Eta() << " " << HWWVal::els_p4().at(ele).Phi() << " : "
-		<< HWWVal::els_p4().at(ele).pt() << " " << HWWVal::els_etaSC().at(ele) << " --> MVABin " << MVABin << " : "     
-		<< fMVAVar_EleSigmaIEtaIEta << " " 
-		<< fMVAVar_EleDEtaIn << " " 
-		<< fMVAVar_EleDPhiIn << " " 
-		<< fMVAVar_EleHoverE << " " 
-		<< fMVAVar_EleD0 << " " 
-		<< fMVAVar_EleDZ << " " 
-		<< fMVAVar_EleFBrem << " " 
-		<< fMVAVar_EleEOverP << " " 
-		<< fMVAVar_EleESeedClusterOverPout << " " 
-		<< fMVAVar_EleSigmaIPhiIPhi << " " 
-		<< fMVAVar_EleNBrem << " " 
-		<< fMVAVar_EleOneOverEMinusOneOverP << " " 
-		<< fMVAVar_EleESeedClusterOverPIn << " " 
-		<< fMVAVar_EleIP3d << " " 
-		<< fMVAVar_EleIP3dSig << " " 
-		<< fMVAVar_EleGsfTrackChi2OverNdof << " "
-		<< fMVAVar_EledEtaCalo << " "
-		<< fMVAVar_EledPhiCalo << " "
-		<< fMVAVar_EleR9 << " "
-		<< fMVAVar_EleSCEtaWidth << " "
-		<< fMVAVar_EleSCPhiWidth << " "
-		<< fMVAVar_EleCovIEtaIPhi << " "
-		<< fMVAVar_ElePreShowerOverRaw << " "
-		<< fMVAVar_EleChargedIso03OverPt  << " "
-		<< fMVAVar_EleNeutralHadronIso03OverPt  << " "
-		<< fMVAVar_EleGammaIso03OverPt  << " "
-		<< fMVAVar_EleChargedIso04OverPt  << " "
-		<< fMVAVar_EleNeutralHadronIso04OverPt  << " "
-		<< fMVAVar_EleGammaIso04OverPt  << " "
-		<< " === : === "
-		<< mva << " "    
-		<< std::endl;
+      LogDebug("ElectronIDMVA") << HWWVal::evt_run() << " " << HWWVal::evt_lumiBlock() << " " << HWWVal::evt_event() << " " << HWWVal::evt_ww_rho_vor()
+		                            << HWWVal::els_p4().at(ele).pt() << " " << HWWVal::els_etaSC().at(ele) << " --> MVABin " << MVABin << " : "     
+		                            << fMVAVar_EleSigmaIEtaIEta << " " 
+		                            << fMVAVar_EleDEtaIn << " " 
+		                            << fMVAVar_EleDPhiIn << " " 
+		                            << fMVAVar_EleHoverE << " " 
+		                            << fMVAVar_EleD0 << " " 
+		                            << fMVAVar_EleDZ << " " 
+		                            << fMVAVar_EleFBrem << " " 
+		                            << fMVAVar_EleEOverP << " " 
+		                            << fMVAVar_EleESeedClusterOverPout << " " 
+		                            << fMVAVar_EleSigmaIPhiIPhi << " " 
+		                            << fMVAVar_EleNBrem << " " 
+		                            << fMVAVar_EleOneOverEMinusOneOverP << " " 
+		                            << fMVAVar_EleESeedClusterOverPIn << " " 
+		                            << fMVAVar_EleIP3d << " " 
+		                            << fMVAVar_EleIP3dSig << " " 
+		                            << fMVAVar_EleGsfTrackChi2OverNdof << " "
+		                            << fMVAVar_EledEtaCalo << " "
+		                            << fMVAVar_EledPhiCalo << " "
+		                            << fMVAVar_EleR9 << " "
+		                            << fMVAVar_EleSCEtaWidth << " "
+		                            << fMVAVar_EleSCPhiWidth << " "
+		                            << fMVAVar_EleCovIEtaIPhi << " "
+		                            << fMVAVar_ElePreShowerOverRaw << " "
+		                            << fMVAVar_EleChargedIso03OverPt  << " "
+		                            << fMVAVar_EleNeutralHadronIso03OverPt  << " "
+		                            << fMVAVar_EleGammaIso03OverPt  << " "
+		                            << fMVAVar_EleChargedIso04OverPt  << " "
+		                            << fMVAVar_EleNeutralHadronIso04OverPt  << " "
+		                            << fMVAVar_EleGammaIso04OverPt  << " "
+		                            << " === : === "
+		                            << mva;
     }
     return mva;
 
@@ -289,7 +275,7 @@ Double_t ElectronIDMVA::MVAValue(Double_t ElePt , Double_t EleSCEta,
         ) {
 
     if (!fIsInitialized) { 
-        std::cout << "Error: ElectronIDMVA not properly initialized.\n"; 
+        edm::LogError("NotInitialized") << "Error: ElectronIDMVA not properly initialized."; 
         return -9999;
     }
 
@@ -367,7 +353,7 @@ Double_t ElectronIDMVA::MVAValue(Double_t ElePt , Double_t EleEta, Double_t Pile
   ) {
   
   if (!fIsInitialized) { 
-    std::cout << "Error: ElectronIDMVA not properly initialized.\n"; 
+    edm::LogError("NotInitialized") << "Error: ElectronIDMVA not properly initialized."; 
     return -9999;
   }
 
@@ -444,40 +430,38 @@ Double_t ElectronIDMVA::MVAValue(Double_t ElePt , Double_t EleEta, Double_t Pile
   mva = reader->EvaluateMVA( fMethodname );
 
   if (printDebug == kTRUE) {
-    std::cout << "Debug Electron MVA: "
-	 << ElePt << " " << EleEta << " " << " --> MVABin " << MVABin << " : "     
-	 << fMVAVar_EleSigmaIEtaIEta << " " 
-	 << fMVAVar_EleDEtaIn << " " 
-	 << fMVAVar_EleDPhiIn << " " 
-	 << fMVAVar_EleHoverE << " " 
-	 << fMVAVar_EleD0 << " " 
-	 << fMVAVar_EleDZ << " " 
-	 << fMVAVar_EleFBrem << " " 
-	 << fMVAVar_EleEOverP << " " 
-	 << fMVAVar_EleESeedClusterOverPout << " " 
-	 << fMVAVar_EleSigmaIPhiIPhi << " " 
-	 << fMVAVar_EleNBrem << " " 
-	 << fMVAVar_EleOneOverEMinusOneOverP << " " 
-	 << fMVAVar_EleESeedClusterOverPIn << " " 
-	 << fMVAVar_EleIP3d << " " 
-	 << fMVAVar_EleIP3dSig << " " 
-	 << fMVAVar_EleGsfTrackChi2OverNdof << " "
-	 << fMVAVar_EledEtaCalo << " "
-	 << fMVAVar_EledPhiCalo << " "
-	 << fMVAVar_EleR9 << " "
-	 << fMVAVar_EleSCEtaWidth << " "
-	 << fMVAVar_EleSCPhiWidth << " "
-	 << fMVAVar_EleCovIEtaIPhi << " "
-	 << fMVAVar_ElePreShowerOverRaw << " "
-	 << fMVAVar_EleChargedIso03OverPt  << " "
-	 << fMVAVar_EleNeutralHadronIso03OverPt  << " "
-	 << fMVAVar_EleGammaIso03OverPt  << " "
-	 << fMVAVar_EleChargedIso04OverPt  << " "
-	 << fMVAVar_EleNeutralHadronIso04OverPt  << " "
-	 << fMVAVar_EleGammaIso04OverPt  << " "
-	 << " === : === "
-	 << mva 
-	 << std::endl;
+	  LogDebug("ElectronIDMVA") << ElePt << " " << EleEta << " " << " --> MVABin " << MVABin << " : "     
+	                            << fMVAVar_EleSigmaIEtaIEta << " " 
+	                            << fMVAVar_EleDEtaIn << " " 
+	                            << fMVAVar_EleDPhiIn << " " 
+	                            << fMVAVar_EleHoverE << " " 
+	                            << fMVAVar_EleD0 << " " 
+	                            << fMVAVar_EleDZ << " " 
+	                            << fMVAVar_EleFBrem << " " 
+	                            << fMVAVar_EleEOverP << " " 
+	                            << fMVAVar_EleESeedClusterOverPout << " " 
+	                            << fMVAVar_EleSigmaIPhiIPhi << " " 
+	                            << fMVAVar_EleNBrem << " " 
+	                            << fMVAVar_EleOneOverEMinusOneOverP << " " 
+	                            << fMVAVar_EleESeedClusterOverPIn << " " 
+	                            << fMVAVar_EleIP3d << " " 
+	                            << fMVAVar_EleIP3dSig << " " 
+	                            << fMVAVar_EleGsfTrackChi2OverNdof << " "
+	                            << fMVAVar_EledEtaCalo << " "
+	                            << fMVAVar_EledPhiCalo << " "
+	                            << fMVAVar_EleR9 << " "
+	                            << fMVAVar_EleSCEtaWidth << " "
+	                            << fMVAVar_EleSCPhiWidth << " "
+	                            << fMVAVar_EleCovIEtaIPhi << " "
+	                            << fMVAVar_ElePreShowerOverRaw << " "
+	                            << fMVAVar_EleChargedIso03OverPt  << " "
+	                            << fMVAVar_EleNeutralHadronIso03OverPt  << " "
+	                            << fMVAVar_EleGammaIso03OverPt  << " "
+	                            << fMVAVar_EleChargedIso04OverPt  << " "
+	                            << fMVAVar_EleNeutralHadronIso04OverPt  << " "
+	                            << fMVAVar_EleGammaIso04OverPt  << " "
+	                            << " === : === "
+	                            << mva;
   }
 
   return mva;

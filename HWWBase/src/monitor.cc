@@ -51,6 +51,7 @@ void EventMonitor::hypo_monitor::count(HypothesisType type, const char* name, do
   }
 }
 
+/*
 void EventMonitor::hypo_monitor::print() const
 {
   std::cout << "Total number of processed events: \t" << nEvtProcessed << std::endl;
@@ -83,3 +84,4 @@ void EventMonitor::hypo_monitor::print() const
     cut_file.close();
   }
 }
+*/

@@ -32,7 +32,7 @@ namespace HWWFunctions {
       if (d0err2vtx >= 0) 
           return std::pair<double, double>(d0vtx, sqrt(d0err2vtx));
 
-      std::cerr << "Oh no!  sigma^2(d0corr) < 0!" << std::endl;
+      edm::LogError("NegativeValue") << "Oh no!  sigma^2(d0corr) < 0!";
       return std::pair<double, double>(d0vtx, -sqrt(-d0err2vtx));
   }
 
@@ -63,7 +63,7 @@ namespace HWWFunctions {
       if (d0err2vtx >= 0) 
           return std::pair<double, double>(d0vtx, sqrt(d0err2vtx));
 
-      std::cerr << "Oh no!  sigma^2(d0corr) < 0!" << std::endl;
+      edm::LogError("NegativeValue") << "Oh no!  sigma^2(d0corr) < 0!";
       return std::pair<double, double>(d0vtx, -sqrt(-d0err2vtx));
   }
 

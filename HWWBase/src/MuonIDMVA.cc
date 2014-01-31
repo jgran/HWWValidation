@@ -1,3 +1,4 @@
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "HWWValidation/HWWBase/interface/MuonIDMVA.h"
 #include "HWWValidation/HWWBase/interface/HWW.h"
 #include "HWWValidation/HWWBase/interface/muonSelections.h"
@@ -41,7 +42,7 @@ void MuonIDMVA::Initialize( TString methodName, unsigned int version,
                             TString Subdet1Pt20ToInfWeights) {
 
     if (version != 1) {
-        std::cout << "[MuonIDMVA::Initialize] Version must be 1.  Aborting." << std::endl;
+        edm::LogError("InvalidInput") << "[MuonIDMVA::Initialize] Version must be 1.  Aborting.";
         return;
     }
 
@@ -88,18 +89,6 @@ void MuonIDMVA::Initialize( TString methodName, unsigned int version,
 	if (i==5) fTMVAReader[i]->BookMVA(fMethodname , Subdet1Pt20ToInfWeights  );
 	
     }
-
-/*
-    std::cout << "Muon ID MVA Initialization\n";
-    std::cout << "MethodName : " << fMethodname << " , version == " << version << std::endl;
-    std::cout << "Load weights file : " << Subdet0Pt10To14p5Weights << std::endl;
-    std::cout << "Load weights file : " << Subdet1Pt10To14p5Weights << std::endl;
-    std::cout << "Load weights file : " << Subdet0Pt14p5To20Weights << std::endl;
-    std::cout << "Load weights file : " << Subdet1Pt14p5To20Weights << std::endl;
-    std::cout << "Load weights file : " << Subdet0Pt20ToInfWeights << std::endl;
-    std::cout << "Load weights file : " << Subdet1Pt20ToInfWeights << std::endl;
-*/
-
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -132,7 +121,7 @@ Double_t MuonIDMVA::MVAValue(Double_t MuPt , Double_t MuEta,
   ) {
   
   if (!fIsInitialized) { 
-    std::cout << "Error: MuonIDMVA not properly initialized.\n"; 
+    edm::LogError("NotInitialized") << "Error: MuonIDMVA not properly initialized."; 
     return -9999;
   }
 
@@ -186,35 +175,34 @@ Double_t MuonIDMVA::MVAValue(Double_t MuPt , Double_t MuEta,
   mva = reader->EvaluateMVA( fMethodname );
 
   if (printDebug) {
-    std::cout << "Debug Muon MVA: "
-	 << MuPt << " " << MuEta << " --> MVABin " << MVABin << " : "     
-	 << fMVAVar_MuTkNchi2              << " " 
-	 << fMVAVar_MuGlobalNchi2          << " " 
-	 << fMVAVar_MuNValidHits           << " " 
-	 << fMVAVar_MuNTrackerHits         << " " 
-	 << fMVAVar_MuNPixelHits           << " "  
-	 << fMVAVar_MuNMatches             << " " 
-	 << fMVAVar_MuD0                   << " " 
-	 << fMVAVar_MuIP3d                 << " " 
-	 << fMVAVar_MuIP3dSig              << " " 
-	 << fMVAVar_MuTrkKink              << " " 
-	 << fMVAVar_MuSegmentCompatibility << " " 
-	 << fMVAVar_MuCaloCompatibility    << " " 
-	 << fMVAVar_MuHadEnergyOverPt      << " " 
-	 << fMVAVar_MuHoEnergyOverPt       << " " 
-	 << fMVAVar_MuEmEnergyOverPt       << " " 
-	 << fMVAVar_MuHadS9EnergyOverPt    << " " 
-	 << fMVAVar_MuHoS9EnergyOverPt     << " " 
-	 << fMVAVar_MuEmS9EnergyOverPt     << " " 
-	 << fMVAVar_MuTrkIso03OverPt   << " " 
-	 << fMVAVar_MuEMIso03OverPt   << " " 
-	 << fMVAVar_MuHadIso03OverPt   << " " 
-	 << fMVAVar_MuTrkIso05OverPt   << " " 
-	 << fMVAVar_MuEMIso05OverPt   << " " 
-	 << fMVAVar_MuHadIso05OverPt   << " " 
-	 << " === : === "
-	 << mva 
-	 << std::endl;
+    LogDebug("MuonIDMVA") << "Debug Muon MVA: "
+	                        << MuPt << " " << MuEta << " --> MVABin " << MVABin << " : "     
+	                        << fMVAVar_MuTkNchi2              << " " 
+	                        << fMVAVar_MuGlobalNchi2          << " " 
+	                        << fMVAVar_MuNValidHits           << " " 
+	                        << fMVAVar_MuNTrackerHits         << " " 
+	                        << fMVAVar_MuNPixelHits           << " "  
+	                        << fMVAVar_MuNMatches             << " " 
+	                        << fMVAVar_MuD0                   << " " 
+	                        << fMVAVar_MuIP3d                 << " " 
+	                        << fMVAVar_MuIP3dSig              << " " 
+	                        << fMVAVar_MuTrkKink              << " " 
+	                        << fMVAVar_MuSegmentCompatibility << " " 
+	                        << fMVAVar_MuCaloCompatibility    << " " 
+	                        << fMVAVar_MuHadEnergyOverPt      << " " 
+	                        << fMVAVar_MuHoEnergyOverPt       << " " 
+	                        << fMVAVar_MuEmEnergyOverPt       << " " 
+	                        << fMVAVar_MuHadS9EnergyOverPt    << " " 
+	                        << fMVAVar_MuHoS9EnergyOverPt     << " " 
+	                        << fMVAVar_MuEmS9EnergyOverPt     << " " 
+	                        << fMVAVar_MuTrkIso03OverPt   << " " 
+	                        << fMVAVar_MuEMIso03OverPt   << " " 
+	                        << fMVAVar_MuHadIso03OverPt   << " " 
+	                        << fMVAVar_MuTrkIso05OverPt   << " " 
+	                        << fMVAVar_MuEMIso05OverPt   << " " 
+	                        << fMVAVar_MuHadIso05OverPt   << " " 
+	                        << " === : === "
+	                        << mva;
   }
 
   return mva;
@@ -224,7 +212,7 @@ Double_t MuonIDMVA::MVAValue(Double_t MuPt , Double_t MuEta,
 Double_t MuonIDMVA::MVAValue(const unsigned int mu, const unsigned int vertex) {
   
   if (!fIsInitialized) { 
-    std::cout << "Error: MuonIDMVA not properly initialized.\n"; 
+    edm::LogError("NotInialized") << "Error: MuonIDMVA not properly initialized."; 
     return -9999;
   }
 
@@ -284,37 +272,36 @@ Double_t MuonIDMVA::MVAValue(const unsigned int mu, const unsigned int vertex) {
   mva = reader->EvaluateMVA( fMethodname );
 
   if (0) {
-    cout << HWWVal::evt_run() << " " << HWWVal::evt_lumiBlock() << " " << HWWVal::evt_event() << " " << Rho << endl;
-    std::cout << "Debug Muon MVA: "
-              << HWWVal::mus_p4().at(mu).pt() << " " << HWWVal::mus_p4().at(mu).eta() << " " << HWWVal::mus_p4().at(mu).phi() << " : "
-              << MuPt << " " << MuEta << " --> MVABin " << MVABin << " : "     
-              << fMVAVar_MuTkNchi2              << " " 
-              << fMVAVar_MuGlobalNchi2          << " " 
-              << fMVAVar_MuNValidHits           << " " 
-              << fMVAVar_MuNTrackerHits         << " " 
-              << fMVAVar_MuNPixelHits           << " "  
-              << fMVAVar_MuNMatches             << " " 
-              << fMVAVar_MuD0                   << " " 
-              << fMVAVar_MuIP3d                 << " " 
-              << fMVAVar_MuIP3dSig              << " " 
-              << fMVAVar_MuTrkKink              << " " 
-              << fMVAVar_MuSegmentCompatibility << " " 
-              << fMVAVar_MuCaloCompatibility    << " " 
-              << fMVAVar_MuHadEnergyOverPt      << " " 
-              << fMVAVar_MuHoEnergyOverPt       << " " 
-              << fMVAVar_MuEmEnergyOverPt       << " " 
-              << fMVAVar_MuHadS9EnergyOverPt    << " " 
-              << fMVAVar_MuHoS9EnergyOverPt     << " " 
-              << fMVAVar_MuEmS9EnergyOverPt     << " " 
-              << fMVAVar_MuTrkIso03OverPt   << " " 
-              << fMVAVar_MuEMIso03OverPt   << " " 
-              << fMVAVar_MuHadIso03OverPt   << " " 
-              << fMVAVar_MuTrkIso05OverPt   << " " 
-              << fMVAVar_MuEMIso05OverPt   << " " 
-              << fMVAVar_MuHadIso05OverPt   << " " 
-              << " === : === "
-              << mva 
-              << std::endl;
+    LogDebug("MuonIDMVA") << "Debug Muon MVA: "
+                          << HWWVal::evt_run() << " " << HWWVal::evt_lumiBlock() << " " << HWWVal::evt_event() << " " << Rho << " "
+                          << HWWVal::mus_p4().at(mu).pt() << " " << HWWVal::mus_p4().at(mu).eta() << " " << HWWVal::mus_p4().at(mu).phi() << " : "
+                          << MuPt << " " << MuEta << " --> MVABin " << MVABin << " : "     
+                          << fMVAVar_MuTkNchi2              << " " 
+                          << fMVAVar_MuGlobalNchi2          << " " 
+                          << fMVAVar_MuNValidHits           << " " 
+                          << fMVAVar_MuNTrackerHits         << " " 
+                          << fMVAVar_MuNPixelHits           << " "  
+                          << fMVAVar_MuNMatches             << " " 
+                          << fMVAVar_MuD0                   << " " 
+                          << fMVAVar_MuIP3d                 << " " 
+                          << fMVAVar_MuIP3dSig              << " " 
+                          << fMVAVar_MuTrkKink              << " " 
+                          << fMVAVar_MuSegmentCompatibility << " " 
+                          << fMVAVar_MuCaloCompatibility    << " " 
+                          << fMVAVar_MuHadEnergyOverPt      << " " 
+                          << fMVAVar_MuHoEnergyOverPt       << " " 
+                          << fMVAVar_MuEmEnergyOverPt       << " " 
+                          << fMVAVar_MuHadS9EnergyOverPt    << " " 
+                          << fMVAVar_MuHoS9EnergyOverPt     << " " 
+                          << fMVAVar_MuEmS9EnergyOverPt     << " " 
+                          << fMVAVar_MuTrkIso03OverPt   << " " 
+                          << fMVAVar_MuEMIso03OverPt   << " " 
+                          << fMVAVar_MuHadIso03OverPt   << " " 
+                          << fMVAVar_MuTrkIso05OverPt   << " " 
+                          << fMVAVar_MuEMIso05OverPt   << " " 
+                          << fMVAVar_MuHadIso05OverPt   << " " 
+                          << " === : === "
+                          << mva;
   }
 
   return mva;

@@ -25,7 +25,7 @@ namespace HWWFunctions {
       return "all";
       break;
     }
-    std::cout << "ERROR: unknown hypothesis name is requested: " << type << std::endl;
+    edm::LogError("InvalidInput") << "ERROR: unknown hypothesis name is requested: " << type;
     return "";
   }
 

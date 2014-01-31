@@ -131,14 +131,12 @@ namespace HWWFunctions {
     int n    = (int) EleSelectionType(ELE_LAST);
     int nMax = (int) 8*sizeof(1ll) - 1;
     if( n > nMax ){
-      cout << endl << "ERROR at line " << __LINE__ << " in " << __FILE__ << ":" << endl;
-      cout << "enum \"EleSelectionType\" has " << n << " elements but cannot have more than " << nMax << " elements... Exiting." << endl << endl;
+      edm::LogError("InvalidInput") << "enum \"EleSelectionType\" has " << n << " elements but cannot have more than " << nMax << " elements... Exiting.";
       exit(1);
     }
     else{
       if( !shown ){
-        cout << endl << "There are " << ( nMax - n ) << " available selectors left in enum EleSelectionType" << endl;
-        cout << "\t( " << __FILE__ << " )" << endl << endl;
+        LogDebug("electronSelections") << endl << "There are " << ( nMax - n ) << " available selectors left in enum EleSelectionType";
       }
       shown = true;
     }

@@ -1,3 +1,4 @@
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "HWWValidation/HWWBase/interface/CommonUtils.h"
 #include "HWWValidation/HWWBase/interface/BTagMaker.h" 
 #include "HWWValidation/HWWBase/interface/HWW.h" 
@@ -31,7 +32,7 @@ edm::RefToBase<reco::Jet> getReferenceJetRef(const edm::View<reco::Jet>* refJets
 
   }
 
-  if (mindR == 0.01) std::cout << "\n didn't find a match!\n";
+  if (mindR == 0.01) LogError("BTagMaker") << "Didn't find a match!";
 
   if(!retRef.isNonnull())
     throw cms::Exception("Reference jet not found in BTagMaker");

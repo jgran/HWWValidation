@@ -3,6 +3,7 @@
 #include <cmath>
 #include <vector>
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "HWWValidation/HWWBase/interface/EGammaMvaEleEstimator.h"
 #include "HWWValidation/HWWBase/interface/HWW.h"
 #include "HWWValidation/HWWBase/interface/electronSelections.h"
@@ -98,8 +99,8 @@ void EGammaMvaEleEstimator::initialize( std::string methodName,
   
   //Check number of weight files given
   if (fNMVABins != weightsfiles.size() ) {
-    std::cout << "Error: Expected Number of bins = " << fNMVABins << " does not equal to weightsfiles.size() = " 
-              << weightsfiles.size() << std::endl; 
+     edm::LogError("InvalidInput") << "Error: Expected Number of bins = " << fNMVABins << " does not equal to weightsfiles.size() = " 
+              << weightsfiles.size(); 
   }
 
   //Loop over all bins
@@ -211,15 +212,8 @@ void EGammaMvaEleEstimator::initialize( std::string methodName,
     }
   
     tmpTMVAReader->BookMVA(fMethodname , weightsfiles[i]);
-/*
-    std::cout << "MVABin " << i << " : MethodName = " << fMethodname 
-              << " , type == " << type << " , "
-              << "Load weights file : " << weightsfiles[i] 
-              << std::endl;
-*/
     fTMVAReader.push_back(tmpTMVAReader);
   }
-  //std::cout << "Electron ID MVA Completed\n";
 
 }
 
@@ -354,7 +348,7 @@ Double_t EGammaMvaEleEstimator::mvaValue(Double_t fbrem,
 					Bool_t printDebug) {
   
   if (!fisInitialized) { 
-    std::cout << "Error: EGammaMvaEleEstimator not properly initialized.\n"; 
+    edm::LogError("NotInitialized") << "Error: EGammaMvaEleEstimator not properly initialized."; 
     return -9999;
   }
 
@@ -400,34 +394,30 @@ Double_t EGammaMvaEleEstimator::mvaValue(Double_t fbrem,
   }
 
   if(printDebug) {
-    cout << " *** Inside the class fMethodname " << fMethodname << endl;
-	cout << " bin " << GetMVABin(fMVAVar_eta,fMVAVar_pt);
-	cout << " fbrem " <<  fMVAVar_fbrem  
-      	 << " kfchi2 " << fMVAVar_kfchi2  
-	 	 << " kfhits " << fMVAVar_kfhits  
-	 	 << " gsfchi2 " << fMVAVar_gsfchi2  
-	 	 << " deta " <<  fMVAVar_deta  
-	 	 << " dphi " << fMVAVar_dphi  
-      	 << " detacalo " << fMVAVar_detacalo  
-      // << " dphicalo " << fMVAVar_dphicalo  
-	 	 << " see " << fMVAVar_see  
-	 << " spp " << fMVAVar_spp  
-	 << " etawidth " << fMVAVar_etawidth  
-	 << " phiwidth " << fMVAVar_phiwidth  
-	 << " e1x5e5x5 " << fMVAVar_e1x5e5x5  
-	 << " R9 " << fMVAVar_R9  
-      // << " mynbrems " << fMVAVar_nbrems  
-	 << " HoE " << fMVAVar_HoE  
-	 << " EoP " << fMVAVar_EoP  
-	 << " IoEmIoP " << fMVAVar_IoEmIoP  
-	 << " eleEoPout " << fMVAVar_eleEoPout  
-      //<< " EoPout " << fMVAVar_EoPout  
-	 << " PreShowerOverRaw " << fMVAVar_PreShowerOverRaw  
-	 << " d0 " << fMVAVar_d0  
-	 << " ip3d " << fMVAVar_ip3d  
-	 << " eta " << fMVAVar_eta  
-	 << " pt " << fMVAVar_pt << endl;
-    cout << " ### MVA " << mva << endl;
+	  LogDebug("EGammaMvaEleEstimator") << " bin "              << GetMVABin(fMVAVar_eta,fMVAVar_pt)
+	                                    << " fbrem "            <<  fMVAVar_fbrem  
+                                      << " kfchi2 "           << fMVAVar_kfchi2  
+	                                    << " kfhits "           << fMVAVar_kfhits  
+	                                    << " gsfchi2 "          << fMVAVar_gsfchi2  
+	                                    << " deta "             <<  fMVAVar_deta  
+	                                    << " dphi "             << fMVAVar_dphi  
+                                      << " detacalo "         << fMVAVar_detacalo  
+	                                    << " see "              << fMVAVar_see  
+	                                    << " spp "              << fMVAVar_spp  
+	                                    << " etawidth "         << fMVAVar_etawidth  
+	                                    << " phiwidth "         << fMVAVar_phiwidth  
+	                                    << " e1x5e5x5 "         << fMVAVar_e1x5e5x5  
+	                                    << " R9 "               << fMVAVar_R9  
+	                                    << " HoE "              << fMVAVar_HoE  
+	                                    << " EoP "              << fMVAVar_EoP  
+	                                    << " IoEmIoP "          << fMVAVar_IoEmIoP  
+	                                    << " eleEoPout "        << fMVAVar_eleEoPout  
+	                                    << " PreShowerOverRaw " << fMVAVar_PreShowerOverRaw  
+	                                    << " d0 "               << fMVAVar_d0  
+	                                    << " ip3d "             << fMVAVar_ip3d  
+	                                    << " eta "              << fMVAVar_eta  
+	                                    << " pt "               << fMVAVar_pt
+                                      << " ### MVA "          << mva;
   }
 
 
@@ -460,7 +450,7 @@ Double_t EGammaMvaEleEstimator::mvaValue(Double_t fbrem,
 					Bool_t printDebug) {
   
   if (!fisInitialized) { 
-    std::cout << "Error: EGammaMvaEleEstimator not properly initialized.\n"; 
+    edm::LogError("NotInitialized") << "Error: EGammaMvaEleEstimator not properly initialized."; 
     return -9999;
   }
 
@@ -472,7 +462,6 @@ Double_t EGammaMvaEleEstimator::mvaValue(Double_t fbrem,
   fMVAVar_deta            = deta;
   fMVAVar_dphi            = dphi;
   fMVAVar_detacalo        = detacalo;
-  // fMVAVar_dphicalo        = dphicalo;
 
 
   fMVAVar_see             = see;
@@ -481,7 +470,6 @@ Double_t EGammaMvaEleEstimator::mvaValue(Double_t fbrem,
   fMVAVar_phiwidth        = phiwidth;
   fMVAVar_e1x5e5x5        = e1x5e5x5;
   fMVAVar_R9              = R9;
-  //fMVAVar_nbrems          = float(nbrems);   // BTD does not support int variables
 
 
   fMVAVar_HoE             = HoE;
@@ -489,7 +477,6 @@ Double_t EGammaMvaEleEstimator::mvaValue(Double_t fbrem,
   fMVAVar_IoEmIoP         = IoEmIoP;
   fMVAVar_eleEoPout       = eleEoPout;
   fMVAVar_PreShowerOverRaw= PreShowerOverRaw;
-  //fMVAVar_EoPout          = EoPout; 
 
   fMVAVar_eta             = eta;
   fMVAVar_pt              = pt;
@@ -506,32 +493,30 @@ Double_t EGammaMvaEleEstimator::mvaValue(Double_t fbrem,
 
 
   if(printDebug) {
-    cout << " *** Inside the class fMethodname " << fMethodname << endl;
-    cout << " bin " <<  GetMVABin(fMVAVar_eta,fMVAVar_pt);  
-    cout << " fbrem " <<  fMVAVar_fbrem  
-      	 << " kfchi2 " << fMVAVar_kfchi2  
-	 << " mykfhits " << fMVAVar_kfhits  
-	 << " gsfchi2 " << fMVAVar_gsfchi2  
-	 << " deta " <<  fMVAVar_deta  
-	 << " dphi " << fMVAVar_dphi  
-      	 << " detacalo " << fMVAVar_detacalo  
-      // << " dphicalo " << fMVAVar_dphicalo  
-	 << " see " << fMVAVar_see  
-	 << " spp " << fMVAVar_spp  
-	 << " etawidth " << fMVAVar_etawidth  
-	 << " phiwidth " << fMVAVar_phiwidth  
-	 << " e1x5e5x5 " << fMVAVar_e1x5e5x5  
-	 << " R9 " << fMVAVar_R9  
-      // << " mynbrems " << fMVAVar_nbrems  
-	 << " HoE " << fMVAVar_HoE  
-	 << " EoP " << fMVAVar_EoP  
-	 << " IoEmIoP " << fMVAVar_IoEmIoP  
-	 << " eleEoPout " << fMVAVar_eleEoPout  
-      //<< " EoPout " << fMVAVar_EoPout  
-	 << " PreShowerOverRaw " << fMVAVar_PreShowerOverRaw  
-	 << " eta " << fMVAVar_eta  
-	 << " pt " << fMVAVar_pt << endl;
-    cout << " ### MVA " << mva << endl;
+	  LogDebug("EGammaMvaEleEstimator") << " bin "              << GetMVABin(fMVAVar_eta,fMVAVar_pt)
+	                                    << " fbrem "            <<  fMVAVar_fbrem  
+                                      << " kfchi2 "           << fMVAVar_kfchi2  
+	                                    << " kfhits "           << fMVAVar_kfhits  
+	                                    << " gsfchi2 "          << fMVAVar_gsfchi2  
+	                                    << " deta "             <<  fMVAVar_deta  
+	                                    << " dphi "             << fMVAVar_dphi  
+                                      << " detacalo "         << fMVAVar_detacalo  
+	                                    << " see "              << fMVAVar_see  
+	                                    << " spp "              << fMVAVar_spp  
+	                                    << " etawidth "         << fMVAVar_etawidth  
+	                                    << " phiwidth "         << fMVAVar_phiwidth  
+	                                    << " e1x5e5x5 "         << fMVAVar_e1x5e5x5  
+	                                    << " R9 "               << fMVAVar_R9  
+	                                    << " HoE "              << fMVAVar_HoE  
+	                                    << " EoP "              << fMVAVar_EoP  
+	                                    << " IoEmIoP "          << fMVAVar_IoEmIoP  
+	                                    << " eleEoPout "        << fMVAVar_eleEoPout  
+	                                    << " PreShowerOverRaw " << fMVAVar_PreShowerOverRaw  
+	                                    << " d0 "               << fMVAVar_d0  
+	                                    << " ip3d "             << fMVAVar_ip3d  
+	                                    << " eta "              << fMVAVar_eta  
+	                                    << " pt "               << fMVAVar_pt
+                                      << " ### MVA "          << mva;
   }
 
 
@@ -550,14 +535,9 @@ void EGammaMvaEleEstimator::bindVariables() {
   if(fMVAVar_deta > 0.06)
     fMVAVar_deta = 0.06;
   
-  
   fMVAVar_dphi = fabs(fMVAVar_dphi);
   if(fMVAVar_dphi > 0.6)
     fMVAVar_dphi = 0.6;
-  
-  
-//   if(fMVAVar_EoPout > 20.)
-//     fMVAVar_EoPout = 20.;
   
   if(fMVAVar_EoP > 20.)
     fMVAVar_EoP = 20.;
@@ -565,16 +545,9 @@ void EGammaMvaEleEstimator::bindVariables() {
   if(fMVAVar_eleEoPout > 20.)
     fMVAVar_eleEoPout = 20.;
   
-  
   fMVAVar_detacalo = fabs(fMVAVar_detacalo);
   if(fMVAVar_detacalo > 0.2)
     fMVAVar_detacalo = 0.2;
-  
-  
-//   fMVAVar_dphicalo = fabs(fMVAVar_dphicalo);
-//   if(fMVAVar_dphicalo > 0.4)
-//     fMVAVar_dphicalo = 0.4;
-  
   
   if(fMVAVar_e1x5e5x5 < -1.)
     fMVAVar_e1x5e5x5 = -1;
@@ -582,18 +555,14 @@ void EGammaMvaEleEstimator::bindVariables() {
   if(fMVAVar_e1x5e5x5 > 2.)
     fMVAVar_e1x5e5x5 = 2.; 
   
-  
-  
   if(fMVAVar_R9 > 5)
     fMVAVar_R9 = 5;
   
   if(fMVAVar_gsfchi2 > 200.)
     fMVAVar_gsfchi2 = 200;
   
-  
   if(fMVAVar_kfchi2 > 10.)
     fMVAVar_kfchi2 = 10.;
-  
   
   // Needed for a bug in CMSSW_420, fixed in more recent CMSSW versions
   if(std::isnan(fMVAVar_spp))
@@ -602,10 +571,3 @@ void EGammaMvaEleEstimator::bindVariables() {
   
   return;
 }
-
-
-
-
-
-
-

@@ -91,7 +91,7 @@ void MVAJetIdMaker::SetVars(const edm::Event& iEvent, const edm::EventSetup& iSe
         // print out MVA inputs 
         if(0) {
 
-          std::cout << setprecision(5)
+          LogDebug("MVAJetIdMaker")
             << "Debug Jet MVA : "
             << iEvent.id() 			<< " : "
             << lPUJetId.nvtx()      << " "
@@ -110,8 +110,8 @@ void MVAJetIdMaker::SetVars(const edm::Event& iEvent, const edm::EventSetup& iSe
             << lPUJetId.frac03()    << " "
             << lPUJetId.frac04()    << " "
             << lPUJetId.frac05()
-            << " === : === "; 
-          cout << lPUJetId.mva() << endl;
+            << " === : === "
+            << lPUJetId.mva();
         }
 		  }
 		  else             

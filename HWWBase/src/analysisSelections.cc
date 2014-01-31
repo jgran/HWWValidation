@@ -1,9 +1,9 @@
 #include "Math/VectorUtil.h"
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "HWWValidation/HWWBase/interface/muonSelections.h"
 #include "HWWValidation/HWWBase/interface/electronSelections.h"
 #include "HWWValidation/HWWBase/interface/pfjetMVAtools.h"
 #include "HWWValidation/HWWBase/interface/analysisSelections.h"
-//#include "HWWValidation/jetcorr/JetCorrectorParameters.icc"
 
 namespace HWWFunctions {
 
@@ -12,31 +12,31 @@ namespace HWWFunctions {
     HypothesisType type = getHypothesisTypeNew(i_hyp);
     double weight = 1.0;
     
-    monitor.count(GetHWW(), type, "baseline", weight);
+    monitor.count(type, "baseline", weight);
     if(!passCharge(i_hyp)) return;
-    monitor.count(GetHWW(), type, "opposite sign", weight);
+    monitor.count(type, "opposite sign", weight);
     if(!passFullLep(i_hyp, egammaMvaEleEstimator, muonMVAEstimator)) return;
-    monitor.count(GetHWW(), type, "full lepton selection", weight);
+    monitor.count(type, "full lepton selection", weight);
     if(!passExtraLeptonVeto(i_hyp, egammaMvaEleEstimator, muonMVAEstimator)) return;
-    monitor.count(GetHWW(), type, "extra lepton veto", weight);
+    monitor.count(type, "extra lepton veto", weight);
     if(!(HWWVal::evt_pfmet() > 20.0)) return;
-    monitor.count(GetHWW(), type, "met > 20 GeV", weight);
+    monitor.count(type, "met > 20 GeV", weight);
     if(!(HWWVal::hyp_p4().at(i_hyp).mass() > 12.0)) return;
-    monitor.count(GetHWW(), type, "mll > 12 GeV", weight);
+    monitor.count(type, "mll > 12 GeV", weight);
     if(!passZVeto(i_hyp)) return;
-    monitor.count(GetHWW(), type, "|mll - mZ| > 15 GeV", weight);
+    monitor.count(type, "|mll - mZ| > 15 GeV", weight);
     if(!passMinMet(i_hyp)) return;
-    monitor.count(GetHWW(), type, "minMET > 20 GeV", weight);
+    monitor.count(type, "minMET > 20 GeV", weight);
     if(!passMinMet40(i_hyp)) return;
-    monitor.count(GetHWW(), type, "minMET > 40 GeV for ee/mm", weight);
+    monitor.count(type, "minMET > 40 GeV for ee/mm", weight);
     if(!passDPhiDiLepJet(i_hyp)) return;
-    monitor.count(GetHWW(), type, "dPhiDiLepJet < 165 dg for ee/mm", weight);
+    monitor.count(type, "dPhiDiLepJet < 165 dg for ee/mm", weight);
     if(!passSoftMuonVeto(i_hyp)) return;
-    monitor.count(GetHWW(), type, "SoftMuons==0", weight);
+    monitor.count(type, "SoftMuons==0", weight);
     if(!passTopVeto(i_hyp)) return;
-    monitor.count(GetHWW(), type, "top veto", weight);
+    monitor.count(type, "top veto", weight);
     if(HWWVal::hyp_p4().at(i_hyp).pt() <= 45.0) return;
-    monitor.count(GetHWW(), type, "ptll > 45 GeV", weight);
+    monitor.count(type, "ptll > 45 GeV", weight);
 
     int njets = numberOfJets(i_hyp);
     std::vector<JetPair> sortedJets = getJets(i_hyp, 30.0, 4.7, true, false);
@@ -46,22 +46,22 @@ namespace HWWFunctions {
     LorentzVector jet3;
 
     if(njets==0){
-      monitor.count(GetHWW(), type, "njets == 0", weight);
+      monitor.count(type, "njets == 0", weight);
       if(max(HWWVal::hyp_ll_p4().at(i_hyp).pt(), HWWVal::hyp_lt_p4().at(i_hyp).pt()) < 30) return; 
-      monitor.count(GetHWW(), type, "max(lep1.pt(),lep2.pt())>30", weight);
+      monitor.count(type, "max(lep1.pt(),lep2.pt())>30", weight);
       if(min(HWWVal::hyp_ll_p4().at(i_hyp).pt(), HWWVal::hyp_lt_p4().at(i_hyp).pt()) < 25) return; 
-      monitor.count(GetHWW(), type, "min(lep1.pt(),lep2.pt())>25", weight);
+      monitor.count(type, "min(lep1.pt(),lep2.pt())>25", weight);
     }
     if(njets==1){
-      monitor.count(GetHWW(), type, "njets == 1", weight);
+      monitor.count( type, "njets == 1", weight);
     }
     if ( njets==2 || njets==3 ) {
-      monitor.count(GetHWW(), type, "njets == 2 or 3", weight);
+      monitor.count(type, "njets == 2 or 3", weight);
       if (fabs(sortedJets[0].first.eta())>=4.7 || fabs(sortedJets[1].first.eta())>=4.7) return;
-      monitor.count(GetHWW(),type,"abs(jet1.eta())<4.7 && abs(jet2.eta())<4.7",weight);
+      monitor.count(type,"abs(jet1.eta())<4.7 && abs(jet2.eta())<4.7",weight);
       if (njets==3 && sortedJets[2].first.pt()>30 && ((sortedJets[0].first.eta()-sortedJets[2].first.eta() > 0 && sortedJets[1].first.eta()-sortedJets[2].first.eta() < 0) ||
             (sortedJets[1].first.eta()-sortedJets[2].first.eta() > 0 && sortedJets[0].first.eta()-sortedJets[2].first.eta() < 0)) ) return;
-      monitor.count(GetHWW(), type, "no central jets", weight);
+      monitor.count(type, "no central jets", weight);
 
     }
     
@@ -327,7 +327,7 @@ namespace HWWFunctions {
   {
     if(tightness>2)
     {
-      cout << "ERROR : tightness should be 0, 1, or 2. " << endl;
+      edm::LogError("InvalidParameter") << "ERROR : tightness should be 0, 1, or 2. ";
       return false;
     }
 
@@ -729,8 +729,6 @@ namespace HWWFunctions {
       if( fabs(etaSC)<0.8 && mvavalue>0.0)  return true;
       return false;
     }
-
-    cout << "Something is wrong. You should not see this! " << endl; 
   }
 
   bool passMuonRingsMVA(unsigned int mu, MuonMVAEstimator* muonMVAEstimator, std::vector<Int_t> IdentifiedMu, std::vector<Int_t> IdentifiedEle)
@@ -751,8 +749,6 @@ namespace HWWFunctions {
       if( fabs(eta)<1.479 && mvavalue>0.86 )  return true;
       return false;
     }	
-    
-    cout << "Something is wrong. You should not see this! " << endl; 
   }
 
   bool passMuonRingsMVAFO(unsigned int mu, MuonMVAEstimator* muonMVAEstimator, std::vector<Int_t> IdentifiedMu, std::vector<Int_t> IdentifiedEle)

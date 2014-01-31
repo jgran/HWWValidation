@@ -19,8 +19,8 @@ namespace HWWFunctions {
     if(       variable == "mvavalue"            ){ mva_variable = HWWVal::pfjets_mvavalue();
     }
     else{
-    cout<<"variable not found. Check input. Exiting."<<endl;
-    exit(99);
+      edm::LogError("InvalidInput") <<"variable not found. Check input. Exiting.";
+      exit(99);
     }
 
     //if no bug is detected, returns the original collection of the mvas stored in the cms2 ntuple.
@@ -98,8 +98,8 @@ namespace HWWFunctions {
       //fill the new mva values
       return true;  
     }else{
-      cout<<"new mva values vector size "<<goodmvas.size()<<" different to pfjets collection size "<<HWWVal::pfjets_p4().size()<<endl;
-      cout<<"returning old mva collection: "<<variable<<endl;
+      //cout<<"new mva values vector size "<<goodmvas.size()<<" different to pfjets collection size "<<HWWVal::pfjets_p4().size()<<endl;
+      //cout<<"returning old mva collection: "<<variable<<endl;
       goodmvas.clear();
       goodmvas = mva_variable;
       return false;

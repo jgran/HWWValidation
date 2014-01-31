@@ -83,7 +83,7 @@ namespace HWWFunctions {
           // Default //
           /////////////
       default:
-          std::cout << "muonID ERROR: requested muon type is not defined. Abort." << std::endl;
+          edm::LogError("InvalidInput") << "muonID ERROR: requested muon type is not defined. Abort.";
           exit(1);
           return false;
       } 
@@ -228,7 +228,7 @@ namespace HWWFunctions {
           break;
       }
       default:
-          std::cout << "muonID ERROR: requested muon type is not defined. Abort." << std::endl;
+          edm::LogError("InvalidInput") << "muonID ERROR: requested muon type is not defined. Abort.";
           return false;
       }
   }
@@ -266,7 +266,7 @@ namespace HWWFunctions {
           if (HWWVal::mus_iso04_pf().at(imu)<-99.) return 9999.;
           return HWWVal::mus_iso04_pf().at(imu)/HWWVal::mus_p4().at(imu).pt();
       } else {
-          std::cout << "muonIsoValuePF: CONE SIZE NOT SUPPORTED" << std::endl;
+          edm::LogWarning("InvalidInput") << "muonIsoValuePF: CONE SIZE NOT SUPPORTED";
           return 9999.;
       }
   }

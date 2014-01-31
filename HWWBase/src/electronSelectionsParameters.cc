@@ -1,4 +1,5 @@
 #include <iostream>
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "HWWValidation/HWWBase/interface/electronSelectionsParameters.h"
 
 namespace HWWFunctions {
@@ -113,7 +114,7 @@ namespace HWWFunctions {
               }
 
           default:
-              std::cout << "[eidGetWP2012] ERROR! Invalid tightness level" << std::endl;
+              edm::LogError("InvalidInput") << "[eidGetWP2012] ERROR! Invalid tightness level";
 
       }
 
@@ -350,7 +351,7 @@ namespace HWWFunctions {
               }   
 
           default:
-              std::cout << "[eidGetVBTF] ERROR! Invalid tightness level" << std::endl;
+              edm::LogError("InvalidInput") << "[eidGetVBTF] ERROR! Invalid tightness level";
       }
 
       return;
