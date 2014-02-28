@@ -56,7 +56,7 @@ class HWWAnalyzer : public DQMEDAnalyzer {
       EGammaMvaEleEstimator* egammaMvaEleEstimator;
       MuonMVAEstimator* muonMVAEstimator;
   
-      EventMonitor::hypo_monitor monitor;
+      EventMonitor eventMonitor;
 
       VertexMaker         vertexMaker;
       EventMaker          eventMaker;

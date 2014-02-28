@@ -46,14 +46,13 @@ void HWWAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
   //reset variables
   HWWVal::Reset();
 
-  //reset counters to 0
-  monitor.counters.clear();
 
   //count total events
-  monitor.count(MM, "total events", 1.0);
-  monitor.count(EE, "total events", 1.0);
-  monitor.count(EM, "total events", 1.0);
-  monitor.count(ME, "total events", 1.0);
+  eventMonitor.monitor.count(MM, "total events", 1.0);
+  eventMonitor.monitor.count(EE, "total events", 1.0);
+  eventMonitor.monitor.count(EM, "total events", 1.0);
+  eventMonitor.monitor.count(ME, "total events", 1.0);
+
 
   //get variables
   eventMaker    .SetVars(iEvent, iSetup);
@@ -103,7 +102,7 @@ void HWWAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
       int bestHyp = bestHypothesis(candidates);
 
       //perform remaining selections
-      doCutFlow(bestHyp, monitor, egammaMvaEleEstimator, muonMVAEstimator);
+      doCutFlow(bestHyp, eventMonitor.monitor, egammaMvaEleEstimator, muonMVAEstimator);
 
     }
   }  
@@ -133,12 +132,9 @@ void HWWAnalyzer::FillHistograms(){
   hist[3] = cutflow_me;
 
   for (unsigned int i=0; i<4; i++){
-    for (unsigned int j=0; j<monitor.counters.size(); ++j){
-      int content = hist[i]->getBinContent(j+1) + monitor.counters[j].nevt[i];
-      float error = sqrt(content);
-      hist[i]->setBinContent(j+1, content);
-      hist[i]->setBinError(j+1, error);
-      hist[i]->setBinLabel(j+1, monitor.counters[j].name.c_str(), 1);
+    for (unsigned int j=0; j<eventMonitor.monitor.counters.size(); ++j){
+      hist[i]->setBinContent(j+1, eventMonitor.monitor.counters[j].nevt[i]);
+      hist[i]->setBinLabel(j+1, eventMonitor.monitor.counters[j].name.c_str(), 1);
     }
   }
 
