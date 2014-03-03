@@ -1,3 +1,5 @@
+#include "JetMETCorrections/Objects/interface/JetCorrectionsRecord.h"
+#include "JetMETCorrections/Objects/interface/JetCorrector.h"
 #include "HWWValidation/HWWBase/interface/MVAJetIdMaker.h"
 #include "HWWValidation/HWWBase/interface/HWW.h"
 
@@ -6,8 +8,9 @@ typedef math::XYZTLorentzVectorF LorentzVector;
 MVAJetIdMaker::MVAJetIdMaker(const edm::ParameterSet& iConfig, edm::ConsumesCollector iCollector){
 
   PFJetCollection_     = iCollector.consumes<reco::PFJetCollection> (iConfig.getParameter<edm::InputTag>("pfJetsInputTag"));
-  CorrPFJetCollection_ = iCollector.consumes<reco::PFJetCollection> (iConfig.getParameter<edm::InputTag>("corrPFJetsInputTag"));
+  //CorrPFJetCollection_ = iCollector.consumes<reco::PFJetCollection> (iConfig.getParameter<edm::InputTag>("corrPFJetsInputTag"));
   thePVCollection_     = iCollector.consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("primaryVertexInputTag"));
+  jetCorrector_        = iConfig.getParameter<std::string>("jetCorrector");
 
   fPUJetIdAlgo = new PileupJetIdAlgo(iConfig);
 
@@ -39,21 +42,34 @@ void MVAJetIdMaker::SetVars(const edm::Event& iEvent, const edm::EventSetup& iSe
   iEvent.getByToken(PFJetCollection_, lHUCJets);
   PFJetCollection               lUCJets = *lHUCJets;
 
-  //Corrected Jets
-  Handle<PFJetCollection>       lHCJets;
-  iEvent.getByToken(CorrPFJetCollection_  , lHCJets);
-  PFJetCollection               lCJets = *lHCJets;
-
   // vertices    
   Handle<reco::VertexCollection> lHVertices;
   iEvent.getByToken(thePVCollection_, lHVertices); 
   VertexCollection lVertices = *lHVertices;
+
+/*
+  //Corrected Jets
+  Handle<PFJetCollection>       lHCJets;
+  iEvent.getByToken(CorrPFJetCollection_  , lHCJets);
+  PFJetCollection               lCJets = *lHCJets;
 
   //store corrected pfjets
   for(unsigned int ijet=0; ijet<lCJets.size(); ijet++){
 
 		const PFJet     *pCJet  = &(lCJets.at(ijet));
     HWWVal::pfjets_corr_p4() .push_back( LorentzVector( pCJet->p4() ) );
+
+  }
+*/
+
+  const JetCorrector* corrector=0;
+  corrector = JetCorrector::getJetCorrector(jetCorrector_, iSetup); 
+  std::vector<reco::PFJet> lCJets;
+  for(reco::PFJetCollection::const_iterator jet=lUCJets.begin(); jet!=lUCJets.end(); ++jet){
+
+    reco::PFJet tempJet = *jet; 
+    tempJet.scaleEnergy(corrector ? corrector->correction(*jet, iEvent, iSetup) : 1.);
+    lCJets.push_back(tempJet);
 
   }
 
@@ -72,9 +88,9 @@ void MVAJetIdMaker::SetVars(const edm::Event& iEvent, const edm::EventSetup& iSe
   }
 
   // loop over jets 
-  for(int i0   = 0; i0 < (int) lUCJets.size(); i0++) {   // uncorrected jets collection                                           
+  for(int i0   = 0; i0 < (int) lUCJets.size(); i0++) {   // uncorrected jets collection
 	  const PFJet       *pUCJet = &(lUCJets.at(i0));
-	  for(int i1 = 0; i1 < (int) lCJets.size(); i1++) {   // corrected jets collection                                         
+	  for(int i1 = 0; i1 < (int) lCJets.size(); i1++) {   // corrected jets collection
 		  const PFJet     *pCJet  = &(lCJets.at(i1));
 		  if( pUCJet->jetArea() != pCJet->jetArea()                  	) continue;
 		  if( fabs(pUCJet->eta() - pCJet->eta())         > 0.001         ) continue;

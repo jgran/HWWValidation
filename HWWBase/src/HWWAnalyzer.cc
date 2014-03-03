@@ -133,8 +133,8 @@ void HWWAnalyzer::FillHistograms(){
 
   for (unsigned int i=0; i<4; i++){
     for (unsigned int j=0; j<eventMonitor.monitor.counters.size(); ++j){
-      hist[i]->setBinContent(j+1, eventMonitor.monitor.counters[j].nevt[i]);
       hist[i]->setBinLabel(j+1, eventMonitor.monitor.counters[j].name.c_str(), 1);
+      hist[i]->setBinContent(j+1, eventMonitor.monitor.counters[j].nevt[i]);
     }
   }
 
