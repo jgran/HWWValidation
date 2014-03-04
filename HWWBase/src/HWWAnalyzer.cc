@@ -15,7 +15,6 @@ HWWAnalyzer::HWWAnalyzer(const edm::ParameterSet& iConfig)
              recoConversionMaker(iConfig, consumesCollector()),
              rhoMaker           (iConfig, consumesCollector()),
              pfMETMaker         (iConfig, consumesCollector()),
-             bTagMaker          (iConfig, consumesCollector()),
              mvaJetIdMaker      (iConfig, consumesCollector())
 {
 
@@ -95,7 +94,6 @@ void HWWAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
       //get variables
       pfMETMaker            .SetVars(iEvent, iSetup);
       trkMETMaker           .SetVars(iEvent, iSetup);
-      bTagMaker             .SetVars(iEvent, iSetup);
       mvaJetIdMaker         .SetVars(iEvent, iSetup);
 
       //find best lepton pair

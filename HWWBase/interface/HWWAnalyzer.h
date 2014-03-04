@@ -30,7 +30,6 @@
 #include "HWWValidation/HWWBase/interface/RhoMaker.h"
 #include "HWWValidation/HWWBase/interface/PFMETMaker.h"
 #include "HWWValidation/HWWBase/interface/TrkMETMaker.h"
-#include "HWWValidation/HWWBase/interface/BTagMaker.h"
 #include "HWWValidation/HWWBase/interface/PileupJetIdAlgo.h"
 #include "HWWValidation/HWWBase/interface/MVAJetIdMaker.h"
 
@@ -73,7 +72,6 @@ class HWWAnalyzer : public DQMEDAnalyzer {
       RhoMaker            rhoMaker;
       PFMETMaker          pfMETMaker;
       TrkMETMaker         trkMETMaker;
-      BTagMaker           bTagMaker;
       MVAJetIdMaker       mvaJetIdMaker;
 
       MonitorElement* cutflow_mm;

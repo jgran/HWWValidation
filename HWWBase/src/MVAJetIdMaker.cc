@@ -8,7 +8,6 @@ typedef math::XYZTLorentzVectorF LorentzVector;
 MVAJetIdMaker::MVAJetIdMaker(const edm::ParameterSet& iConfig, edm::ConsumesCollector iCollector){
 
   PFJetCollection_     = iCollector.consumes<reco::PFJetCollection> (iConfig.getParameter<edm::InputTag>("pfJetsInputTag"));
-  //CorrPFJetCollection_ = iCollector.consumes<reco::PFJetCollection> (iConfig.getParameter<edm::InputTag>("corrPFJetsInputTag"));
   thePVCollection_     = iCollector.consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("primaryVertexInputTag"));
   jetCorrector_        = iConfig.getParameter<std::string>("jetCorrector");
 
@@ -46,21 +45,6 @@ void MVAJetIdMaker::SetVars(const edm::Event& iEvent, const edm::EventSetup& iSe
   Handle<reco::VertexCollection> lHVertices;
   iEvent.getByToken(thePVCollection_, lHVertices); 
   VertexCollection lVertices = *lHVertices;
-
-/*
-  //Corrected Jets
-  Handle<PFJetCollection>       lHCJets;
-  iEvent.getByToken(CorrPFJetCollection_  , lHCJets);
-  PFJetCollection               lCJets = *lHCJets;
-
-  //store corrected pfjets
-  for(unsigned int ijet=0; ijet<lCJets.size(); ijet++){
-
-		const PFJet     *pCJet  = &(lCJets.at(ijet));
-    HWWVal::pfjets_corr_p4() .push_back( LorentzVector( pCJet->p4() ) );
-
-  }
-*/
 
   const JetCorrector* corrector=0;
   corrector = JetCorrector::getJetCorrector(jetCorrector_, iSetup); 

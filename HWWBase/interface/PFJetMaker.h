@@ -4,6 +4,7 @@
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/Framework/interface/ConsumesCollector.h"
 #include "DataFormats/JetReco/interface/PFJet.h"
+#include "DataFormats/JetReco/interface/JetFloatAssociation.h"
 
 class PFJetMaker {
 
@@ -14,7 +15,8 @@ class PFJetMaker {
 
   private:
 
-    edm::EDGetTokenT<reco::PFJetCollection> PFJetCollection_;
+    edm::EDGetTokenT<edm::View<reco::Jet> > PFJetCollection_;
+    edm::EDGetTokenT<reco::JetFloatAssociation::Container> BJetTags_;
 
 };
 

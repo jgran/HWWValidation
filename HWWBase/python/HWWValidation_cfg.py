@@ -9,8 +9,8 @@ options = VarParsing.VarParsing ('analysis')
 #options.inputFiles= 'root://eoscms//eos/cms/store/relval/CMSSW_7_0_0_pre11/RelValProdTTbar/AODSIM/START70_V4-v1/00000/D0516C65-766A-E311-B744-00259059642E.root'
 #options.inputFiles= 'file:/home/users/jgran/CMSSW_7_0_0_pre9/src/HWWValidation/RelVal_CMSSW_7_0_0_pre9.root'
 options.inputFiles= 'file:/home/users/jgran/CMSSW_7_0_0_pre11/src/HWWValidation/RelVal_CMSSW_7_0_0_pre11.root'
-options.maxEvents = -1 # -1 means all events
-#options.maxEvents = 1000 # 
+#options.maxEvents = -1 # -1 means all events
+options.maxEvents = 1000 # 
 
 # get and parse the command line arguments
 options.parseArguments()
@@ -35,16 +35,6 @@ process.load("HWWValidation.HWWBase.hwwAnalyzer_cfi")
 process.load('JetMETCorrections.Configuration.DefaultJEC_cff')
 process.load('HWWValidation.HWWBase.puJetIDAlgo_cff')
 
-#process.ak5PFJetsL1FastL2L3 = process.ak5PFJetsL2L3.clone(
-#    src = 'ak5PFJets',
-#    correctors = ['ak5PFL1FastL2L3']
-#)
-#
-#process.ak5PFJetsL1FastL2L3Residual = process.ak5PFJetsL2L3.clone(
-#    src = 'ak5PFJets',
-#    correctors = ['ak5PFL1FastL2L3Residual']
-#)
-
 # b-tagging general configuration
 process.load('RecoJets.JetAssociationProducers.ic5PFJetTracksAssociatorAtVertex_cfi')
 process.load('RecoBTag.Configuration.RecoBTag_cff')
@@ -62,9 +52,10 @@ process.load("DQMServices.Components.DQMEnvironment_cfi")
 process.load('Configuration.StandardSequences.EDMtoMEAtRunEnd_cff')
 process.dqmsave_step = cms.Path(process.DQMSaver)
 
-process.myPath = cms.Path(#process.ak5PFJetsL1FastL2L3*process.ak5PFJetsL1FastL2L3Residual*
+process.myPath = cms.Path(process.ak5PFJetsL1FastL2L3*process.ak5PFJetsL1FastL2L3Residual*
                      process.PFJetTracksAssociatorAtVertex*process.PFImpactParameterTagInfos*
-                     process.PFTrackCountingHighEffBJetTags*process.hwwAnalyzer
+                     process.PFTrackCountingHighEffBJetTags*
+                     process.hwwAnalyzer
 )
 
 process.schedule = cms.Schedule(
